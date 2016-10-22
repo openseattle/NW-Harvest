@@ -15,7 +15,7 @@ namespace NWHarvest.Web.Models
 
         [Required]
         [StringLength(100)]
-        [Display(Name = "Food Bank")]
+        [Display(Name = "Food Program")]
         public string name { get; set; }
 
         [StringLength(11)]

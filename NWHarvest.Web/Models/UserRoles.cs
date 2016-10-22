@@ -20,7 +20,7 @@
         {
             get
             {
-                return "Food Bank";
+                return "Food Program";
             }
         }
     }

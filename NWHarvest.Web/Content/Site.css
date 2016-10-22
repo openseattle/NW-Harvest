@@ -42,7 +42,9 @@ textarea {
 
 .navbar-collapse {
     background-image:url('Banner.jpg');
-    min-height:261px;
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    min-height: 281px;
 }
 
 .navbar-brand {

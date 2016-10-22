@@ -18,11 +18,11 @@
     });
     userTypeListItems.Add(new SelectListItem
     {
-        Text = "Food Bank",
+        Text = "Food Program",
         Value = "IsFoodBank"
     });
     <div class="userType">
-        <p>Please select whether you are a food bank or a grower</p>
+        <p>Please select whether you are a food program or a grower</p>
         @Html.DropDownListFor(m => m.UserType, userTypeListItems, " ")
     </div>
     <hr/>

@@ -91,7 +91,7 @@
                                 <b> | </b>
                                 @Html.ActionLink("Delete", "Delete", new { id = item.id })
                             }
-                            <!--Only food banks can claim food.-->
+                            <!--Only food programs can claim food.-->
                             @if (Model.registeredUser.Role == UserRoles.FoodBankRole)
                             {
                                 <b>|</b>

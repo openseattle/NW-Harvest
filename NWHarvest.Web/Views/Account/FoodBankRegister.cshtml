@@ -8,8 +8,8 @@
 @using (Html.BeginForm("FoodBankRegister", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Create a new Food Bank account</h4>
-    <p>Are you not a Food Bank? Growers <a href="/Account/Register">click here</a> to register.</p>
+    <h4>Create a new Food Program account</h4>
+    <p>Are you not a Food Program? Growers <a href="/Account/Register">click here</a> to register.</p>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">

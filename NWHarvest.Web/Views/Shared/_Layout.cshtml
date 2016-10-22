@@ -37,7 +37,7 @@
                         if (ViewBag.userRole == UserRoles.AdministratorRole)
                         {
                             <li>@Html.ActionLink("Growers", "Index", "Growers")</li>
-                            <li>@Html.ActionLink("Food Banks", "Index", "FoodBanks")</li>
+                            <li>@Html.ActionLink("Food Programs", "Index", "FoodBanks")</li>
                         }
 
                         if (ViewBag.userRole == UserRoles.GrowerRole || ViewBag.userRole == UserRoles.FoodBankRole)
