@@ -111,7 +111,9 @@ namespace NWHarvest.Web.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             FoodBank foodBank = db.FoodBanks.Find(id);
+            var aspNetUser = db.Users.Find(foodBank.UserId);
             db.FoodBanks.Remove(foodBank);
+            db.Users.Remove(aspNetUser);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

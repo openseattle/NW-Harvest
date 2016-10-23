@@ -111,7 +111,9 @@ namespace NWHarvest.Web.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Grower grower = db.Growers.Find(id);
+            var aspNetUser = db.Users.Find(grower.UserId);
             db.Growers.Remove(grower);
+            db.Users.Remove(aspNetUser);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
