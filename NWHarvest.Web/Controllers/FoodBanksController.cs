@@ -79,7 +79,7 @@ namespace NWHarvest.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,name,phone,email,address1,address2,address3,address4,city,state,zip")] FoodBank foodBank)
+        public ActionResult Edit([Bind(Include = "UserId,NotificationPreference,id,name,phone,email,address1,address2,address3,address4,city,state,zip")] FoodBank foodBank)
         {
             if (ModelState.IsValid)
             {

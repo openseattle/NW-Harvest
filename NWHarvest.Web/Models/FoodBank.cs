@@ -18,6 +18,7 @@ namespace NWHarvest.Web.Models
         [Display(Name = "Food Program")]
         public string name { get; set; }
 
+        [Required]
         [StringLength(11)]
         [Display(Name = "Phone Number")]
         public string phone { get; set; }
