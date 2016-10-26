@@ -10,6 +10,11 @@ namespace NWHarvest.Web.Models
     [Table("Listing")]
     public partial class Listing
     {
+        public Listing()
+        {
+
+        }
+
         public int id { get; set; }
         
         [Required]

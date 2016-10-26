@@ -9,8 +9,9 @@ using NWHarvest.Web.Models;
 
 namespace NWHarvest.Web.Controllers
 {
+    using System;
     using System.Collections.Generic;
-    
+
     public class ViewLists
     {
         public RegisteredUser registeredUser { get; set; } 
@@ -79,10 +80,8 @@ namespace NWHarvest.Web.Controllers
             var registeredUserService = new RegisteredUserService();
             var user = registeredUserService.GetRegisteredUser(this.User);
 
-            ListingViewModel listingViewModel = new ListingViewModel();
-            listingViewModel.Grower = db.Growers.Where(g => g.Id == user.GrowerId).FirstOrDefault();
-            ViewBag.grower = new SelectList(db.Growers, "id", "name");
-            ViewBag.growerName = "the grower";
+            var grower = db.Growers.Where(g => g.Id == user.GrowerId).FirstOrDefault();
+            ListingViewModel listingViewModel = new ListingViewModel(db, grower);
             
             return View(listingViewModel);
         }
@@ -92,36 +91,35 @@ namespace NWHarvest.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ListingViewModel listing)
-        {
-            
+        public ActionResult Create(ListingViewModel listingViewModel)
+        {   
             var service = new RegisteredUserService();
             var user = service.GetRegisteredUser(this.User);
 
-            var grower = (from b in db.Growers
+            var saveListing = new Listing();
+
+            saveListing.Grower = (from b in db.Growers
                             where b.Id == user.GrowerId
                             select b).FirstOrDefault();
-            var pickupLocation = (from b in db.PickupLocations
-                                  where b.id.ToString() == listing.SavedLocationId
+
+            saveListing.PickupLocation = (from b in db.PickupLocations
+                                  where b.id.ToString() == listingViewModel.SavedLocationId
                                   select b).FirstOrDefault();
-
-            listing.Grower = grower;
-            listing.available = true;
-            listing.PickupLocation = pickupLocation;
             
-            var saveListing = new Listing();
-            saveListing.product = listing.product;
-            saveListing.qtyClaimed = listing.qtyClaimed;
-            saveListing.qtyOffered = listing.qtyOffered;
-            saveListing.qtyLabel = listing.qtyLabel;
-            saveListing.harvested_date = listing.harvested_date;
-            saveListing.expire_date = listing.expire_date;
-            saveListing.cost = listing.cost;
-            saveListing.available = listing.available;
-            saveListing.comments = listing.comments;
-            saveListing.Grower = listing.Grower;
-            saveListing.FoodBank = listing.FoodBank;
+            saveListing.product = listingViewModel.product;
+            saveListing.qtyClaimed = listingViewModel.qtyClaimed;
+            saveListing.qtyOffered = listingViewModel.qtyOffered;
+            saveListing.qtyLabel = listingViewModel.qtyLabel;
+            saveListing.harvested_date = listingViewModel.harvested_date;
+            saveListing.expire_date = listingViewModel.expire_date;
+            saveListing.cost = listingViewModel.cost;
+            saveListing.available = true;
+            saveListing.comments = listingViewModel.comments;
+            saveListing.FoodBank = listingViewModel.FoodBank;
+            saveListing.location = "";
+            saveListing.qtyClaimed = 0;
 
+            CheckListingForErrors(saveListing);
 
             if (ModelState.IsValid)
             {
@@ -129,9 +127,50 @@ namespace NWHarvest.Web.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            
-            //ViewBag.grower = new SelectList(db.Growers, "id", "name", listing.Grower.Id);
-            return View(listing);
+
+            //Get pickup locations.
+            listingViewModel.Grower = saveListing.Grower;
+            listingViewModel.PopulatePickupLocations(db);// PickupLocations = listingViewModel.PickupLocations;
+
+            return View(listingViewModel);
+        }
+
+        private void CheckListingForErrors(Listing saveListing)
+        {
+            if (saveListing.product == null)
+            {
+                ModelState.AddModelError("Product", "Product is required.");
+            }
+
+            if (saveListing.qtyOffered == null)
+            {
+                ModelState.AddModelError("qtyOffered", "Quantity is required.");
+            }
+
+            if (saveListing.qtyLabel == null)
+            {
+                ModelState.AddModelError("qtyLabel", "Unit of Measure is required.");
+            }
+
+            if (saveListing.expire_date == null)
+            {
+                ModelState.AddModelError("expire_date", "Expiration Date is required.");
+            }
+
+            if (saveListing.cost == null)
+            {
+                ModelState.AddModelError("cost", "Cost is required.");
+            }
+
+            if (saveListing.available == null)
+            {
+                ModelState.AddModelError("available", "Available is required.");
+            }
+
+            if (saveListing.PickupLocation == null)
+            {
+                ModelState.AddModelError("PickupLocations", "You must select a pickup location. If none are available, create one under My Locations.");
+            }
         }
 
         // GET: Listings/Edit/5
@@ -146,8 +185,60 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.grower = new SelectList(db.Growers, "id", "name", listing.Grower.Id);
-            return View(listing);
+
+            var pickupLocationsForGrower = db.PickupLocations.Where(m => m.Grower.Id == listing.Grower.Id);
+            ViewBag.locationsList = new SelectList(pickupLocationsForGrower, "id", "name", listing.PickupLocation.id);
+
+            ListingViewModel listingViewModel = new ListingViewModel(db, listing.Grower);
+            listingViewModel.id = Convert.ToInt32(id);
+            listingViewModel.PopulatePickupLocations(db);
+            listingViewModel.product = listing.product;
+            listingViewModel.qtyOffered = listing.qtyOffered;
+            listingViewModel.qtyLabel = listing.qtyLabel;
+            listingViewModel.harvested_date = listing.harvested_date;
+            listingViewModel.expire_date = listing.expire_date;
+            listingViewModel.cost = listing.cost;
+            listingViewModel.available = listing.available;
+            listingViewModel.comments = listing.comments;
+
+            return View(listingViewModel);
+        }
+
+        // POST: Listings/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ListingViewModel listingViewModel)
+        {
+            listingViewModel.PopulatePickupLocations(db);
+            listingViewModel.PopulatePickupLocation(db);
+
+            var saveListing = (from b in db.Listings where b.id == listingViewModel.id select b).FirstOrDefault();
+
+            var pickupLocationsForGrower = db.PickupLocations.Where(m => m.Grower.Id == saveListing.Grower.Id);
+            ViewBag.locationsList = new SelectList(pickupLocationsForGrower, "id", "name", saveListing.PickupLocation.id);
+
+            saveListing.product = listingViewModel.product;
+            saveListing.qtyOffered = listingViewModel.qtyOffered;
+            saveListing.qtyLabel = listingViewModel.qtyLabel;
+            saveListing.harvested_date = listingViewModel.harvested_date;
+            saveListing.expire_date = listingViewModel.expire_date;
+            saveListing.cost = listingViewModel.cost;
+            saveListing.available = listingViewModel.available;
+            saveListing.comments = listingViewModel.comments;
+            saveListing.PickupLocation = listingViewModel.PickupLocation;
+
+            CheckListingForErrors(saveListing);
+
+            if (ModelState.IsValid)
+            {
+                db.Entry(saveListing).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            return View(listingViewModel);
         }
 
         private ApplicationUserManager _userManager;
@@ -176,25 +267,6 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.grower = new SelectList(db.Growers, "id", "name", listing.Grower.Id);
-            return View(listing);
-        }
-
-
-        // POST: Listings/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,product,qtyOffered,qtyClaimed,qtyLabel,available,harvested_date,expire_date,cost,comments")] Listing listing)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(listing).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.grower = new SelectList(db.Growers, "id", "name", listing.Grower.Id);
             return View(listing);
         }
 

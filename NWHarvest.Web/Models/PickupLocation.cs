@@ -22,7 +22,7 @@ namespace NWHarvest.Web.Models
         [NotMapped]
         public decimal? longitude { get; set; }
 
-        [DisplayName("Address Line 2")]
+        [DisplayName("Address Line 1")]
         [StringLength(200)]
         public string address1 { get; set; }
 

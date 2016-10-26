@@ -10,23 +10,37 @@ namespace NWHarvest.Web.Models
 {
     public class ListingViewModel
     {
-        ListingsRepository repo = new ListingsRepository();
-
-        public IEnumerable<SelectListItem> PickupLocations
+        public ListingViewModel()
         {
 
-            get
-            {
-                if (this.Grower != null)
-                {
-                    IEnumerable<PickupLocation> allLocs = repo.GetAllPickupLocations(this.Grower.Id);
-                    IEnumerable<SelectListItem> listItems = allLocs.Select(pl => new SelectListItem() { Value = pl.id.ToString(), Text = pl.name });
-                    return listItems;
-                }
+        }
 
-                return new List<SelectListItem>();
+        public ListingViewModel (ApplicationDbContext db, Grower grower)
+        {
+            Grower = grower;
+            PopulatePickupLocations(db);
+            PopulatePickupLocation(db);
+        }
+
+        public void PopulatePickupLocations(ApplicationDbContext db)
+        {
+            if (this.Grower != null)
+            {
+                ListingsRepository repo = new ListingsRepository(db);
+
+                IEnumerable<PickupLocation> allLocs = repo.GetAllPickupLocations(this.Grower.Id);
+                IEnumerable<SelectListItem> listItems = allLocs.Select(pl => new SelectListItem() { Value = pl.id.ToString(), Text = pl.name });
+                PickupLocations = listItems;
+            }
+            else
+            {
+                PickupLocations = new List<SelectListItem>();
             }
         }
+
+        private IEnumerable<SelectListItem> _pickupLocations;
+        public IEnumerable<SelectListItem> PickupLocations { get; set;}
+
         public int id { get; set; }
         [DataType(DataType.Text)]
         public string SavedLocationId { get; set; }
@@ -68,28 +82,23 @@ namespace NWHarvest.Web.Models
         public virtual FoodBank FoodBank { get; set; }
 
         [DisplayName("Pickup Location")]
-        public virtual PickupLocation PickupLocation
+        public virtual PickupLocation PickupLocation { get; set; }
+
+        public void PopulatePickupLocation(ApplicationDbContext db)
         {
-            get
+            if (this.Grower != null)
             {
+                ListingsRepository repo = new ListingsRepository(db);
+
                 if (String.IsNullOrWhiteSpace(this.SavedLocationId) == false)
                 {
                     IEnumerable<PickupLocation> allLocs = repo.GetAllPickupLocations(this.Grower.Id);
-                    return allLocs.Where(l => l.id == int.Parse(this.SavedLocationId)).FirstOrDefault();
+                    PickupLocation = allLocs.Where(l => l.id == int.Parse(this.SavedLocationId)).FirstOrDefault();
                 }
-
-                return new PickupLocation();
             }
-            set
+            else
             {
-                if (value != null)
-                {
-                    this.SavedLocationId = value.id.ToString();
-                }
-                else
-                {
-                    this.SavedLocationId = null;
-                }
+                PickupLocation = null;
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿@model NWHarvest.Web.Models.Listing
+﻿@model NWHarvest.Web.Models.ListingViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -14,7 +14,16 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.id)
-
+        @Html.HiddenFor(model => model.Grower.Id)
+        @Html.HiddenFor(model => model.Grower.UserId)
+        @Html.HiddenFor(model => model.Grower.name)
+        @Html.HiddenFor(model => model.Grower.address1)
+        @Html.HiddenFor(model => model.Grower.email)
+        @Html.HiddenFor(model => model.Grower.NotificationPreference)
+        @Html.HiddenFor(model => model.Grower.zip)
+        @Html.HiddenFor(model => model.Grower.city)
+        @Html.HiddenFor(model => model.Grower.state)
+        
         <div class="form-group">
             @Html.LabelFor(model => model.product, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -77,6 +86,16 @@
                 <div class="checkbox">
                     @Html.EditorFor(model => model.available)
                     @Html.ValidationMessageFor(model => model.available, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="control-label col-md-2"><strong>Listing Location</strong></p>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.SavedLocationId, (SelectList)ViewBag.locationsList, "Select Pickup Location")
+                <div>
+                    @Html.ValidationMessageFor(model => model.PickupLocations, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>

@@ -7,7 +7,17 @@ namespace NWHarvest.Web.Models
 {
     public class ListingsRepository
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext db;
+
+        public ListingsRepository()
+        {
+            this.db = new ApplicationDbContext();
+        }
+
+        public ListingsRepository(ApplicationDbContext db)
+        {
+            this.db = db;
+        }
 
         public IEnumerable<Listing> GetAllAvailable()
         {

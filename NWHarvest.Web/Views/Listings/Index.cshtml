@@ -139,7 +139,13 @@
                         <td>@Html.DisplayFor(modelItem => item.comments)</td>
                         <td>@Html.DisplayFor(modelItem => item.PickupLocation.city)</td>
                         <td>@Html.DisplayFor(modelItem => item.PickupLocation.zip)</td>
-                        <td><a target="_blank" href='@string.Format("https://www.google.com/maps/dir/{0}+{1}+{2}+{3}/{4}+{5}+{6}+{7}", item.FoodBank.address1, item.FoodBank.city, item.FoodBank.state, item.FoodBank.zip, item.Grower.address1, item.Grower.city, item.Grower.state, item.Grower.zip)'>Get Directions</a></td>
+                        @if (item.FoodBank != null) {
+                            <td><a target="_blank" href='@string.Format("https://www.google.com/maps/dir/{0}+{1}+{2}+{3}/{4}+{5}+{6}+{7}", item.FoodBank.address1, item.FoodBank.city, item.FoodBank.state, item.FoodBank.zip, item.Grower.address1, item.Grower.city, item.Grower.state, item.Grower.zip)'>Get Directions</a></td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
                     </tr>
                 }
 
