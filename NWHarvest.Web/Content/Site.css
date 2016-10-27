@@ -65,12 +65,12 @@ div.body-content div.text-center a.btn {
     background-color: #548ac8;
 }
 
-#listingDeets dd{
+.tableDetails dd{
     margin-bottom: 10px;
 }
 
 .dataTable td {
-    max-width: 150px;
+    max-width: 160px;
     min-width: 10px;
     overflow: hidden;
     text-overflow: ellipsis;

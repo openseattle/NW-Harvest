@@ -18,7 +18,10 @@ namespace NWHarvest.Web.Controllers
         // GET: PickupLocations
         public ActionResult Index()
         {
-            var pickupLocations = db.PickupLocations.Include(p => p.Grower);
+            var registeredUserService = new RegisteredUserService();
+            var user = registeredUserService.GetRegisteredUser(this.User);
+
+            var pickupLocations = db.PickupLocations.Where(p => p.Grower.Id == user.GrowerId);
             return View(pickupLocations.ToList());
         }
 
@@ -49,8 +52,20 @@ namespace NWHarvest.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,growerId,address1,address2,address3,address4,city,state,zip,comments")] PickupLocation pickupLocation)
+        public ActionResult Create([Bind(Include = "id,name,address1,address2,address3,address4,city,state,zip,comments")] PickupLocation pickupLocation)
         {
+            var registeredUserService = new RegisteredUserService();
+            var user = registeredUserService.GetRegisteredUser(this.User);
+
+            var grower = db.Growers.Where(b => b.Id == user.GrowerId).FirstOrDefault();
+            pickupLocation.Grower = grower;
+            pickupLocation.address2 = pickupLocation.address2 == null ? "" : pickupLocation.address2;
+            pickupLocation.address3 = pickupLocation.address3 == null ? "" : pickupLocation.address3;
+            pickupLocation.address4 = pickupLocation.address4 == null ? "" : pickupLocation.address4;
+            pickupLocation.comments = pickupLocation.comments == null ? "" : pickupLocation.comments;
+
+            CheckPickupLocationForErrors(pickupLocation);
+
             if (ModelState.IsValid)
             {
                 db.PickupLocations.Add(pickupLocation);
@@ -60,6 +75,34 @@ namespace NWHarvest.Web.Controllers
 
             ViewBag.growerId = new SelectList(db.Growers, "id", "name", pickupLocation.Grower.Id);
             return View(pickupLocation);
+        }
+
+        private void CheckPickupLocationForErrors(PickupLocation pickupLocation)
+        {
+            if (pickupLocation.name == null)
+            {
+                ModelState.AddModelError("name", "Name is required.");
+            }
+
+            if (pickupLocation.address1 == null)
+            {
+                ModelState.AddModelError("address1", "Address is required.");
+            }
+
+            if (pickupLocation.city == null)
+            {
+                ModelState.AddModelError("city", "City is required.");
+            }
+
+            if (pickupLocation.state == null)
+            {
+                ModelState.AddModelError("state", "State is required.");
+            }
+
+            if (pickupLocation.zip == null)
+            {
+                ModelState.AddModelError("zip", "Zip is required.");
+            }
         }
 
         // GET: PickupLocations/Edit/5
@@ -116,9 +159,23 @@ namespace NWHarvest.Web.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             PickupLocation pickupLocation = db.PickupLocations.Find(id);
-            db.PickupLocations.Remove(pickupLocation);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+
+            //Saved to make sure grower is displayed on unsuccessful delete.
+            var grower = pickupLocation.Grower;
+
+            try
+            {
+                db.PickupLocations.Remove(pickupLocation);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            catch(Exception error)
+            {
+                ModelState.AddModelError(String.Empty, "You cannot delete this location because it is used on an existing Listing.");
+                pickupLocation.Grower = grower;
+                return View(pickupLocation);
+            }
         }
 
         protected override void Dispose(bool disposing)
