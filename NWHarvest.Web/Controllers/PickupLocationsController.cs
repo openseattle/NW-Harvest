@@ -128,13 +128,26 @@ namespace NWHarvest.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "id,name,growerId,address1,address2,address3,address4,city,state,zip,comments")] PickupLocation pickupLocation)
         {
+            var savePickupLocation = db.PickupLocations.Where(b => b.id == pickupLocation.id).FirstOrDefault();
+            savePickupLocation.name = pickupLocation.name;
+            savePickupLocation.address1 = pickupLocation.address1;
+            savePickupLocation.address2 = pickupLocation.address2;
+            savePickupLocation.address3 = pickupLocation.address3;
+            savePickupLocation.address4 = pickupLocation.address4;
+            savePickupLocation.city = pickupLocation.city;
+            savePickupLocation.state = pickupLocation.state;
+            savePickupLocation.zip = pickupLocation.zip;
+            savePickupLocation.comments = pickupLocation.comments;
+
+            CheckPickupLocationForErrors(savePickupLocation);
+
             if (ModelState.IsValid)
             {
-                db.Entry(pickupLocation).State = EntityState.Modified;
+                db.Entry(savePickupLocation).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.growerId = new SelectList(db.Growers, "id", "name", pickupLocation.Grower.Id);
+            ViewBag.growerId = new SelectList(db.Growers, "id", "name", savePickupLocation.Grower.Id);
             return View(pickupLocation);
         }
 

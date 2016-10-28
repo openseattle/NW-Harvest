@@ -1,4 +1,5 @@
 ﻿@model NWHarvest.Web.Models.PickupLocation
+@using NWHarvest.Web.Models
 
 @{
     ViewBag.Title = "Edit";
@@ -10,7 +11,8 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+    @Html.HiddenFor(model => model.Grower.Id)
+
     <div class="form-horizontal">
         <h4>PickupLocation</h4>
         <hr />
@@ -22,14 +24,6 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Grower.Id, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("growerId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Grower.Id, "", new { @class = "text-danger" })
             </div>
         </div>
 
