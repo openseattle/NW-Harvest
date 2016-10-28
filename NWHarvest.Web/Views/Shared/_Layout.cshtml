@@ -40,7 +40,7 @@
                             <li>@Html.ActionLink("Food Programs", "Index", "FoodBanks")</li>
                         }
 
-                        if (ViewBag.userRole == UserRoles.GrowerRole || ViewBag.userRole == UserRoles.FoodBankRole)
+                        if (ViewBag.userRole == UserRoles.GrowerRole)
                         {
                             <li>@Html.ActionLink("My Locations", "Index", "PickupLocations")</li>
                         }

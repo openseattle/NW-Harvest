@@ -279,57 +279,50 @@ namespace NWHarvest.Web.Controllers
         {
             var id = listing.id;
 
+            var theComments = listing.comments;
+            listing = db.Listings.FirstOrDefault(p => p.id == listing.id);
 
+            var service = new RegisteredUserService();
+            var user = service.GetRegisteredUser(this.User);
 
-            //if (ModelState.IsValid)
-            //{
-                var theComments = listing.comments;
-                listing = db.Listings.FirstOrDefault(p => p.id == listing.id);
+            var foodBank = (from b in db.FoodBanks
+                            where b.Id == user.FoodBankId
+                            select b).FirstOrDefault();
 
-                var service = new RegisteredUserService();
-                var user = service.GetRegisteredUser(this.User);
+            var growerUser = UserManager.FindById(listing.Grower.UserId);
+            var grower = db.Growers.First(x => x.UserId == growerUser.Id);
+            var message = new IdentityMessage
+            {
+                Destination = growerUser.PhoneNumber,
+                Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
+                Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
+            };
 
-                var foodBank = (from b in db.FoodBanks
-                                where b.Id == user.FoodBankId
-                                select b).FirstOrDefault();
+            var sendSMS = !string.IsNullOrWhiteSpace(growerUser.PhoneNumber) &&
+                            growerUser.PhoneNumberConfirmed &&
+                            (grower.NotificationPreference.ToLower().Contains("both") ||
+                            grower.NotificationPreference.ToLower().Contains("text"));
 
-                var growerUser = UserManager.FindById(listing.Grower.UserId);
-                var grower = db.Growers.First(x => x.UserId == growerUser.Id);
-                var message = new IdentityMessage
-                {
-                    Destination = growerUser.PhoneNumber,
-                    Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
-                    Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
-                };
+            var sendEmail = growerUser.EmailConfirmed && (grower.NotificationPreference.ToLower().Contains("both") ||
+                            grower.NotificationPreference.ToLower().Contains("email"));
 
-                var sendSMS = !string.IsNullOrWhiteSpace(growerUser.PhoneNumber) &&
-                              growerUser.PhoneNumberConfirmed &&
-                              (grower.NotificationPreference.ToLower().Contains("both") ||
-                               grower.NotificationPreference.ToLower().Contains("text"));
+            if (sendSMS)
+            {
+                UserManager.SmsService.SendAsync(message).Wait();
+            }
+            if (sendEmail)
+            {
+                UserManager.EmailService.SendAsync(message);
+            }
 
-                var sendEmail = growerUser.EmailConfirmed && (grower.NotificationPreference.ToLower().Contains("both") ||
-                              grower.NotificationPreference.ToLower().Contains("email"));
+            listing.FoodBank = foodBank;
 
-                if (sendSMS)
-                {
-                    UserManager.SmsService.SendAsync(message).Wait();
-                }
-                if (sendEmail)
-                {
-                    UserManager.EmailService.SendAsync(message);
-                }
+            listing.comments = theComments;
+            listing.available = false;
 
-                listing.FoodBank = foodBank;
-
-                listing.comments = theComments;
-                listing.available = false;
-
-                db.Entry(listing).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            //}
-            //ViewBag.Grower = new SelectList(db.Growers, "id", "name", listing.Grower.Id);
-            //return View(listing);
+            db.Entry(listing).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: Listings/Delete/5

@@ -1,4 +1,5 @@
 ﻿@model NWHarvest.Web.Models.Listing
+@using NWHarvest.Web.Models
 
 @{
     ViewBag.Title = "Details";
@@ -63,7 +64,15 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
+<p>@{ 
+    var registeredUserService = new RegisteredUserService();
+    var user = registeredUserService.GetRegisteredUser(this.User);
+    ViewBag.userRole = user.Role;
+
+    if (user.Role == UserRoles.GrowerRole || user.Role == UserRoles.AdministratorRole)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.id }) <strong>|</strong>
+        }
+    }
     @Html.ActionLink("Back to List", "Index")
 </p>

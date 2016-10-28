@@ -31,7 +31,12 @@ namespace NWHarvest.Web.Models
                                   where b.UserId == userId
                                   select b).ToList();
 
-            if (growersResults.Any())
+            if (user.Identity.GetUserName() == "admin@northwestharvest.com")
+            {
+                registeredUser.Role = UserRoles.AdministratorRole;
+            }
+
+            else if (growersResults.Any())
             {
                 registeredUser.Role = UserRoles.GrowerRole;
                 registeredUser.GrowerId = growersResults.FirstOrDefault().Id;
@@ -43,11 +48,6 @@ namespace NWHarvest.Web.Models
                 registeredUser.Role = UserRoles.FoodBankRole;
                 registeredUser.FoodBankId = foodBankResults.FirstOrDefault().Id;
                 registeredUser.UserName = foodBankResults.FirstOrDefault().name;
-            }
-
-            else
-            {
-                registeredUser.Role = UserRoles.AdministratorRole;
             }
 
             return registeredUser;
