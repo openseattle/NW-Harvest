@@ -23,5 +23,13 @@
                 return "Food Program";
             }
         }
+
+        public static string Administrator
+        {
+            get
+            {
+                return "admin@northwestharvest.com";
+            }
+        }
     }
 }

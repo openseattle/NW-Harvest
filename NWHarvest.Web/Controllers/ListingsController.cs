@@ -130,7 +130,7 @@ namespace NWHarvest.Web.Controllers
 
             //Get pickup locations.
             listingViewModel.Grower = saveListing.Grower;
-            listingViewModel.PopulatePickupLocations(db);// PickupLocations = listingViewModel.PickupLocations;
+            listingViewModel.PopulatePickupLocations(db);
 
             return View(listingViewModel);
         }
@@ -155,6 +155,11 @@ namespace NWHarvest.Web.Controllers
             if (saveListing.expire_date == null)
             {
                 ModelState.AddModelError("expire_date", "Expiration Date is required.");
+            }
+
+            if (saveListing.expire_date < DateTime.Now)
+            {
+                ModelState.AddModelError("expire_date", "Expiration Date must be greater than or equal to today's date.");
             }
 
             if (saveListing.cost == null)

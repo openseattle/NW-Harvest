@@ -31,7 +31,7 @@ namespace NWHarvest.Web.Models
                                   where b.UserId == userId
                                   select b).ToList();
 
-            if (user.Identity.GetUserName() == "admin@northwestharvest.com")
+            if (user.Identity.GetUserName() == UserRoles.Administrator)
             {
                 registeredUser.Role = UserRoles.AdministratorRole;
             }
@@ -51,6 +51,47 @@ namespace NWHarvest.Web.Models
             }
 
             return registeredUser;
+        }
+
+        public bool IsValidUserNameForLoginType(string email, string loginType)
+        {
+            var userIsValid = false;
+
+            if (loginType == UserRoles.FoodBankRole)
+            {
+                userIsValid = UserIsFoodBank(email);
+            }
+
+            else if (loginType == UserRoles.GrowerRole)
+            {
+                userIsValid = UserIsGrower(email);
+            }
+
+            else if (loginType == UserRoles.AdministratorRole)
+            {
+                userIsValid = UserIsAdministrator(email);
+            }
+
+            return userIsValid;
+        }
+
+        private bool UserIsGrower(string email)
+        {
+            var results = db.Growers.Where(b => b.email == email).ToList();
+
+            return results.Count > 0;
+        }
+
+        private bool UserIsFoodBank(string email)
+        {
+            var results = db.FoodBanks.Where(b => b.email == email).ToList();
+
+            return results.Count > 0;
+        }
+
+        private bool UserIsAdministrator(string email)
+        {
+            return email == UserRoles.Administrator;
         }
     }
 }

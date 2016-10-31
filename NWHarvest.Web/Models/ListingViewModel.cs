@@ -60,10 +60,12 @@ namespace NWHarvest.Web.Models
 
         [Column(TypeName = "date")]
         [DisplayName("Harvested Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? harvested_date { get; set; }
 
         [Column(TypeName = "date")]
         [DisplayName("Expiration Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? expire_date { get; set; }
 
         [DisplayName("Cost")]

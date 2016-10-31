@@ -58,9 +58,10 @@ namespace NWHarvest.Web.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnUrl, string loginType)
         {
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.loginType = loginType;
             return View();
         }
 
@@ -69,13 +70,23 @@ namespace NWHarvest.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, string loginType)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
+            ViewBag.loginType = loginType;
+            var registeredUserService = new RegisteredUserService();
+            bool userIsValid = registeredUserService.IsValidUserNameForLoginType(model.Email, loginType);
+
+            if (!userIsValid)
+            {
+                ModelState.AddModelError("", "User is not a valid " + loginType + ".");
+                return View(model);
+            }
+            
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
