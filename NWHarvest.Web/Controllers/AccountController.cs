@@ -83,7 +83,7 @@ namespace NWHarvest.Web.Controllers
 
             if (!userIsValid)
             {
-                ModelState.AddModelError("", "User is not a valid " + loginType + ".");
+                ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
                 return View(model);
             }
             
