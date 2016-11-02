@@ -60,9 +60,14 @@ namespace NWHarvest.Web.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl, string loginType)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            ViewBag.loginType = loginType;
-            return View();
+            if(loginType == UserRoles.AdministratorRole || loginType == UserRoles.FoodBankRole || loginType == UserRoles.GrowerRole)
+            {
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.loginType = loginType;
+                return View();
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         //
