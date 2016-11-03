@@ -226,6 +226,7 @@
     <Content Include="Content\DataTables\swf\flashExport.swf" />
     <Content Include="Content\datepicker.css" />
     <Content Include="Content\Banner.jpg" />
+    <Content Include="Content\Logo.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
