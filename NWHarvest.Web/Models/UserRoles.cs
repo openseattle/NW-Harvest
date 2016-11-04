@@ -28,7 +28,7 @@
         {
             get
             {
-                return "admin@northwestharvest.com";
+                return "growingconnections@northwestharvest.org";
             }
         }
     }
