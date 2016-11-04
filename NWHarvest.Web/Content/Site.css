@@ -40,11 +40,21 @@ textarea {
     color: white;
 }
 
-.navbar-collapse {
-    background-image:url('Logo.jpg');
-    background-repeat:no-repeat;
-    background-size:100% 100%;
-    min-height: 281px;
+@media (min-width: 768px) {
+    .navbar-collapse {
+        background-image: url('Banner.jpg');
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        min-height: 281px;
+    }
+}
+
+@media (max-width: 767px) {
+    .navbar-collapse {
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        min-height: 281px;
+    }
 }
 
 .navbar-brand {
