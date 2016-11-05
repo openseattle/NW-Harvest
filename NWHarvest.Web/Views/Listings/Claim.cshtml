@@ -12,61 +12,56 @@
 
     <div class="form-horizontal">
         <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.Grower)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.Grower)</dt>
+            <dd>@Html.DisplayFor(model => model.Grower.name)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.Grower.name)
-            </dd>
+            <dt>@Html.DisplayNameFor(model => model.product)</dt>
+            <dd>@Html.DisplayFor(model => model.product)</dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.product)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.qtyOffered)</dt>
+            <dd>@Html.DisplayFor(model => model.qtyOffered)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.product)
-            </dd>
+            <dt>@Html.DisplayNameFor(model => model.qtyClaimed)</dt>
+            <dd>@Html.DisplayFor(model => model.qtyClaimed)</dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.qtyOffered)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.qtyLabel)</dt>
+            <dd>@Html.DisplayFor(model => model.qtyLabel)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.qtyOffered)
-            </dd>
+            <dt>@Html.DisplayNameFor(model => model.expire_date)</dt>
+            <dd>@Html.DisplayFor(model => model.expire_date)</dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.qtyClaimed)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.cost)</dt>
+            <dd>@Html.DisplayFor(model => model.cost)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.qtyClaimed)
-            </dd>
+            <hr />
+            <h2>Pickup Information</h2>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.qtyLabel)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.name)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.name)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.qtyLabel)
-            </dd>
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address1)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address1)</dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.expire_date)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address2)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address2)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.expire_date)
-            </dd>
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address3)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address3)</dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.cost)
-            </dt>
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address4)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address4)</dd>
 
-            <dd>
-                @Html.DisplayFor(model => model.cost)
-            </dd>
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.city)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.city)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.state)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.state)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.zip)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.zip)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.comments)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.comments)</dd>
         </dl>
 
         <hr />

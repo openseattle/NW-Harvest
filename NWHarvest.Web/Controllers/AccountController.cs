@@ -84,11 +84,16 @@ namespace NWHarvest.Web.Controllers
 
             ViewBag.loginType = loginType;
             var registeredUserService = new RegisteredUserService();
-            bool userIsValid = registeredUserService.IsValidUserNameForLoginType(model.Email, loginType);
 
-            if (!userIsValid)
+            if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
             {
                 ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
+                return View(model);
+            }
+
+            if(!registeredUserService.IsUserActive(model.Email, loginType))
+            {
+                ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
                 return View(model);
             }
             
@@ -190,19 +195,20 @@ namespace NWHarvest.Web.Controllers
                     {
                         db.FoodBanks.Add(
                             new FoodBank()
-                                {
-                                    UserId = user.Id,
-                                    name = model.Name,
-                                    email = model.Email,
-                                    phone = model.PhoneNumber,
-                                    address1 = model.StreetAddress1,
-                                    address2 = model.StreetAddress2 == null ? "" : model.StreetAddress2,
-                                    address3 = "",
-                                    address4 = "",
-                                    city = model.City,
-                                    state = model.State,
-                                    zip = model.ZipCode,
-                                    NotificationPreference = model.Notification
+                            {
+                                UserId = user.Id,
+                                name = model.Name,
+                                email = model.Email,
+                                phone = model.PhoneNumber,
+                                address1 = model.StreetAddress1,
+                                address2 = model.StreetAddress2 == null ? "" : model.StreetAddress2,
+                                address3 = "",
+                                address4 = "",
+                                city = model.City,
+                                state = model.State,
+                                zip = model.ZipCode,
+                                NotificationPreference = model.Notification,
+                                IsActive = true
                                 });
                     }
                     else if (model.UserType == "IsGrower")
@@ -221,7 +227,8 @@ namespace NWHarvest.Web.Controllers
                                     city = model.City,
                                     state = model.State,
                                     zip = model.ZipCode,
-                                    NotificationPreference = model.Notification
+                                    NotificationPreference = model.Notification,
+                                    IsActive = true
                                 });
                     }
 

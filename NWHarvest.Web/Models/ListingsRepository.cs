@@ -23,10 +23,11 @@ namespace NWHarvest.Web.Models
         {
             var currentDate = DateTime.Now;
             return (from b in db.Listings
-                        where b.available == true
-                            & b.expire_date >= currentDate
-                        orderby b.id descending 
-                        select b).ToList();
+                    where b.available == true
+                        & b.expire_date >= currentDate
+                        & b.Grower.IsActive == true
+                    orderby b.id descending 
+                    select b).ToList();
         }
         public IEnumerable<Listing> GetAvailableByGrower(int growerId)
         {

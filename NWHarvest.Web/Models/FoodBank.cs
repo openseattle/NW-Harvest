@@ -61,5 +61,9 @@ namespace NWHarvest.Web.Models
 
         [Required]
         public string NotificationPreference { get; set; }
+
+        [Required]
+        [Display(Name = "Active")]
+        public bool IsActive { get; set; }
     }
 }

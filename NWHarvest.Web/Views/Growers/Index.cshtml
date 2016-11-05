@@ -19,6 +19,7 @@
             <th>@Html.DisplayNameFor(model => model.city)</th>
             <th>@Html.DisplayNameFor(model => model.state)</th>
             <th>@Html.DisplayNameFor(model => model.zip)</th>
+            <th>@Html.DisplayNameFor(model => model.IsActive)</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -36,6 +37,7 @@
             <td>@Html.DisplayFor(modelItem => item.city)</td>
             <td>@Html.DisplayFor(modelItem => item.state)</td>
             <td>@Html.DisplayFor(modelItem => item.zip)</td>
+            <td>@Html.DisplayFor(modelItem => item.IsActive)</td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id })

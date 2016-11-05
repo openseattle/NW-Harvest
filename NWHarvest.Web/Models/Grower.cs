@@ -70,6 +70,10 @@ namespace NWHarvest.Web.Models
         [Display(Name = "Notification Preference")]
         public string NotificationPreference { get; set; }
 
+        [Required]
+        [Display(Name = "Active")]
+        public bool IsActive { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PickupLocation> PickupLocations { get; set; }
     }

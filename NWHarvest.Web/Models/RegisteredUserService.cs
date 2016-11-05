@@ -93,5 +93,27 @@ namespace NWHarvest.Web.Models
         {
             return email == UserRoles.Administrator;
         }
+
+        public bool IsUserActive(string email, string loginType)
+        {
+            var result = false;
+
+            if (loginType == UserRoles.FoodBankRole)
+            {
+                result = db.FoodBanks.Where(f => f.email == email).FirstOrDefault().IsActive;
+            }
+
+            else if (loginType == UserRoles.GrowerRole)
+            {
+                result = db.Growers.Where(f => f.email == email).FirstOrDefault().IsActive;
+            }
+
+            else if (loginType == UserRoles.AdministratorRole)
+            {
+                result = true;
+            }
+
+            return result;
+        }
     }
 }

@@ -122,8 +122,8 @@
     });
     <hr />
     <div class="notifType">
+        <p>@Html.DropDownListFor(m => m.Notification, listItems, " ")</p>
         <p>Specify how you would like to receive notifications when listings are claimed</p>
-        @Html.DropDownListFor(m => m.Notification, listItems, " ")
     </div>
     <div class="col-md-offset-2 col-md-10">
         <input type="submit" class="btn btn-default customRegister" value="Register" />

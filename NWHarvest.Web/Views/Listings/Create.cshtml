@@ -70,7 +70,7 @@
         </div>
 
         <div class="form-group">
-            <p class="control-label col-md-2"><strong>Listing Location</strong></p>
+            @Html.LabelFor(model => model.PickupLocation, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownListFor(m => m.SavedLocationId, this.Model.PickupLocations, "Select Pickup Location")
                 <div>
