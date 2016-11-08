@@ -67,5 +67,9 @@ namespace NWHarvest.Web.Models
 
         [DisplayName("Pickup Location")]
         public virtual PickupLocation PickupLocation { get; set; }
+
+        [Required]
+        [DisplayName("Picked Up")]
+        public bool IsPickedUp { get; set; }
     }
 }

@@ -1,0 +1,88 @@
+﻿@model NWHarvest.Web.Models.Listing
+
+@{
+    ViewBag.Title = "Claim";
+}
+
+<h2>Claim Listing</h2>
+<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <dl class="dl-horizontal">
+            <dt>@Html.DisplayNameFor(model => model.Grower)</dt>
+            <dd>@Html.DisplayFor(model => model.Grower.name)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.product)</dt>
+            <dd>@Html.DisplayFor(model => model.product)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.qtyOffered)</dt>
+            <dd>@Html.DisplayFor(model => model.qtyOffered)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.qtyClaimed)</dt>
+            <dd>@Html.DisplayFor(model => model.qtyClaimed)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.qtyLabel)</dt>
+            <dd>@Html.DisplayFor(model => model.qtyLabel)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.expire_date)</dt>
+            <dd>@Html.DisplayFor(model => model.expire_date)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.cost)</dt>
+            <dd>@Html.DisplayFor(model => model.cost)</dd>
+
+            <hr />
+            <h2>Pickup Information</h2>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.name)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.name)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address1)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address1)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address2)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address2)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address3)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address3)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.address4)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.address4)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.city)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.city)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.state)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.state)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.zip)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.zip)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.PickupLocation.comments)</dt>
+            <dd>@Html.DisplayFor(model => model.PickupLocation.comments)</dd>
+
+            <dt>@Html.DisplayNameFor(model => model.comments)</dt>
+            <dt>@Html.DisplayFor(model => model.comments)</dt>
+        </dl>
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="PickUp" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

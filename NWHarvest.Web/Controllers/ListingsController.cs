@@ -12,11 +12,12 @@ namespace NWHarvest.Web.Controllers
     using System;
     using System.Collections.Generic;
 
-    public class ViewLists
+    public class ListingsViewModel
     {
         public RegisteredUser registeredUser { get; set; } 
-        public IEnumerable<Listing> TopList { get; set; }
-        public IEnumerable<Listing> BottomList { get; set; }
+        public IEnumerable<Listing> FirstList { get; set; }
+        public IEnumerable<Listing> SecondList { get; set; }
+        public IEnumerable<Listing> ThirdList { get; set; }
         public IEnumerable<PickupLocation> PickupLocations { get; set; }
     }
 
@@ -35,28 +36,31 @@ namespace NWHarvest.Web.Controllers
             var user = registeredUserService.GetRegisteredUser(this.User);
 
             var repo = new ListingsRepository();
-            var viewLists = new ViewLists();
-            viewLists.registeredUser = user;
+            var listingsViewModel = new ListingsViewModel();
+            listingsViewModel.registeredUser = user;
             
             if (user.Role == UserRoles.AdministratorRole)
             {
-                viewLists.TopList = repo.GetAllAvailable();
-                viewLists.BottomList = repo.GetAllUnavailableExpired(DAY_LIMIT_FOR_ADMINISTRATORS);
+                listingsViewModel.FirstList = repo.GetAllAvailable();
+                listingsViewModel.SecondList = repo.GetAllClaimedNotPickedUp(DAY_LIMIT_FOR_ADMINISTRATORS);
+                listingsViewModel.ThirdList = repo.GetAllUnavailableExpired(DAY_LIMIT_FOR_ADMINISTRATORS);
             }
 
             else if (user.Role == UserRoles.GrowerRole)
             {
-                viewLists.TopList = repo.GetAvailableByGrower(user.GrowerId);
-                viewLists.BottomList = repo.GetUnavailableExpired(user.GrowerId, DAY_LIMIT_FOR_GROWERS);
+                listingsViewModel.FirstList = repo.GetAvailableByGrower(user.GrowerId);
+                listingsViewModel.SecondList = repo.GetClaimedNotPickedNotExpiredUpByGrower(user.GrowerId, DAY_LIMIT_FOR_GROWERS);
+                listingsViewModel.ThirdList = repo.GetExpiredOrPickedUpByGrower(user.GrowerId, DAY_LIMIT_FOR_GROWERS);
             }
 
             else if (user.Role == UserRoles.FoodBankRole)
             {
-                viewLists.TopList = repo.GetAllAvailable();
-                viewLists.BottomList = repo.GetClaimedByFoodBank(user.FoodBankId, DAY_LIMIT_FOR_FOOD_BANKS);
+                listingsViewModel.FirstList = repo.GetAllAvailable();
+                listingsViewModel.SecondList = repo.GetClaimedNotPickedUpNotExpiredByFoodBank(user.FoodBankId, DAY_LIMIT_FOR_FOOD_BANKS);
+                listingsViewModel.ThirdList = repo.GetClaimedPickedUpByFoodBankNotPickedUp(user.FoodBankId, DAY_LIMIT_FOR_FOOD_BANKS);
             }
             
-            return View(viewLists);
+            return View(listingsViewModel);
         }
 
         // GET: Listings/Details/5
@@ -258,6 +262,37 @@ namespace NWHarvest.Web.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        // POST: Listings/PickUp/5
+        public ActionResult PickUp(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Listing listing = db.Listings.Find(id);
+            if (listing == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(listing);
+        }
+
+        // POST: Listings/PickUp/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PickUp([Bind(Include = "id")] Listing listing)
+        {
+            Listing saveListing = db.Listings.Find(listing.id);
+            saveListing.IsPickedUp = true;
+
+            db.Entry(saveListing).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: Listings/Claim/5

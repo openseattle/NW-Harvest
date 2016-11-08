@@ -1,45 +1,50 @@
 ﻿@using NWHarvest.Web.Models
-@model NWHarvest.Web.Controllers.ViewLists
+@model NWHarvest.Web.Controllers.ListingsViewModel
 
 @{
     if (Model.registeredUser.Role == UserRoles.AdministratorRole)
     {
         ViewBag.AvailableListTitle = "All Available";
         ViewBag.NoLongerAvailableTitle = "Historical Listings";
-        ViewBag.TopTitle = "All Available Produce";
-        ViewBag.BottomTitle = "No Longer Available and Expired Produce for last 180 Days";
+        ViewBag.FirstTitle = "All Available Produce";
+        ViewBag.SecondTitle = "All Claimed Produce Pending Pickup";
+        ViewBag.ThirdTitle = "No Longer Available and Expired Produce for Last 180 Days";
     }
 
     if (Model.registeredUser.Role == UserRoles.GrowerRole)
     {
         ViewBag.AvailableListTitle = "Current Listings";
         ViewBag.NoLongerAvailableTitle = "Historical Listings";
-        ViewBag.TopTitle = "My Available Produce";
-        ViewBag.BottomTitle = "My Claimed and Expired Produce for Last 30 Days";
+        ViewBag.FirstTitle = "My Available Produce";
+        ViewBag.SecondTitle = "My Claimed Produce Pending Pickup";
+        ViewBag.ThirdTitle = "My Claimed and Expired Produce for Last 30 Days";
     }
 
     if (Model.registeredUser.Role == UserRoles.FoodBankRole)
     {
         ViewBag.AvailableListTitle = "Current Listings";
         ViewBag.NoLongerAvailableTitle = "Historical Listings";
-        ViewBag.TopTitle = "Available Produce";
-        ViewBag.BottomTitle = "My Claimed Produce for Last 30 Days";
+        ViewBag.FirstTitle = "Available Produce";
+        ViewBag.SecondTitle = "My Claimed Produce Pending Pickup";
+        ViewBag.ThirdTitle = "My Claimed Produce for Last 30 Days";
     }
 }
 
-@{ var ListingForTitles = Model.TopList.FirstOrDefault(); }
+@{ var ListingForTitles = Model.FirstList.FirstOrDefault(); }
 
 <div>
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">@ViewBag.AvailableListTitle</a></li>
-        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">@ViewBag.NoLongerAvailableTitle</a></li>
+        <li role="presentation" class="active"><a href="#firstList" aria-controls="firstList" role="tab" data-toggle="tab">@ViewBag.FirstTitle</a></li>
+        <li role="presentation"><a href="#secondList" aria-controls="secondList" role="tab" data-toggle="tab">@ViewBag.SecondTitle</a></li>
+        <li role="presentation"><a href="#thirdList" aria-controls="thirdList" role="tab" data-toggle="tab">@ViewBag.ThirdTitle</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="home">
+
+        <div role="tabpanel" class="tab-pane active" id="firstList">
             
-            <h2>@ViewBag.TopTitle</h2>
+            <h2>@ViewBag.FirstTitle</h2>
 
             <!--Only allow admins and growers to add listings-->
             @if (Model.registeredUser.Role == UserRoles.GrowerRole)
@@ -62,10 +67,11 @@
                     <th>@Html.DisplayNameFor(model => ListingForTitles.comments)</th>
                     <th>@Html.DisplayNameFor(model => ListingForTitles.PickupLocation.city)</th>
                     <th>@Html.DisplayNameFor(model => ListingForTitles.PickupLocation.zip)</th>
+                    <th>Details</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
-                @foreach (var item in Model.TopList)
+                @foreach (var item in Model.FirstList)
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Grower.name)</td>
@@ -81,20 +87,18 @@
                         <td>
 
                             @Html.ActionLink("Details", "Details", new { id = item.id })
-
+                        </td>
+                        <td>
                             <!--Add check for if authorized to edit or delete (growers and admins only)-->
                             @if (Model.registeredUser.Role == UserRoles.AdministratorRole || Model.registeredUser.Role == UserRoles.GrowerRole)
                             {
-                                <b>|</b>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.id })
-                                
+                                @Html.ActionLink("Edit", "Edit", new { id = item.id })                                
                                 <b> | </b>
                                 @Html.ActionLink("Delete", "Delete", new { id = item.id })
                             }
                             <!--Only food programs can claim food.-->
                             @if (Model.registeredUser.Role == UserRoles.FoodBankRole)
                             {
-                                <b>|</b>
                                 @Html.ActionLink("Claim", "Claim", new { id = item.id })
                             }
                         </td>
@@ -104,9 +108,67 @@
 
         </div>
 
-        <div role="tabpanel" class="tab-pane" id="profile">
+        <div role="tabpanel" class="tab-pane" id="secondList">
+
+            <h2>@ViewBag.SecondTitle</h2>
+
+            <table class="table table-striped table-bordered table-hover table-responsive dataTables_scroll" id="HistoricalTable">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.Grower.name)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.product)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.qtyOffered)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.qtyLabel)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.harvested_date)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.expire_date)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.cost)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.comments)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.PickupLocation.city)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.PickupLocation.zip)</th>
+                        <th>Details</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.SecondList)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Grower.name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.product)</td>
+                        <td>@Html.DisplayFor(modelItem => item.qtyOffered)</td>
+                        <td>@Html.DisplayFor(modelItem => item.qtyLabel)</td>
+                        <td>@Html.DisplayFor(modelItem => item.harvested_date)</td>
+                        <td>@Html.DisplayFor(modelItem => item.expire_date)</td>
+                        <td>@Html.DisplayFor(modelItem => item.cost)</td>
+                        <td>@Html.DisplayFor(modelItem => item.comments)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PickupLocation.city)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PickupLocation.zip)</td>
+                        <td>
+                            @Html.ActionLink("Details", "Details", new { id = item.id })
+                            @if (item.FoodBank != null)
+                            {
+                                <b>|</b>
+                                <a target="_blank" href='@string.Format("https://www.google.com/maps/dir/{0}+{1}+{2}+{3}/{4}+{5}+{6}+{7}", item.FoodBank.address1, item.FoodBank.city, item.FoodBank.state, item.FoodBank.zip, item.PickupLocation.address1, item.PickupLocation.city, item.PickupLocation.state, item.PickupLocation.zip)'>Directions</a>
+                            }
+                        </td>
+                        <td>
+                            @if (Model.registeredUser.Role == UserRoles.GrowerRole || Model.registeredUser.Role == UserRoles.AdministratorRole)
+                            {
+                                @Html.ActionLink("Edit", "Edit", new { id = item.id })
+                            }
+                            @if (Model.registeredUser.Role == UserRoles.FoodBankRole)
+                            {
+                                @Html.ActionLink("Picked Up", "PickUp", new { id = item.id })
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="thirdList">
             
-            <h2>@ViewBag.BottomTitle</h2>
+            <h2>@ViewBag.ThirdTitle</h2>
 
             <table class="table table-striped table-bordered table-hover table-responsive dataTables_scroll" id="HistoricalTable">
                 <thead>
@@ -119,13 +181,13 @@
                         <th>@Html.DisplayNameFor(model => ListingForTitles.expire_date)</th>
                         <th>@Html.DisplayNameFor(model => ListingForTitles.cost)</th>
                         <th>@Html.DisplayNameFor(model => ListingForTitles.available)</th>
-                        <th>@Html.DisplayNameFor(model => ListingForTitles.comments)</th>
+                        <th>@Html.DisplayNameFor(model => ListingForTitles.IsPickedUp)</th>
                         <th>@Html.DisplayNameFor(model => ListingForTitles.PickupLocation.city)</th>
                         <th>@Html.DisplayNameFor(model => ListingForTitles.PickupLocation.zip)</th>
-                        <th>Directions</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
-                @foreach (var item in Model.BottomList)
+                @foreach (var item in Model.ThirdList)
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Grower.name)</td>
@@ -136,7 +198,7 @@
                         <td>@Html.DisplayFor(modelItem => item.expire_date)</td>
                         <td>@Html.DisplayFor(modelItem => item.cost)</td>
                         <td>@((bool)item.available ? "No" : "Yes")</td>
-                        <td>@Html.DisplayFor(modelItem => item.comments)</td>
+                        <td>@(item.IsPickedUp ? "Yes" : "No")</td>
                         <td>@Html.DisplayFor(modelItem => item.PickupLocation.city)</td>
                         <td>@Html.DisplayFor(modelItem => item.PickupLocation.zip)</td>
                         <td>
@@ -144,7 +206,7 @@
                             @if (item.FoodBank != null)
                             {
                                 <b>|</b>
-                                <a target="_blank" href='@string.Format("https://www.google.com/maps/dir/{0}+{1}+{2}+{3}/{4}+{5}+{6}+{7}", item.FoodBank.address1, item.FoodBank.city, item.FoodBank.state, item.FoodBank.zip, item.PickupLocation.address1, item.PickupLocation.city, item.PickupLocation.state, item.PickupLocation.zip)'>Get Directions</a>
+                                <a target="_blank" href='@string.Format("https://www.google.com/maps/dir/{0}+{1}+{2}+{3}/{4}+{5}+{6}+{7}", item.FoodBank.address1, item.FoodBank.city, item.FoodBank.state, item.FoodBank.zip, item.PickupLocation.address1, item.PickupLocation.city, item.PickupLocation.state, item.PickupLocation.zip)'>Directions</a>
                             }
                         </td>
                     </tr>

@@ -37,7 +37,7 @@
             <td>@Html.DisplayFor(modelItem => item.city)</td>
             <td>@Html.DisplayFor(modelItem => item.state)</td>
             <td>@Html.DisplayFor(modelItem => item.zip)</td>
-            <td>@Html.DisplayFor(modelItem => item.IsActive)</td>
+            <td>@((bool)item.IsActive ? "Yes" : "No")</td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id = item.Id })
