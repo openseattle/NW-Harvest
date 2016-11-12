@@ -22,7 +22,7 @@ namespace NWHarvest.Web.Models
         public string product { get; set; }
 
         [Required]
-        [DisplayName("Quantity Available")]
+        [DisplayName("Qty")]
         [DisplayFormat(DataFormatString = "{0:n0}", ApplyFormatInEditMode = true)]
         public decimal? qtyOffered { get; set; }
 
@@ -31,7 +31,7 @@ namespace NWHarvest.Web.Models
         public decimal? qtyClaimed { get; set; }
 
         [Required]
-        [DisplayName("Unit of Measure")]
+        [DisplayName("UoM")]
         [StringLength(100)]
         public string qtyLabel { get; set; }
 
@@ -47,7 +47,7 @@ namespace NWHarvest.Web.Models
         public DateTime? expire_date { get; set; }
 
         [Required]
-        [DisplayName("Cost/Unit")]
+        [DisplayName("Unit Cost")]
         public decimal? cost { get; set; }
 
         [DisplayName("Claimed")]

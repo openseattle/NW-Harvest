@@ -25,12 +25,18 @@ namespace NWHarvest.Web
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/javascript").Include(
-                    "~/Scripts/DataTables/jquery.dataTables.min.js"));
+                    "~/Scripts/DataTables/jquery.dataTables.min.js",
+                    "~/Scripts/DataTables/dataTables.responsive.js",
+                    "~/Scripts/DataTables/dataTables.rowReorder.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/datepicker.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/DataTables/css/autoFill.foundation.css",
+                      "~/Content/DataTables/css/dataTables.responsive.css",
+                      "~/Content/DataTables/css/jquery-ui.css",
+                      "~/Content/DataTables/css/jquery.dataTables.css"));
         }
     }
 }

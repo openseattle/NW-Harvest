@@ -14,8 +14,6 @@
             <th>@Html.DisplayNameFor(model => model.email)</th>
             <th>@Html.DisplayNameFor(model => model.address1)</th>
             <th>@Html.DisplayNameFor(model => model.address2)</th>
-            <th>@Html.DisplayNameFor(model => model.address3)</th>
-            <th>@Html.DisplayNameFor(model => model.address4)</th>
             <th>@Html.DisplayNameFor(model => model.city)</th>
             <th>@Html.DisplayNameFor(model => model.state)</th>
             <th>@Html.DisplayNameFor(model => model.zip)</th>
@@ -32,8 +30,6 @@
             <td>@Html.DisplayFor(modelItem => item.email)</td>
             <td>@Html.DisplayFor(modelItem => item.address1)</td>
             <td>@Html.DisplayFor(modelItem => item.address2)</td>
-            <td>@Html.DisplayFor(modelItem => item.address3)</td>
-            <td>@Html.DisplayFor(modelItem => item.address4)</td>
             <td>@Html.DisplayFor(modelItem => item.city)</td>
             <td>@Html.DisplayFor(modelItem => item.state)</td>
             <td>@Html.DisplayFor(modelItem => item.zip)</td>
@@ -50,10 +46,32 @@
 @section Scripts {
     @Scripts.Render("~/bundles/javascript")
 
-    <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <script type="text/javascript">
-            $(document).ready(function () {
-                $(".table").dataTable();
-        });
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                console.log('show tab');
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                    .dataTable({
+                        "responsive": true,
+                        "bAutowidth": false,
+
+                        "columnDefs": [{
+                            targets: [0,1,2,3],
+                            render: function (data, type, row) {
+                                return type === 'display' && data.length > 10 ?
+                                    data.substr(0, 10) + '…' :
+                                    data;
+                            }
+                        }]
+
+                    });
+
+            });
     </script>
 }

@@ -40,20 +40,28 @@ textarea {
     color: white;
 }
 
-@media (min-width: 768px) {
-    .navbar-collapse {
-        background-image: url('Banner.jpg');
+@media (min-width:0px) and (max-width: 991px) {
+        .navbar-collapse {
         background-repeat: no-repeat;
-        background-size: 100% 100%;
-        min-height: 281px;
+        background-size: 100%;
     }
 }
 
-@media (max-width: 767px) {
+@media (min-width:992px) and (max-width: 1200px) {
     .navbar-collapse {
+        background-image: url('Banner.jpg');
         background-repeat: no-repeat;
-        background-size: 100% 100%;
-        min-height: 281px;
+        background-size: 100%;
+        min-height: 169px;
+    }
+}
+
+@media (min-width:1201px) {
+    .navbar-collapse {
+        background-image: url('Banner.jpg');
+        background-repeat: no-repeat;
+        background-size: 100%;
+        min-height: 205px;
     }
 }
 
@@ -80,9 +88,17 @@ div.body-content div.text-center a.btn {
 }
 
 .dataTable td {
-    max-width: 250px;
-    min-width: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
     white-space: nowrap;
+    max-width: 160px;
+    min-width: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap:break-word; 
+    
 }

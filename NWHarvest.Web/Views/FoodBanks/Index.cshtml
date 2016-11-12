@@ -50,10 +50,32 @@
 @section Scripts {
     @Scripts.Render("~/bundles/javascript")
 
-    <link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
     <script type="text/javascript">
-            $(document).ready(function () {
-                $(".table").dataTable();
-        });
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                console.log('show tab');
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                    .dataTable({
+                        "responsive": true,
+                        "bAutowidth": false,
+
+                        "columnDefs": [{
+                            targets: [1,2,3],
+                            render: function (data, type, row) {
+                                return type === 'display' && data.length > 10 ?
+                                    data.substr(0, 10) + '…' :
+                                    data;
+                            }
+                        }]
+
+                    });
+
+            });
     </script>
 }
