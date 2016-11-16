@@ -72,10 +72,5 @@
     var user = registeredUserService.GetRegisteredUser(this.User);
     ViewBag.userRole = user.Role;
 
-    if (user.Role == UserRoles.GrowerRole || user.Role == UserRoles.AdministratorRole)
-    {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.id }) <strong>|</strong>
-        }
-    }
     @Html.ActionLink("Back to List", "Index")
 </p>

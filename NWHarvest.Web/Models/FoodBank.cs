@@ -29,19 +29,19 @@ namespace NWHarvest.Web.Models
 
         [Required]
         [StringLength(200)]
-        [Display(Name = "Address 1")]
+        [Display(Name = "Address_1")]
         public string address1 { get; set; }
 
         [StringLength(200)]
-        [Display(Name = "Address 2")]
+        [Display(Name = "Address_2")]
         public string address2 { get; set; }
 
         [StringLength(200)]
-        [Display(Name = "Address 3")]
+        [Display(Name = "Address_3")]
         public string address3 { get; set; }
 
         [StringLength(200)]
-        [Display(Name = "Address 4")]
+        [Display(Name = "Address_4")]
         public string address4 { get; set; }
 
         [Required]
