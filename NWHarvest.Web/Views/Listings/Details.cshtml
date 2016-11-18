@@ -71,6 +71,6 @@
     var registeredUserService = new RegisteredUserService();
     var user = registeredUserService.GetRegisteredUser(this.User);
     ViewBag.userRole = user.Role;
-
+    }
     @Html.ActionLink("Back to List", "Index")
 </p>
