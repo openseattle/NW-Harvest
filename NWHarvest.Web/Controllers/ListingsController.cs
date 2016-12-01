@@ -331,28 +331,38 @@ namespace NWHarvest.Web.Controllers
 
             var growerUser = UserManager.FindById(listing.Grower.UserId);
             var grower = db.Growers.First(x => x.UserId == growerUser.Id);
-            var message = new IdentityMessage
-            {
-                Destination = growerUser.PhoneNumber,
-                Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
-                Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
-            };
 
             var sendSMS = !string.IsNullOrWhiteSpace(growerUser.PhoneNumber) &&
                             growerUser.PhoneNumberConfirmed &&
-                            (grower.NotificationPreference.ToLower().Contains("both") ||
-                            grower.NotificationPreference.ToLower().Contains("text"));
-
-            var sendEmail = growerUser.EmailConfirmed && (grower.NotificationPreference.ToLower().Contains("both") ||
-                            grower.NotificationPreference.ToLower().Contains("email"));
+                            (grower.NotificationPreference.ToLower().Contains("both")
+                            || grower.NotificationPreference.ToLower().Contains("text"));
 
             if (sendSMS)
             {
-                UserManager.SmsService.SendAsync(message).Wait();
+                var textMessage = new IdentityMessage
+                {
+                    Destination = growerUser.PhoneNumber,
+                    Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
+                    Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
+                };
+
+                UserManager.SmsService.SendAsync(textMessage).Wait();
             }
+
+            var sendEmail = growerUser.EmailConfirmed
+                && (grower.NotificationPreference.ToLower().Contains("both")
+                || grower.NotificationPreference.ToLower().Contains("email"));
+
             if (sendEmail)
             {
-                UserManager.EmailService.SendAsync(message);
+                var emailMessage = new IdentityMessage
+                {
+                    Destination = growerUser.Email,
+                    Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
+                    Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
+                };
+
+                UserManager.EmailService.SendAsync(emailMessage);
             }
 
             listing.FoodBank = foodBank;
