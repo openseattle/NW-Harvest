@@ -11,5 +11,10 @@ namespace NWHarvest.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult RegistrationComplete()
+        {
+            return View();
+        }
     }
 }

@@ -25,10 +25,6 @@ namespace NWHarvest.Web.Models
         [StringLength(100)]
         public string name { get; set; }
 
-        [Display(Name = "Phone Number")]
-        [StringLength(11)]
-        public string phone { get; set; }
-
         [Required]
         [Display(Name = "Email")]
         [StringLength(100)]

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -70,7 +67,6 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
@@ -96,7 +92,13 @@ namespace NWHarvest.Web.Controllers
                 ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
                 return View(model);
             }
-            
+
+            if (!registeredUserService.IsEmailConfirmed(model.Email))
+            {
+                ModelState.AddModelError("", model.Email + " is an unconfirmed email address. Please check your email for your registration confirmation. If you have not received a confirmation please contact the Growing Connections administrator.");
+                return View(model);
+            }
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
@@ -186,7 +188,7 @@ namespace NWHarvest.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -199,7 +201,6 @@ namespace NWHarvest.Web.Controllers
                                 UserId = user.Id,
                                 name = model.Name,
                                 email = model.Email,
-                                phone = model.PhoneNumber,
                                 address1 = model.StreetAddress1,
                                 address2 = model.StreetAddress2 == null ? "" : model.StreetAddress2,
                                 address3 = "",
@@ -219,7 +220,6 @@ namespace NWHarvest.Web.Controllers
                                     UserId = user.Id,
                                     name = model.Name,
                                     email = model.Email,
-                                    phone = model.PhoneNumber,
                                     address1 = model.StreetAddress1,
                                     address2 = model.StreetAddress2 == null? "": model.StreetAddress2,
                                     address3 = "",
@@ -234,15 +234,13 @@ namespace NWHarvest.Web.Controllers
 
                     db.SaveChanges();
 
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Listings");
+                    return RedirectToAction("RegistrationComplete", "Home");
                 }
                 AddErrors(result);
             }
@@ -250,44 +248,6 @@ namespace NWHarvest.Web.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        ////
-        //// GET: /Account/FoodBankRegister
-        //[AllowAnonymous]
-        //public ActionResult FoodBankRegister()
-        //{
-        //    return View();
-        //}
-
-        ////
-        //// POST: /Account/FoodBankRegister
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> FoodBankRegister(RegisterViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-        //        var result = await UserManager.CreateAsync(user, model.Password);
-        //        if (result.Succeeded)
-        //        {
-        //            await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-        //            // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-        //            // Send an email with this link
-        //            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-        //            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-        //            await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-        //            return RedirectToAction("Index", "Listings");
-        //        }
-        //        AddErrors(result);
-        //    }
-
-        //    // If we got this far, something failed, redisplay form
-        //    return View(model);
-        //}
 
         //
         // GET: /Account/ConfirmEmail

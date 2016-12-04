@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
-using System;
-using System.Collections.Generic;
+using Microsoft.AspNet.Identity.Owin;
 using System.Linq;
 using System.Web;
 
@@ -17,6 +16,7 @@ namespace NWHarvest.Web.Models
     public class RegisteredUserService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
         public RegisteredUser GetRegisteredUser(System.Security.Principal.IPrincipal user)
         {
             var registeredUser = new RegisteredUser();
@@ -73,6 +73,13 @@ namespace NWHarvest.Web.Models
             }
 
             return userIsValid;
+        }
+
+        public bool IsEmailConfirmed(string email)
+        {
+            var results = db.Users.Where(b => b.Email == email);
+
+            return results.FirstOrDefault().EmailConfirmed;
         }
 
         private bool UserIsGrower(string email)

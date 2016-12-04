@@ -96,24 +96,11 @@ namespace NWHarvest.Web.Models
         public string ConfirmPassword { get; set; }
 
         [Required]
-        [DataType(DataType.PhoneNumber)]
-        [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; }
-
-        [Required]
         [Display(Name = "Street Address")]
         public string StreetAddress1 { get; set; }
 
         [Display(Name = "Address Cont.")]
         public string StreetAddress2 { get; set; }
-
-        //[Required]
-        //[Display(Name = "Address")]
-        //public string Address { get; set; }
-
-        //[Required]
-        //[Display(Name = "Address")]
-        //public string Address { get; set; }
 
         [Required]
         [Display(Name = "City")]
