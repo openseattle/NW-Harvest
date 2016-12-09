@@ -80,33 +80,45 @@ namespace NWHarvest.Web.Controllers
 
             ViewBag.loginType = loginType;
             var registeredUserService = new RegisteredUserService();
+            var user = db.Users.Where(b => b.Email == model.Email).FirstOrDefault();
 
-            if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
+            //User does not exist.
+            if (user == null)
             {
-                ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
-                return View(model);
-            }
-
-            if(!registeredUserService.IsUserActive(model.Email, loginType))
-            {
-                ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
-                return View(model);
-            }
-
-            if (!registeredUserService.IsEmailConfirmed(model.Email))
-            {
-                ModelState.AddModelError("", model.Email + " is an unconfirmed email address. Please check your email for your registration confirmation. If you have not received a confirmation please contact the Growing Connections administrator.");
+                ModelState.AddModelError("", "Invalid login attempt.");
                 return View(model);
             }
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
                     if (true)
                     {
+                        if (!registeredUserService.IsEmailConfirmed(model.Email))
+                        {
+                            //SendConfirmationEmail(user);
+                            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                            await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                            ModelState.AddModelError("", model.Email + " is an unconfirmed email address. We have resent the confirmation email. Please check your email for your registration confirmation. If you have not received a confirmation please contact the Growing Connections administrator.");
+                            return View(model);
+                        }
+
+                        if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
+                        {
+                            ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
+                            return View(model);
+                        }
+
+                        if (!registeredUserService.IsUserActive(model.Email, loginType))
+                        {
+                            ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
+                            return View(model);
+                        }
+
                         return RedirectToAction("Index", "Listings");
                     }
                 case SignInStatus.LockedOut:
@@ -234,12 +246,9 @@ namespace NWHarvest.Web.Controllers
 
                     db.SaveChanges();
 
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
                     return RedirectToAction("RegistrationComplete", "Home");
                 }
                 AddErrors(result);
@@ -279,18 +288,28 @@ namespace NWHarvest.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                var user = await UserManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
+                    return View("ForgotPasswordUserDoesNotExist");
                 }
 
+                if (!(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                {
+                    //SendConfirmationEmail(user);
+                    string confirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var confirmatonCallbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = confirmationCode }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + confirmatonCallbackUrl + "\">here</a>");
+                    return View("ForgotPasswordWithUnconfirmedEmail");
+                }
+                
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");            
+
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
@@ -325,7 +344,7 @@ namespace NWHarvest.Web.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist

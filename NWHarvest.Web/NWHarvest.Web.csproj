@@ -327,6 +327,8 @@
     <Content Include="Views\Account\RegisterRouteView.cshtml" />
     <Content Include="Views\Listings\PickUp.cshtml" />
     <Content Include="Views\Home\RegistrationComplete.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordWithUnconfirmedEmail.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordUserDoesNotExist.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
