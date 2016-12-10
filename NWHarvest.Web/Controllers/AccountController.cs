@@ -89,6 +89,27 @@ namespace NWHarvest.Web.Controllers
                 return View(model);
             }
 
+            if (!registeredUserService.IsEmailConfirmed(model.Email))
+            {
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                ModelState.AddModelError("", model.Email + " is an unconfirmed email address. We have resent the confirmation email. Please check your email for your registration confirmation. If you have not received a confirmation please contact the Growing Connections administrator.");
+                return View(model);
+            }
+
+            if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
+            {
+                ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
+                return View(model);
+            }
+
+            if (!registeredUserService.IsUserActive(model.Email, loginType))
+            {
+                ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
+                return View(model);
+            }
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
@@ -97,28 +118,6 @@ namespace NWHarvest.Web.Controllers
                 case SignInStatus.Success:
                     if (true)
                     {
-                        if (!registeredUserService.IsEmailConfirmed(model.Email))
-                        {
-                            //SendConfirmationEmail(user);
-                            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                            await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                            ModelState.AddModelError("", model.Email + " is an unconfirmed email address. We have resent the confirmation email. Please check your email for your registration confirmation. If you have not received a confirmation please contact the Growing Connections administrator.");
-                            return View(model);
-                        }
-
-                        if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
-                        {
-                            ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
-                            return View(model);
-                        }
-
-                        if (!registeredUserService.IsUserActive(model.Email, loginType))
-                        {
-                            ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
-                            return View(model);
-                        }
-
                         return RedirectToAction("Index", "Listings");
                     }
                 case SignInStatus.LockedOut:
