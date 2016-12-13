@@ -68,7 +68,7 @@ namespace NWHarvest.Web.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? expire_date { get; set; }
 
-        [DisplayName("Cost")]
+        [DisplayName("Cost per Unit")]
         public decimal? cost { get; set; }
 
         [DisplayName("Is Available")]
