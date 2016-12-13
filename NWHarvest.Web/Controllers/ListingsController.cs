@@ -328,6 +328,7 @@ namespace NWHarvest.Web.Controllers
             var foodBank = (from b in db.FoodBanks
                             where b.Id == user.FoodBankId
                             select b).FirstOrDefault();
+            var foodBankUser = UserManager.FindById(foodBank.UserId);
 
             var growerUser = UserManager.FindById(listing.Grower.UserId);
             var grower = db.Growers.First(x => x.UserId == growerUser.Id);
@@ -339,12 +340,7 @@ namespace NWHarvest.Web.Controllers
 
             if (sendSMS)
             {
-                var textMessage = new IdentityMessage
-                {
-                    Destination = growerUser.PhoneNumber,
-                    Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
-                    Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
-                };
+                var textMessage = CreateSMSMessage(growerUser, foodBankUser, listing);
 
                 UserManager.SmsService.SendAsync(textMessage).Wait();
             }
@@ -355,12 +351,7 @@ namespace NWHarvest.Web.Controllers
 
             if (sendEmail)
             {
-                var emailMessage = new IdentityMessage
-                {
-                    Destination = growerUser.Email,
-                    Body = $"Your listing of {listing.product} has been claimed by {foodBank.name}",
-                    Subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.name}"
-                };
+                var emailMessage = CreateEmailMessage(growerUser, foodBankUser, listing);
 
                 UserManager.EmailService.SendAsync(emailMessage);
             }
@@ -373,6 +364,45 @@ namespace NWHarvest.Web.Controllers
             db.Entry(listing).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        private IdentityMessage CreateSMSMessage(ApplicationUser grower, ApplicationUser foodBank, Listing listing)
+        {
+            var body = $"Your listing of {listing.product} has been claimed by {foodBank.UserName}, {foodBank.Email}";
+
+            if(foodBank.PhoneNumber != null && foodBank.PhoneNumber != "")
+            {
+                body += $", {foodBank.PhoneNumber}";
+            }
+
+            var smsMessage = new IdentityMessage
+            {
+                Destination = grower.PhoneNumber,
+                Subject = "",
+                Body = body
+            };
+
+            return smsMessage;
+        }
+
+        private IdentityMessage CreateEmailMessage(ApplicationUser grower, ApplicationUser foodBank, Listing listing)
+        {
+            var subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.UserName}";
+            var body = $"Your listing of {listing.product} has been claimed by {foodBank.UserName}, {foodBank.Email}";
+
+            if (foodBank.PhoneNumber != null && foodBank.PhoneNumber != "")
+            {
+                body += $", {foodBank.PhoneNumber}";
+            }
+
+            var emailMessage = new IdentityMessage
+            {
+                Destination = grower.Email,
+                Subject = subject,
+                Body = body
+            };
+
+            return emailMessage;
         }
 
         // GET: Listings/Delete/5
