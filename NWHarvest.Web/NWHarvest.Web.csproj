@@ -197,6 +197,9 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DisplayDescription.cs" />
+    <Compile Include="Models\DisplayMessage.cs" />
+    <Compile Include="Models\DisplayMessageService.cs" />
     <Compile Include="Models\Grower.cs" />
     <Compile Include="Models\FoodBank.cs" />
     <Compile Include="Models\IdentityModels.cs" />

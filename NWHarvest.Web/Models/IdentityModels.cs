@@ -34,5 +34,7 @@ namespace NWHarvest.Web.Models
         public virtual DbSet<FoodBank> FoodBanks { get; set; }
         public virtual DbSet<Listing> Listings { get; set; }
         public virtual DbSet<PickupLocation> PickupLocations { get; set; }
+        public virtual DbSet<DisplayMessage> DisplayMessages { get; set; }
+        public virtual DbSet<DisplayDescription> DisplayDescriptions { get; set; }
     }
 }
