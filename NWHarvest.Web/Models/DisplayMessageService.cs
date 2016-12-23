@@ -16,14 +16,20 @@ namespace NWHarvest.Web.Models
 
         public List<string> GetMessages(string displayDescription)
         {
+            var messageList = new List<string>();
+
             var descriptionId = _db.DisplayDescriptions
                 .Where(d => d.Description == displayDescription)
-                .FirstOrDefault().DisplayDescriptionId;
+                .FirstOrDefault();
 
-            var messageList = _db.DisplayMessages.Where(b => b.DisplayDescriptionId == descriptionId)
-                .OrderBy(b => b.SortOrder)
-                .Select(b => b.Message)
-                .ToList();
+            if (descriptionId != null) { 
+
+                messageList = _db.DisplayMessages
+                    .Where(b => b.DisplayDescriptionId == descriptionId.DisplayDescriptionId)
+                    .OrderBy(b => b.SortOrder)
+                    .Select(b => b.Message)
+                    .ToList();
+            }
 
             return messageList;
         }
