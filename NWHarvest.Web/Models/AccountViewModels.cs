@@ -70,7 +70,7 @@ namespace NWHarvest.Web.Models
         public string UserType { get; set; }
 
         [Required]
-        [Display(Name = "Name")]
+        [Display(Name = "Program Name")]
         public string Name { get; set; }
 
         [Required]

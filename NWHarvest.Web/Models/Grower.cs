@@ -31,19 +31,19 @@ namespace NWHarvest.Web.Models
         public string email { get; set; }
 
         [Required]
-        [Display(Name = "Address_1")]
+        [Display(Name = "Address1")]
         [StringLength(200)]
         public string address1 { get; set; }
 
-        [Display(Name = "Address_2")]
+        [Display(Name = "Address2")]
         [StringLength(200)]
         public string address2 { get; set; }
 
-        [Display(Name = "Address_3")]
+        [Display(Name = "Address3")]
         [StringLength(200)]
         public string address3 { get; set; }
 
-        [Display(Name = "Address_4")]
+        [Display(Name = "Addres 4")]
         [StringLength(200)]
         public string address4 { get; set; }
 
