@@ -207,7 +207,7 @@ UpgradeLog*.htm
 *.ldf
 
 #EntityFramework Migrations
-*/Migrations/*
+#*/Migrations/*
 
 # Business Intelligence projects
 *.rdl.data
