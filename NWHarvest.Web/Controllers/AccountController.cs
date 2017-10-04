@@ -6,6 +6,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NWHarvest.Web.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -13,20 +14,20 @@ namespace NWHarvest.Web.Controllers
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private UserManager<ApplicationUser> _userManager;
 
         private ApplicationDbContext db = new ApplicationDbContext();
 
 
-        public AccountController()
+        public AccountController() : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
+        }
+        public AccountController(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
+        public UserManager<ApplicationUser> UserManager { get; private set; }
 
         public ApplicationSignInManager SignInManager
         {
@@ -34,24 +35,12 @@ namespace NWHarvest.Web.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
-            }
-        }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
             private set
             {
-                _userManager = value;
+                _signInManager = value;
             }
         }
-
+        
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -98,7 +87,7 @@ namespace NWHarvest.Web.Controllers
                 return View(model);
             }
 
-            if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
+            if (!registeredUserService.IsValidUserNameForLoginType(_userManager, model.Email, loginType))
             {
                 ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
                 return View(model);
@@ -109,7 +98,7 @@ namespace NWHarvest.Web.Controllers
                 ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
                 return View(model);
             }
-
+            
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);

@@ -41,7 +41,7 @@ namespace NWHarvest.Web.Migrations
 
             roleManager.Create(adminRole);
             userManager.Create(adminuser);
-            userManager.AddToRole(adminuser.Id, "Administrator");
+            userManager.AddToRole(adminuser.Id, UserRoles.Administrator);
         }
     }
 }
