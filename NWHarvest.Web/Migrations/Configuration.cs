@@ -28,8 +28,10 @@ namespace NWHarvest.Web.Migrations
             {
                 UserName = adminUsername,
                 Email = adminUsername,
-                PasswordHash = new PasswordHasher().HashPassword(adminPassword)
+                PasswordHash = new PasswordHasher().HashPassword(adminPassword),
+                EmailConfirmed = true
             };
+
             var userStore = new UserStore<ApplicationUser>(context);
             var userManager = new UserManager<ApplicationUser>(userStore);
 
