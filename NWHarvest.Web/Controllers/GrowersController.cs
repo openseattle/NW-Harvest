@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using NWHarvest.Web.Models;
 
@@ -20,6 +16,53 @@ namespace NWHarvest.Web.Controllers
         {
             return View(db.Growers.ToList());
         }
+
+        // todo: use UserRole enum
+        //[Authorize(Roles = "Administrator,Foodbank")]
+        [AllowAnonymous]
+        public ActionResult RoleDetails(string userId)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View("Error");
+            }
+            var grower = db.Growers.Where(fb => fb.UserId == userId).FirstOrDefault();
+
+            if (grower == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(grower);
+        }
+
+        public ActionResult RoleEdit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Grower grower = db.Growers.Find(id);
+            if (grower == null)
+            {
+                return HttpNotFound();
+            }
+            return View(grower);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RoleEdit([Bind(Include = "id,UserId,NotificationPreference,name,phone,email,address1,address2,address3,address4,city,state,zip,IsActive")] Grower grower)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(grower).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction(nameof(RoleDetails), new { UserId = grower.UserId });
+            }
+            return View(grower);
+        }
+
 
         // GET: Growers/Details/5
         public ActionResult Details(int? id)
@@ -47,7 +90,7 @@ namespace NWHarvest.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,phone,email,address1,address2,address3,address4,city,state,zip")] Grower grower)
+        public ActionResult Create([Bind(Include = "name,phone,email,address1,address2,address3,address4,city,state,zip")] Grower grower)
         {
             if (ModelState.IsValid)
             {
@@ -116,6 +159,14 @@ namespace NWHarvest.Web.Controllers
             db.Users.Remove(aspNetUser);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [AllowAnonymous]
+        public ActionResult Register(Grower grower)
+        {
+            db.Growers.Add(grower);
+            db.SaveChanges();
+            return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
         }
 
         protected override void Dispose(bool disposing)

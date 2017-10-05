@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using NWHarvest.Web.Models;
+using Microsoft.AspNet.Identity;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -15,19 +16,43 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        [AllowAnonymous]
+        public ActionResult Register(FoodBank foodbank)
+        {
+            db.FoodBanks.Add(foodbank);
+            db.SaveChanges();
+
+            return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
+        }
+
         // GET: FoodBanks
         public ActionResult Index()
         {
             return View(db.FoodBanks.ToList());
         }
 
+        // todo: use UserRole enum
+        //[Authorize(Roles = "Administrator,Foodbank")]
+        [AllowAnonymous]
+        public ActionResult RoleDetails(string userId)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View("Error");
+            }
+            var foodBank = db.FoodBanks.Where(fb => fb.UserId == userId).FirstOrDefault();
+            
+            if (foodBank == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(foodBank);
+        }
+
         // GET: FoodBanks/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             FoodBank foodBank = db.FoodBanks.Find(id);
             if (foodBank == null)
             {

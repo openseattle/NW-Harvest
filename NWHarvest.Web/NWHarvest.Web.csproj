@@ -187,12 +187,14 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\FoodBanksController.cs" />
     <Compile Include="Controllers\GrowersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ListingsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PickupLocationsController.cs" />
+    <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -338,6 +340,10 @@
     <Content Include="Views\Home\RegistrationComplete.cshtml" />
     <Content Include="Views\Account\ForgotPasswordWithUnconfirmedEmail.cshtml" />
     <Content Include="Views\Account\ForgotPasswordUserDoesNotExist.cshtml" />
+    <Content Include="Views\FoodBanks\RoleDetails.cshtml" />
+    <Content Include="Views\Growers\RoleDetails.cshtml" />
+    <Content Include="Views\Growers\RoleEdit.cshtml" />
+    <Content Include="Views\Administrator\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
