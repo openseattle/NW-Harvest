@@ -3,86 +3,45 @@
 @{
     ViewBag.Title = "Details";
 }
-
-<h2>@Html.DisplayFor(model => model.name)</h2>
-
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address1)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address1)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address2)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address2)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address3)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address3)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address4)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address4)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.city)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.city)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.state)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.state)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.zip)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.zip)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-
-    </dl>
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">@Html.DisplayFor(model => model.name)</h2>
+        <h4 class="card-subtitle mb-2 text-muted">Food Bank</h4>
+        <div class="card-text">@Html.DisplayFor(model => model.email)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.address1)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.address2)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.address3)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.address4)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.city), @Html.DisplayFor(model => model.state) @Html.DisplayFor(model => model.zip)</div>
+        <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
+        <p>
+            @Html.ActionLink("Edit", "RoleEdit", new { id = Model.Id }, new { @class = "card-link btn-sm btn-primary btn-sm" })
+        </p>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-</p>
+<br />
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title h4">My Locations</h4>
+        <h6 class="card-subtitle"><a href="#" class="card-link btn btn-primary btn-sm">Add</a></h6>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+        </ul>
+    </div>
+</div>
+
+
+<br />
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title h4">My Listings</h4>
+        <h6 class="card-subtitle"><a href="#" class="card-link btn btn-primary btn-sm">Add</a></h6>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Cras justo odio</li>
+            <li class="list-group-item">Dapibus ac facilisis in</li>
+            <li class="list-group-item">Vestibulum at eros</li>
+        </ul>
+    </div>
+</div>

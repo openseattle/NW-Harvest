@@ -340,10 +340,10 @@
     <Content Include="Views\Home\RegistrationComplete.cshtml" />
     <Content Include="Views\Account\ForgotPasswordWithUnconfirmedEmail.cshtml" />
     <Content Include="Views\Account\ForgotPasswordUserDoesNotExist.cshtml" />
-    <Content Include="Views\FoodBanks\RoleDetails.cshtml" />
     <Content Include="Views\Growers\RoleDetails.cshtml" />
     <Content Include="Views\Growers\RoleEdit.cshtml" />
     <Content Include="Views\Administrator\Index.cshtml" />
+    <Content Include="Views\FoodBanks\RoleDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
