@@ -4,6 +4,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using NWHarvest.Web.Models;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using NWHarvest.Web.Enums;
+using System;
 
 namespace NWHarvest.Web.Migrations
 {
@@ -37,11 +39,21 @@ namespace NWHarvest.Web.Migrations
 
             var roleStore = new RoleStore<IdentityRole>(context);
             var roleManager = new RoleManager<IdentityRole>(roleStore);
-            var adminRole = new IdentityRole("Administrator");
 
-            roleManager.Create(adminRole);
+            CreateRoles(roleManager);
+
             userManager.Create(adminuser);
-            userManager.AddToRole(adminuser.Id, UserRoles.Administrator);
+            userManager.AddToRole(adminuser.Id, UserRole.Administrator.ToString());
+        }
+
+        private void CreateRoles(RoleManager<IdentityRole> roleManager)
+        {
+            var roles = Enum.GetValues(typeof(UserRole));
+            foreach (var item in roles)
+            {
+                var role = new IdentityRole(item.ToString());
+                roleManager.Create(role);
+            }
         }
     }
 }
