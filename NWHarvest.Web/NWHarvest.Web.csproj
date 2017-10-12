@@ -352,6 +352,10 @@
     <Content Include="Views\Growers\_GrowerEditForm.cshtml" />
     <Content Include="Views\Growers\_GrowerDetail.cshtml" />
     <Content Include="Views\Shared\_Address.cshtml" />
+    <Content Include="Views\Growers\Profile.Mobile.cshtml" />
+    <Content Include="Views\Growers\Edit.Mobile.cshtml" />
+    <Content Include="Views\Growers\_GrowerListing.Mobile.cshtml" />
+    <Content Include="Views\Growers\_GrowerDetail.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
