@@ -1,0 +1,12 @@
+﻿@model NWHarvest.Web.ViewModels.FoodBankEditViewModel
+
+@{
+    ViewBag.Title = "Edit Food Bank";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+
+@Html.Partial("_EditForm", Model)
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

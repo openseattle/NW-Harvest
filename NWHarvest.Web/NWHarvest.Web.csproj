@@ -376,6 +376,11 @@
     <Content Include="Views\FoodBanks\Pickup.cshtml" />
     <Content Include="Views\FoodBanks\_PickupForm.cshtml" />
     <Content Include="Views\FoodBanks\_Listing.cshtml" />
+    <Content Include="Views\FoodBanks\_ClaimedListing.cshtml" />
+    <Content Include="Views\FoodBanks\Profile.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\Edit.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\Claim.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\_Listing.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

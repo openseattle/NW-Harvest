@@ -1,0 +1,41 @@
+﻿@model NWHarvest.Web.ViewModels.FoodBankViewModel
+
+@{
+    ViewBag.Title = "Food Bank Details";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">@Html.DisplayFor(model => model.Name)</h3>
+                <div class="card-text">@Html.DisplayFor(model => model.Email)</div>
+                @Html.Partial("_Address", Model.Address)
+                <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
+                <p>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "card-link btn-sm btn-primary btn-sm" })
+                </p>
+            </div>
+        </div>
+        <br />
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h5>Claimed Listings for Pickup</h5>
+            </div>
+            @if (Model.ClaimedListings?.Count > 0)
+            {
+                @Html.Partial("_ClaimedListing", Model.ClaimedListings.ToList())
+            }
+        </div>
+        <br />
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h5>Available Grower Listings</h5>
+            </div>
+            @if (Model.AvailableListings?.Count > 0)
+            {
+                @Html.Partial("_Listing", Model.AvailableListings.ToList())
+            }
+        </div>
+    </div>
+</div>
