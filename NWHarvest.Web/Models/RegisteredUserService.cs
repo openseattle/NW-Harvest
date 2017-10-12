@@ -31,7 +31,7 @@ namespace NWHarvest.Web.Models
                                   where b.UserId == userId
                                   select b).ToList();
 
-            if (user.Identity.GetUserName() == UserRoles.Administrator)
+            if (user.IsInRole(UserRoles.AdministratorRole))
             {
                 registeredUser.Role = UserRoles.AdministratorRole;
             }
@@ -53,7 +53,7 @@ namespace NWHarvest.Web.Models
             return registeredUser;
         }
 
-        public bool IsValidUserNameForLoginType(string email, string loginType)
+        public bool IsValidUserNameForLoginType(UserManager<ApplicationUser> userManager, string email, string loginType)
         {
             var userIsValid = false;
 
@@ -69,7 +69,7 @@ namespace NWHarvest.Web.Models
 
             else if (loginType == UserRoles.AdministratorRole)
             {
-                userIsValid = UserIsAdministrator(email);
+                userIsValid = UserIsAdministrator(userManager, email);
             }
 
             return userIsValid;
@@ -96,9 +96,16 @@ namespace NWHarvest.Web.Models
             return results.Count > 0;
         }
 
-        private bool UserIsAdministrator(string email)
+        private bool UserIsAdministrator(UserManager<ApplicationUser> userManager, string email)
         {
-            return email == UserRoles.Administrator;
+            var user = userManager.FindByEmail(email);
+            if (user == null)
+            {
+                return false;
+            }
+
+            return userManager.IsInRole(user.Id, UserRoles.AdministratorRole);
+            //return email == UserRoles.Administrator;
         }
 
         public bool IsUserActive(string email, string loginType)

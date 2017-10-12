@@ -1,6 +1,4 @@
-﻿@using NWHarvest.Web.Models
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -11,46 +9,27 @@
 
 </head>
 <body>
-    @*<div class="navbar navbar-inverse navbar-fixed-top">*@
-    <div class="navbar navbar-inverse" style="background-color:#154399">
-        <div class="container">         
+    <nav class="navbar navbar-inverse" style="background-color:#154399">
+        <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </button>                
-                <div class="navbar-brand"></div>          
+                </button>
+                <a class="navbar-brand" href="#">@ViewBag.NavBarTitle</a>
             </div>
-            <div class="navbar-collapse collapse">               
-                <ul class="nav navbar-nav">
 
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-
-                    @if (this.User.Identity.Name != "")
-                    {
-                        var registeredUserService = new RegisteredUserService();
-                        var user = registeredUserService.GetRegisteredUser(this.User);
-                        ViewBag.userRole = user.Role;
-                        
-                        if (ViewBag.userRole == UserRoles.AdministratorRole)
-                        {
-                            <li>@Html.ActionLink("Growers", "Index", "Growers")</li>
-                            <li>@Html.ActionLink("Food Programs", "Index", "FoodBanks")</li>
-                        }
-
-                        if (ViewBag.userRole == UserRoles.GrowerRole)
-                        {
-                            <li>@Html.ActionLink("My Locations", "Index", "PickupLocations")</li>
-                        }
-
-                        <li>@Html.ActionLink("Available Produce", "Index", "Listings")</li>
-                    }
-                </ul>
+            <div class="navbar-collapse collapse" id="navbar-collapse-1">
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
-    </div>
+    </nav>
+    <header class="header">
+        <div class="container">
+            <img src="~/Content/Banner.jpg" />
+        </div>
+    </header>
     <div class="container body-content">
         @RenderBody()
         <hr />

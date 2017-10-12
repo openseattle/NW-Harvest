@@ -1,0 +1,43 @@
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+
+@{
+    ViewBag.Title = "Manage Listings";
+}
+
+<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.GrowerName</h3>
+<p>
+    @Html.ActionLink("Add Listing", "Create", null, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Grower Profile", nameof(Profile), "Growers", null, new { @class = "btn btn-primary" })
+</p>
+
+<ul class="list-group">
+    @foreach (var listing in Model)
+    {
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-8 card">
+                    <div class="card-body">
+                        <h4 class="card-title">@listing.Product</h4>
+                        <div class="card-text"><span class="strong">Quantity</span>: @listing.QuantityAvailable @listing.UnitOfMeasure</div>
+                        <div class="card-text"><span class="strong">Claimed</span>: @listing.QuantityClaimed</div>
+                        <div class="card-text"><span class="strong">Expiration</span>: @(listing.ExpirationDate.ToShortDateString())</div>
+                        <div class="card-text"><span class="strong">Available</span>: @(listing.IsAvailable ? "Yes" : "No")</div>
+                        <div class="card-text"><span class="strong">Comments</span>: @listing.Comments</div>
+                    </div>
+                </div>
+                <div class="col-xs-4 pull-right">
+                    <div class="card-body">
+                        <h5 class="card-title pull-right">
+                            @*@Html.ActionLink("Edit", "Edit", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })*@
+                            @Html.ActionLink("Details", "Details", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })
+                            @*@Html.ActionLink("Delete", "Delete", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })*@
+                        </h5>
+
+                    </div>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+

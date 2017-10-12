@@ -28,9 +28,9 @@ textarea {
     display: flex;
 }
 
-.userType select, .notifType select {
-    margin-left: 15px;
-}
+    .userType select, .notifType select {
+        margin-left: 15px;
+    }
 
 .customRegister {
     width: 100%;
@@ -40,39 +40,82 @@ textarea {
     color: white;
 }
 
-@media (min-width:0px) and (max-width: 991px) {
-        .navbar-collapse {
+/* todo: stack buttons on small screens */
+@media (max-width: 400px) {
+}
+
+/*smartphone 576 x 527 */
+@media (min-width:0px) and (max-width: 576px) {
+    .header {
+        display: none !important;
+    }
+
+    .navbar-collapse {
         background-repeat: no-repeat;
         background-size: 100%;
     }
 }
 
-@media (min-width:992px) and (max-width: 1200px) {
-    .navbar-collapse {
-        background-image: url('Banner.jpg');
+/* tablets 880 x 527*/
+@media (min-width:576px) and (max-width: 880px) {
+    .header {
+        text-align: center;
         background-repeat: no-repeat;
-        background-size: 100%;
-        min-height: 169px;
+        background-color: #154399;
+        border-color: #154399;
+        padding: 1px;
+    }
+
+    .navbar {
+        display: none !important;
+    }
+
+    .navbar-collapse {
+        display: none !important;
     }
 }
 
-@media (min-width:1201px) {
-    .navbar-collapse {
-        background-image: url('Banner.jpg');
+/* laptop & desktop*/
+@media (min-width:880px) {
+    .header {
+        text-align: center;
         background-repeat: no-repeat;
-        background-size: 100%;
-        min-height: 205px;
+    }
+
+    .navbar {
+        display: none !important;
+    }
+
+    .navbar-collapse {
     }
 }
+
+.header {
+    background-color: #154399;
+}
+
+    .header img {
+        padding: 1px;
+        border-color: #154399;
+    }
 
 .navbar-brand {
-    display:none;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 14px;
+    text-align: center;
+    margin: auto;
+    padding: 0;
+    color: #fff !important;
 }
 
-.navbar-nav{
+.navbar-toggle {
+    z-index: 1;
 }
 
-.body-content h2, body .body-content #registerTitle{
+
+.body-content h2, body .body-content #registerTitle {
     color: #F4AA00;
     font-family: Arial;
     font-weight: bold;
@@ -83,12 +126,11 @@ div.body-content div.text-center a.btn {
     background-color: #548ac8;
 }
 
-.tableDetails dd{
+.tableDetails dd {
     margin-bottom: 10px;
 }
 
 .dataTable td {
-
     white-space: nowrap;
     max-width: 160px;
     min-width: 10px;
@@ -99,6 +141,9 @@ div.body-content div.text-center a.btn {
     clear: both;
     border-collapse: collapse;
     table-layout: fixed;
-    word-wrap:break-word; 
-    
+    word-wrap: break-word;
+}
+
+.strong {
+    font-weight: bold;
 }

@@ -1,0 +1,12 @@
+﻿@model NWHarvest.Web.ViewModels.RoleEditViewModel
+
+@{
+    ViewBag.Title = "Edit Grower";
+    ViewBag.NavBarTitle = "Edit Grower";
+}
+
+@Html.Partial("_GrowerEditForm", Model)
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

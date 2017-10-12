@@ -1,0 +1,8 @@
+﻿@model NWHarvest.Web.ViewModels.PickupLocationViewModel
+
+<h4>Pickup Location</h4>
+<div class="strong">@Html.DisplayFor(model => model.Name)</div>
+
+@Html.Partial("_Address", Model.Address)
+
+<div>@Html.DisplayFor(model => model.Comments)</div>

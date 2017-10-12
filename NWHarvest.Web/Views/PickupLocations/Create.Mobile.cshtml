@@ -1,0 +1,13 @@
+﻿@model NWHarvest.Web.ViewModels.PickupLocationEditViewModel
+
+@{
+    ViewBag.NavBarTitle = "Create Pickup Location";
+}
+
+<h3>@Model.Grower.Name</h3>
+<hr />
+@Html.Partial("_PickupLocationCreateForm", Model)
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

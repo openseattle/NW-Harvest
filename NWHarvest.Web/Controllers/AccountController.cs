@@ -6,6 +6,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NWHarvest.Web.Models;
+using NWHarvest.Web.Enums;
+using System;
+using System.Security.Principal;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -17,12 +20,11 @@ namespace NWHarvest.Web.Controllers
 
         private ApplicationDbContext db = new ApplicationDbContext();
 
-
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,11 +36,12 @@ namespace NWHarvest.Web.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
+
 
         public ApplicationUserManager UserManager
         {
@@ -51,23 +54,13 @@ namespace NWHarvest.Web.Controllers
                 _userManager = value;
             }
         }
-
-        //
-        // GET: /Account/Login
+        
         [AllowAnonymous]
         public ActionResult Login(string returnUrl, string loginType)
         {
-            if(loginType == UserRoles.AdministratorRole || loginType == UserRoles.FoodBankRole || loginType == UserRoles.GrowerRole)
-            {
-                ViewBag.ReturnUrl = returnUrl;
-                ViewBag.loginType = loginType;
-                return View();
-            }
-
-            return RedirectToAction("Index", "Home");
+            return View();
         }
 
-        // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -77,62 +70,82 @@ namespace NWHarvest.Web.Controllers
             {
                 return View(model);
             }
-
-            ViewBag.loginType = loginType;
-            var registeredUserService = new RegisteredUserService();
-            var user = db.Users.Where(b => b.Email == model.Email).FirstOrDefault();
-
-            //User does not exist.
-            if (user == null)
-            {
-                ModelState.AddModelError("", "Invalid login attempt.");
-                return View(model);
-            }
-
-            if (!registeredUserService.IsEmailConfirmed(model.Email))
-            {
-                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                ModelState.AddModelError("", model.Email + " is an unconfirmed email address. We have resent the confirmation email. Please check your email for your registration confirmation. If you have not received a confirmation please contact the Growing Connections administrator.");
-                return View(model);
-            }
-
-            if (!registeredUserService.IsValidUserNameForLoginType(model.Email, loginType))
-            {
-                ModelState.AddModelError("", model.Email + " is not a valid " + loginType + ".");
-                return View(model);
-            }
-
-            if (!registeredUserService.IsUserActive(model.Email, loginType))
-            {
-                ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
-                return View(model);
-            }
-
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
+            
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    if (true)
-                    {
-                        return RedirectToAction("Index", "Listings");
-                    }
+                    return RedirectToRole(UserManager.FindByEmail(model.Email));
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
+                    var user = UserManager.FindByEmail(model.Email);
+                    if (user != null)
+                    {
+                        if (!user.EmailConfirmed)
+                        {
+                            await SendEmailConfirmationToken(user.Id);
+                            return RedirectToAction(nameof(ConfirmEmail), new { resend = true });
+                        }
+                    }
+                    return View(model);
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
+
+            //if (!registeredUserService.IsUserActive(model.Email, loginType))
+            //{
+            //    ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
+            //    return View(model);
+            //}
+
         }
 
-        //
-        // GET: /Account/VerifyCode
+        private ActionResult RedirectToRole(ApplicationUser user)
+        {
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            // redirect users with no roles to home
+            if (user.Roles.Count == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // authorize authenticated user
+            var userRoles = UserManager.GetRoles(user.Id);
+            if (HttpContext.User == null)
+            {
+                var identity = UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+                HttpContext.User = new GenericPrincipal(identity, userRoles.ToArray());
+            }
+
+            // default to first user role
+            switch (Enum.Parse(typeof(UserRole), userRoles.First()))
+            {
+                case UserRole.Administrator:
+                    return RedirectToAction("Index", "Administrator");
+                case UserRole.Grower:
+                    return RedirectToAction("Profile", "Growers");
+                case UserRole.FoodBank:
+                    return RedirectToAction("Profile", "FoodBanks");
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
+        }
+
+        private async Task SendEmailConfirmationToken(string userId)
+        {
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userId);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userId, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userId, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+        }
+
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -144,8 +157,6 @@ namespace NWHarvest.Web.Controllers
             return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/VerifyCode
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -160,7 +171,7 @@ namespace NWHarvest.Web.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -174,24 +185,18 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
-        //
-        // GET: /Account/RegisterRouteView
         [AllowAnonymous]
         public ActionResult RegisterRouteView()
         {
             return View();
         }
 
-        //
-        // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
-        //
-        // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -199,14 +204,18 @@ namespace NWHarvest.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Name, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await SendEmailConfirmationToken(user.Id);
 
                     if (model.UserType == "IsFoodBank")
                     {
-                        db.FoodBanks.Add(
+                        // add user to a FoodBank role
+                        UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
+
+                        var foodbank = 
                             new FoodBank()
                             {
                                 UserId = user.Id,
@@ -221,34 +230,33 @@ namespace NWHarvest.Web.Controllers
                                 zip = model.ZipCode,
                                 NotificationPreference = model.Notification,
                                 IsActive = true
-                                });
+                            };
+
+                        return RedirectToAction("Register", "FoodBanks", foodbank);
                     }
                     else if (model.UserType == "IsGrower")
                     {
-                        db.Growers.Add(
-                            new Grower
-                                {
-                                    UserId = user.Id,
-                                    name = model.Name,
-                                    email = model.Email,
-                                    address1 = model.StreetAddress1,
-                                    address2 = model.StreetAddress2 == null? "": model.StreetAddress2,
-                                    address3 = "",
-                                    address4 = "",
-                                    city = model.City,
-                                    state = model.State,
-                                    zip = model.ZipCode,
-                                    NotificationPreference = model.Notification,
-                                    IsActive = true
-                                });
+                        // add to user to grower role
+                        UserManager.AddToRole(user.Id, UserRole.Grower.ToString());
+
+                        var grower = new Grower
+                        {
+                            UserId = user.Id,
+                            name = model.Name,
+                            email = model.Email,
+                            address1 = model.StreetAddress1,
+                            address2 = model.StreetAddress2 == null ? "" : model.StreetAddress2,
+                            address3 = "",
+                            address4 = "",
+                            city = model.City,
+                            state = model.State,
+                            zip = model.ZipCode,
+                            NotificationPreference = model.Notification,
+                            IsActive = true
+                        };
+
+                        return RedirectToAction("Register", "Growers", grower);
                     }
-
-                    db.SaveChanges();
-
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    return RedirectToAction("RegistrationComplete", "Home");
                 }
                 AddErrors(result);
             }
@@ -256,30 +264,39 @@ namespace NWHarvest.Web.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        //
-        // GET: /Account/ConfirmEmail
+        
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public async Task<ActionResult> ConfirmEmail(string userId, string code, bool resend = false, bool registration = false)
         {
+            ViewBag.Confirmed = false;
+
+            if (registration || resend)
+            {
+                return View();
+            }
+
             if (userId == null || code == null)
             {
                 return View("Error");
             }
+
             var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            if(result.Succeeded)
+            {
+                ViewBag.Confirmed = true;
+                return View();
+            } else
+            {
+                return View("Error");
+            }
         }
 
-        //
-        // GET: /Account/ForgotPassword
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -302,12 +319,12 @@ namespace NWHarvest.Web.Controllers
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + confirmatonCallbackUrl + "\">here</a>");
                     return View("ForgotPasswordWithUnconfirmedEmail");
                 }
-                
+
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");            
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
@@ -316,24 +333,18 @@ namespace NWHarvest.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ForgotPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // GET: /Account/ResetPassword
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -358,16 +369,12 @@ namespace NWHarvest.Web.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -377,8 +384,6 @@ namespace NWHarvest.Web.Controllers
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
-        //
-        // GET: /Account/SendCode
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
@@ -392,8 +397,6 @@ namespace NWHarvest.Web.Controllers
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/SendCode
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -412,8 +415,6 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
@@ -442,8 +443,6 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -480,8 +479,6 @@ namespace NWHarvest.Web.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -490,8 +487,6 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
         public ActionResult ExternalLoginFailure()
         {

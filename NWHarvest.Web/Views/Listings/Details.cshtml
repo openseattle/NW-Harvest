@@ -1,76 +1,19 @@
-﻿@model NWHarvest.Web.Models.Listing
-@using NWHarvest.Web.Models
-
+﻿@* todo: redesign *@
+@model NWHarvest.Web.ViewModels.ListingViewModel
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Listing Details";
 }
 
-<h2>Listing Details</h2>
+<h2>@ViewBag.Title</h2>
+<h3>@Html.DisplayFor(model => model.GrowerName)</h3>
+<hr />
 
-<div class="tableDetails">
-    <hr />
-    <dl class="dl-horizontal">
-        
-        <dt>@Html.DisplayNameFor(model => model.Grower.name)</dt>
-        <dd>@Html.DisplayFor(model => model.Grower.name)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.product)</dt>
-        <dd>@Html.DisplayFor(model => model.product)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.qtyOffered)</dt>
-        <dd>@Html.DisplayFor(model => model.qtyOffered)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.qtyLabel)</dt>
-        <dd>@Html.DisplayFor(model => model.qtyLabel)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.expire_date)</dt>
-        <dd>@Html.DisplayFor(model => model.expire_date)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.harvested_date)</dt>
-        <dd>@Html.DisplayFor(model => model.harvested_date)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.cost)</dt>
-        <dd>@Html.DisplayFor(model => model.cost)</dd>
-        
-        <hr />
-        <h2>Pickup Information</h2>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.name)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.name)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.address1)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.address1)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.address2)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.address2)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.address3)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.address3)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.address4)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.address4)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.city)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.city)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.state)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.state)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.zip)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.zip)</dd>
-
-        <dt>@Html.DisplayNameFor(model => model.PickupLocation.comments)</dt>
-        <dd>@Html.DisplayFor(model => model.PickupLocation.comments)</dd>
-
-        <dt>Pickup Schedule Notes</dt>
-        <dd>@Html.DisplayFor(model => model.comments)</dd>
-
-    </dl>
-</div>
-<p>@{ 
-    var registeredUserService = new RegisteredUserService();
-    var user = registeredUserService.GetRegisteredUser(this.User);
-    ViewBag.userRole = user.Role;
-    }
-    @Html.ActionLink("Back to List", "Index")
+@Html.Partial("_ListingDetails", Model)
+<hr />
+@Html.Partial("_PickupLocation", Model.PickupLocation)
+<br />
+<p>
+    @Html.ActionLink("Edit", "Edit", "Listings", new { Id = Model.Id }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Delete", "Delete", "Listings", new { Id = Model.Id }, new { @class = "btn btn-danger" })
+    @Html.ActionLink("Back", "Manage", "Listings", null, new { @class = "btn btn-default" })
 </p>

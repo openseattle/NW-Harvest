@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using NWHarvest.Web.Models;
+using Microsoft.AspNet.Identity;
+using NWHarvest.Web.ViewModels;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -14,108 +13,387 @@ namespace NWHarvest.Web.Controllers
     public class FoodBanksController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
 
-        // GET: FoodBanks
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
+        [AllowAnonymous]
+        public ActionResult Register(FoodBank foodbank)
+        {
+            if (ModelState.IsValid)
+            {
+                db.FoodBanks.Add(foodbank);
+                db.SaveChanges();
+                return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
+            }
+
+            return RedirectToAction("Register", "Account");
+        }
+
+        [Authorize(Roles = "FoodBank")]
+        [ActionName("Profile")]
         public ActionResult Index()
         {
-            return View(db.FoodBanks.ToList());
-        }
+            var vm = db.FoodBanks
+                .Where(fb => fb.UserId == UserId)
+                .Select(fb => new FoodBankViewModel
+                {
+                    Id = fb.Id,
+                    Name = fb.name,
+                    Email = fb.email,
+                    NotificationPreference = fb.NotificationPreference,
+                    IsActive = fb.IsActive,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = fb.address1,
+                        Address2 = fb.address2,
+                        Address3 = fb.address3,
+                        Address4 = fb.address4,
+                        City = fb.city,
+                        State = fb.state,
+                        Zip = fb.zip
+                    }
+                })
+                .FirstOrDefault();
 
-        // GET: FoodBanks/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            FoodBank foodBank = db.FoodBanks.Find(id);
-            if (foodBank == null)
+            // available grower listings
+            vm.AvailableListings = db.Listings
+                .Where(l => l.IsAvailable == true)
+                .Select(l => new ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    ExpirationDate = l.ExpirationDate,
+                    Comments = l.Comments,
+                    Grower = new GrowerViewModel
+                    {
+                        Id = l.Grower.Id,
+                        Name = l.Grower.name
+                    }
+                }).ToList();
+
+            // claimed listings for pickup
+            vm.ClaimedListings = db.Listings
+                .Where(l => l.FoodBank.Id == vm.Id && l.IsPickedUp == false)
+                .Select(l => new ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Address = new AddressViewModel
+                        {
+                            Address1 = l.PickupLocation.address1,
+                            Address2 = l.PickupLocation.address2,
+                            Address3 = l.PickupLocation.address3,
+                            Address4 = l.PickupLocation.address4,
+                            City = l.PickupLocation.city,
+                            State = l.PickupLocation.state,
+                            Zip = l.PickupLocation.zip
+                        }
+                    },
+                    QuantityAvailable = l.QuantityAvailable,
+                    Comments = l.Comments,
+                    Grower = new GrowerViewModel
+                    {
+                        Id = l.Grower.Id,
+                        Name = l.Grower.name
+                    }
+                }).ToList();
+
+            if (vm == null)
             {
                 return HttpNotFound();
             }
-            return View(foodBank);
+
+            return View(vm);
         }
 
-        // GET: FoodBanks/Create
-        public ActionResult Create()
+        [Authorize(Roles = "FoodBank")]
+        public ActionResult Edit(int id)
         {
-            return View();
+            var vm = db.FoodBanks
+                .Where(fb => fb.Id == id && fb.UserId == UserId)
+                .Select(fb => new FoodBankEditViewModel
+                {
+                    Id = fb.Id,
+                    Name = fb.name,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = fb.address1,
+                        Address2 = fb.address2,
+                        Address3 = fb.address3,
+                        Address4 = fb.address4,
+                        City = fb.city,
+                        State = fb.state,
+                        Zip = fb.zip
+                    },
+                    IsActive = fb.IsActive
+                })
+                .FirstOrDefault();
+
+            if (vm == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(vm);
         }
 
-        // POST: FoodBanks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,name,phone,email,address1,address2,address3,address4,city,state,zip")] FoodBank foodBank)
+        [Authorize(Roles = "FoodBank")]
+        public ActionResult Edit(FoodBankEditViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                db.FoodBanks.Add(foodBank);
+                var foodBank = db.FoodBanks.Find(vm.Id);
+
+                if (foodBank == null)
+                {
+                    return HttpNotFound();
+                }
+
+                foodBank.name = vm.Name;
+                foodBank.address1 = vm.Address.Address1;
+                foodBank.address2 = vm.Address.Address2;
+                foodBank.address3 = vm.Address.Address3;
+                foodBank.address4 = vm.Address.Address4;
+                foodBank.IsActive = vm.IsActive;
+
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Profile));
             }
 
-            return View(foodBank);
+            return View(vm);
         }
 
-        // GET: FoodBanks/Edit/5
-        public ActionResult Edit(int? id)
+        [HttpGet]
+        [Authorize(Roles = "FoodBank")]
+        public ActionResult Claim(int ListingId)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            FoodBank foodBank = db.FoodBanks.Find(id);
-            if (foodBank == null)
+            var vm = db.Listings
+                .Where(l => l.Id == ListingId)
+                .Select(l => new ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    ExpirationDate = l.ExpirationDate,
+                    Comments = l.Comments,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+
+                    },
+                    Grower = new GrowerViewModel
+                    {
+                        Id = l.Grower.Id,
+                        Name = l.Grower.name
+                    }
+                })
+                .FirstOrDefault();
+
+            if (vm == null)
             {
                 return HttpNotFound();
             }
-            return View(foodBank);
+
+            return View(vm);
         }
 
-        // POST: FoodBanks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "FoodBank")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "UserId,NotificationPreference,id,name,phone,email,address1,address2,address3,address4,city,state,zip,IsActive")] FoodBank foodBank)
+        [ActionName("Claim")]
+        public ActionResult ClaimConfirm(int ListingId)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(foodBank).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(foodBank);
-        }
+            var vm = db.Listings
+                .Where(l => l.Id == ListingId)
+                .Select(l => new ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    ExpirationDate = l.ExpirationDate,
+                    Comments = l.Comments,
+                    Grower = new GrowerViewModel
+                    {
+                        Id = l.Grower.Id,
+                        UserId = l.Grower.UserId,
+                        Email = l.Grower.email,
+                        NotificationPreference = l.Grower.NotificationPreference
+                    }
+                })
+                .FirstOrDefault();
 
-        // GET: FoodBanks/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            FoodBank foodBank = db.FoodBanks.Find(id);
-            if (foodBank == null)
+            if (vm == null)
             {
                 return HttpNotFound();
             }
-            return View(foodBank);
-        }
 
-        // POST: FoodBanks/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            FoodBank foodBank = db.FoodBanks.Find(id);
-            var aspNetUser = db.Users.Find(foodBank.UserId);
-            db.FoodBanks.Remove(foodBank);
-            db.Users.Remove(aspNetUser);
+            var listing = db.Listings.Find(vm.Id);
+            var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
+            if (listing == null || foodBank == null)
+            {
+                return HttpNotFound();
+            }
+
+            // update db
+            listing.IsAvailable = false;
+            listing.QuantityClaimed = listing.QuantityClaimed;
+            listing.FoodBank = foodBank;
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            // send notification(s)
+            SendNotification(vm);
+
+            return RedirectToAction(nameof(Profile));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "FoodBank")]
+        public ActionResult Pickup(int listingId)
+        {
+            var vm = db.Listings
+                .Where(l => l.FoodBank.UserId == UserId && l.Id == listingId)
+                .Select(l => new PickupLocationViewModel
+                {
+                    Id = l.PickupLocation.id,
+                    Name = l.PickupLocation.name,
+                    Comments = l.PickupLocation.comments,
+                    Grower = new GrowerViewModel
+                    {
+                        Name = l.Grower.name
+                    },
+                    Listing = new ListingViewModel
+                    {
+                        Id = l.Id,
+                        Product = l.Product,
+                        QuantityAvailable = l.QuantityAvailable,
+                        UnitOfMeasure = l.UnitOfMeasure
+                    },
+                    Address = new AddressViewModel
+                    {
+                        Address1 = l.PickupLocation.address1,
+                        Address2 = l.PickupLocation.address2,
+                        Address3 = l.PickupLocation.address3,
+                        Address4 = l.PickupLocation.address4,
+                        City = l.PickupLocation.city,
+                        State = l.PickupLocation.state,
+                        Zip = l.PickupLocation.zip
+                    }
+                }).FirstOrDefault();
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "FoodBank")]
+        [ValidateAntiForgeryToken]
+        [ActionName("Pickup")]
+        public ActionResult PickupConfirm(int listingId)
+        {
+            Listing listingToUpdate = db.Listings.Find(listingId);
+            if (listingToUpdate == null)
+            {
+                return HttpNotFound();
+            }
+
+            listingToUpdate.IsPickedUp = true;
+            db.SaveChanges();
+
+            return RedirectToAction(nameof(Profile));
+        }
+
+        private string UserId => User.Identity.GetUserId();
+
+        // send sms and or email to grower
+        private void SendNotification(ListingViewModel vm)
+        {
+            var growerPhoneNumber = UserManager.GetPhoneNumber(vm.Grower.UserId);
+            var foodBankPhoneNumber = UserManager.GetPhoneNumber(UserId);
+            var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
+
+            // todo: implement enum Notifications
+            // see Account/Registration for list of valid values
+            // both
+            // emailNote
+            // textNote
+            switch (vm.Grower.NotificationPreference.ToString().ToLower())
+            {
+                case "both":
+                    SendSmsNotification(vm.Product, foodBank, foodBankPhoneNumber, growerPhoneNumber);
+                    SendEmailNotification(vm.Grower.Email, vm.Product, foodBank, foodBankPhoneNumber);
+                    break;
+                case "emailnote":
+                    SendEmailNotification(vm.Grower.Email, vm.Product, foodBank, foodBankPhoneNumber);
+                    break;
+                case "textnote":
+                    SendSmsNotification(vm.Product, foodBank, foodBankPhoneNumber, growerPhoneNumber);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        private void SendSmsNotification(string product, FoodBank foodBank, string foodBankPhoneNumber, string growerPhoneNumber = null)
+        {
+            // bail grower does not have a phone number
+            if (growerPhoneNumber == null)
+            {
+                return;
+            }
+
+            var body = $"Your listing of {product} has been claimed by {foodBank.name}, {foodBank.email}";
+
+            if (foodBankPhoneNumber != null)
+            {
+                body += ", " + foodBankPhoneNumber;
+            }
+            var message = new IdentityMessage
+            {
+                Destination = growerPhoneNumber,
+                Subject = "",
+                Body = body
+            };
+
+            UserManager.SmsService.SendAsync(message).Wait();
+        }
+
+        private void SendEmailNotification(string growerEmail, string product, FoodBank foodBank, string foodBankPhoneNumber = null)
+        {
+            var subject = $"NW Harvest listing of {product} has been claimed by {foodBank.name}";
+            var body = $"Your listing of {product} has been claimed by {foodBank.name}, {foodBank.email}";
+
+            if (foodBankPhoneNumber != null)
+            {
+                body += ", " + foodBankPhoneNumber;
+            }
+            var message = new IdentityMessage
+            {
+                Destination = growerEmail,
+                Subject = subject,
+                Body = body
+            };
+
+            UserManager.EmailService.SendAsync(message);
         }
 
         protected override void Dispose(bool disposing)

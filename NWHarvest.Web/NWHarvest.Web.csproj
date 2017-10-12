@@ -25,6 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -186,14 +187,25 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdministratorController.cs" />
     <Compile Include="Controllers\FoodBanksController.cs" />
     <Compile Include="Controllers\GrowersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ListingsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PickupLocationsController.cs" />
+    <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helper\MvcHtmlHelper.cs" />
+    <Compile Include="Migrations\201710041937256_Initial.cs" />
+    <Compile Include="Migrations\201710041937256_Initial.Designer.cs">
+      <DependentUpon>201710041937256_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710120537360_UpdateListing.cs" />
+    <Compile Include="Migrations\201710120537360_UpdateListing.Designer.cs">
+      <DependentUpon>201710120537360_UpdateListing.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -205,13 +217,22 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Listing.cs" />
     <Compile Include="Models\ListingsRepository.cs" />
-    <Compile Include="Models\ListingViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PickupLocation.cs" />
     <Compile Include="Models\RegisteredUserService.cs" />
     <Compile Include="Models\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AddressEditViewModel.cs" />
+    <Compile Include="ViewModels\AddressViewModel.cs" />
+    <Compile Include="ViewModels\FoodBankViewModel.cs" />
+    <Compile Include="ViewModels\GrowerViewModel.cs" />
+    <Compile Include="ViewModels\ListingEditViewModel.cs" />
+    <Compile Include="ViewModels\ListingViewModel.cs" />
+    <Compile Include="ViewModels\PickupLocationEditViewModel.cs" />
+    <Compile Include="ViewModels\PickupLocationViewModel.cs" />
+    <Compile Include="ViewModels\FoodBankEditViewModel.cs" />
+    <Compile Include="ViewModels\RoleEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Banner.jpg" />
@@ -244,6 +265,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="Properties\PublishProfiles\Azure Test Site.pubxml" />
     <None Include="Properties\PublishProfiles\NWHarvestWeb - Web Deploy.pubxml" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -304,16 +326,11 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Growers\Create.cshtml" />
-    <Content Include="Views\Growers\Delete.cshtml" />
-    <Content Include="Views\Growers\Details.cshtml" />
     <Content Include="Views\Growers\Edit.cshtml" />
-    <Content Include="Views\Growers\Index.cshtml" />
-    <Content Include="Views\FoodBanks\Create.cshtml" />
-    <Content Include="Views\FoodBanks\Delete.cshtml" />
+    <Content Include="Views\Growers\Profile.cshtml" />
     <Content Include="Views\FoodBanks\Details.cshtml" />
     <Content Include="Views\FoodBanks\Edit.cshtml" />
-    <Content Include="Views\FoodBanks\Index.cshtml" />
+    <Content Include="Views\FoodBanks\Profile.cshtml" />
     <Content Include="Views\Listings\Create.cshtml" />
     <Content Include="Views\Listings\Delete.cshtml" />
     <Content Include="Views\Listings\Details.cshtml" />
@@ -325,13 +342,45 @@
     <Content Include="Views\PickupLocations\Delete.cshtml" />
     <Content Include="Views\PickupLocations\Details.cshtml" />
     <Content Include="Views\PickupLocations\Edit.cshtml" />
-    <Content Include="Views\PickupLocations\Index.cshtml" />
+    <Content Include="Views\PickupLocations\Manage.cshtml" />
     <Content Include="Views\Account\FoodBankRegister.cshtml" />
     <Content Include="Views\Account\RegisterRouteView.cshtml" />
     <Content Include="Views\Listings\PickUp.cshtml" />
     <Content Include="Views\Home\RegistrationComplete.cshtml" />
     <Content Include="Views\Account\ForgotPasswordWithUnconfirmedEmail.cshtml" />
     <Content Include="Views\Account\ForgotPasswordUserDoesNotExist.cshtml" />
+    <Content Include="Views\Administrator\Index.cshtml" />
+    <Content Include="Views\Growers\_GrowerListing.cshtml" />
+    <Content Include="Views\Growers\_GrowerEditForm.cshtml" />
+    <Content Include="Views\Growers\_GrowerDetail.cshtml" />
+    <Content Include="Views\Shared\_Address.cshtml" />
+    <Content Include="Views\Growers\Profile.Mobile.cshtml" />
+    <Content Include="Views\Growers\Edit.Mobile.cshtml" />
+    <Content Include="Views\Growers\_GrowerListing.Mobile.cshtml" />
+    <Content Include="Views\Growers\_GrowerDetail.Mobile.cshtml" />
+    <Content Include="Views\PickupLocations\_PickupLocation.cshtml" />
+    <Content Include="Views\PickupLocations\_PickupLocationCreateForm.cshtml" />
+    <Content Include="Views\Shared\_AddressForm.cshtml" />
+    <Content Include="Views\PickupLocations\Manage.Mobile.cshtml" />
+    <Content Include="Views\PickupLocations\Create.Mobile.cshtml" />
+    <Content Include="Views\Listings\Manage.cshtml" />
+    <Content Include="Views\Listings\_ListingDetails.cshtml" />
+    <Content Include="Views\Listings\_PickupLocation.cshtml" />
+    <Content Include="Views\Listings\Manage.Mobile.cshtml" />
+    <Content Include="Views\Listings\Details.Mobile.cshtml" />
+    <Content Include="Views\Listings\Delete.Mobile.cshtml" />
+    <Content Include="Views\Listings\Create.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\_EditForm.cshtml" />
+    <Content Include="Views\FoodBanks\Claim.cshtml" />
+    <Content Include="Views\FoodBanks\_ClaimForm.cshtml" />
+    <Content Include="Views\FoodBanks\Pickup.cshtml" />
+    <Content Include="Views\FoodBanks\_PickupForm.cshtml" />
+    <Content Include="Views\FoodBanks\_Listing.cshtml" />
+    <Content Include="Views\FoodBanks\_ClaimedListing.cshtml" />
+    <Content Include="Views\FoodBanks\Profile.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\Edit.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\Claim.Mobile.cshtml" />
+    <Content Include="Views\FoodBanks\_Listing.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -341,6 +390,14 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201710041937256_Initial.resx">
+      <DependentUpon>201710041937256_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710120537360_UpdateListing.resx">
+      <DependentUpon>201710120537360_UpdateListing.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
