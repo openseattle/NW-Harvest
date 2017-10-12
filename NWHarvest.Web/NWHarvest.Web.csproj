@@ -362,6 +362,8 @@
     <Content Include="Views\PickupLocations\_PickupLocation.cshtml" />
     <Content Include="Views\PickupLocations\_PickupLocationCreateForm.cshtml" />
     <Content Include="Views\Shared\_AddressForm.cshtml" />
+    <Content Include="Views\PickupLocations\Manage.Mobile.cshtml" />
+    <Content Include="Views\PickupLocations\Create.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
