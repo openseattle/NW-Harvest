@@ -1,97 +1,31 @@
-﻿@model NWHarvest.Web.Models.PickupLocation
+﻿@model NWHarvest.Web.ViewModels.PickupLocationViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Pickup Location Detail";
+    ViewBag.NavBarTitle = ViewBag.Title;
 }
 
-<h2>Pickup Location Details</h2>
-
-<div class="tableDetails">
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Grower.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Grower.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address1)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address1)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address2)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address2)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address3)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address3)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.address4)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.address4)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.city)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.city)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.state)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.state)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.zip)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.zip)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.comments)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.comments)
-        </dd>
-
-    </dl>
+<h3>@Model.Grower.Name</h3>
+<hr />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 card">
+            <div class="card-body">
+                <h4 class="card-title">@Model.Name</h4>
+                @Html.Partial("_Address", @Model.Address)
+                <div>Comments: @Model.Comments</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="card-body">
+                <h4 class="card-title">
+                    @Html.ActionLink("Edit", "Edit", "PickupLocations", new { Id = Model.Id }, new { @class = "btn btn-primary btn-sm" })
+                    @Html.ActionLink("Delete", "Delete", "PickupLocations", new { Id = Model.Id }, new { @class = "btn btn-danger btn-sm" })
+                    @Html.ActionLink("Back", "Manage", "PickupLocations", null, new { @class = "btn btn-default btn-sm" })
+                </h4>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

@@ -1,0 +1,26 @@
+﻿@model List<NWHarvest.Web.ViewModels.PickupLocationViewModel>
+
+<ul class="list-group">
+    @foreach (var location in Model)
+    {
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-6 card">
+                    <div class="card-body">
+                        <h4 class="card-title">@location.Name</h4>
+                        @Html.Partial("_Address", location.Address)
+                    </div>
+                </div>
+                <div class="col-xs-6 ">
+                    <div class="card-body pull-right">
+                        <h4 class="card-title">
+                            @*@Html.ActionLink("Edit", "Edit", "PickupLocations", new { Id = location.Id }, new { @class = "btn btn-default btn-sm" })*@
+                            @Html.ActionLink("Details", "Details", "PickupLocations", new { Id = location.Id }, new { @class = "btn btn-default btn-sm" })
+                            @*@Html.ActionLink("Delete", "Delete", "PickupLocations", new { Id = location.Id }, new { @class = "btn btn-default btn-sm" })*@
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
