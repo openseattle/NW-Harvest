@@ -367,6 +367,10 @@
     <Content Include="Views\Listings\Manage.cshtml" />
     <Content Include="Views\Listings\_ListingDetails.cshtml" />
     <Content Include="Views\Listings\_PickupLocation.cshtml" />
+    <Content Include="Views\Listings\Manage.Mobile.cshtml" />
+    <Content Include="Views\Listings\Details.Mobile.cshtml" />
+    <Content Include="Views\Listings\Delete.Mobile.cshtml" />
+    <Content Include="Views\Listings\Create.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

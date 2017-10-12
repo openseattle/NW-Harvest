@@ -1,0 +1,38 @@
+﻿@model NWHarvest.Web.ViewModels.ListingViewModel
+
+@{
+    ViewBag.Title = "Delete Listing";
+    ViewBag.NavBarTitle = ViewBag.Title;
+}
+
+
+<h3>@Html.DisplayFor(model => model.Grower.Name)</h3>
+<hr />
+<p>Are you sure you want to delete this listing?</p>
+<div>
+
+    <div><span class="strong">Product</span>: @Html.DisplayFor(model => model.Product)</div>
+    <div><span class="strong">Quantity</span>: @Html.DisplayFor(model => model.QuantityAvailable) @Html.DisplayFor(model => model.UnitOfMeasure)</div>
+    <div><span class="strong">Unit Cost</span>: @Html.DisplayFor(model => model.CostPerUnit) / @Html.DisplayFor(model => model.UnitOfMeasure)</div>
+    <div><span class="strong">Expiration</span>: @Html.DisplayFor(model => model.ExpirationDate)</div>
+    <div><span class="strong">Harvested Date</span>: @Html.DisplayFor(model => model.HarvestDate)</div>
+    <div><span class="strong">Status</span>: @(Model.IsAvailable ? "Available" : "Unavailable")</div>
+    <div>@Model.Comments</div>
+
+    <hr />
+    <h4>Pickup Location</h4>
+    <div class="strong">@Html.DisplayFor(model => model.PickupLocation.Name)</div>
+    @Html.Partial("_Address", Model.PickupLocation.Address)
+    <div>@Html.DisplayFor(model => model.PickupLocation.Name)</div>
+    <br />
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            @Html.ActionLink("Cancel", "Profile", "Growers", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

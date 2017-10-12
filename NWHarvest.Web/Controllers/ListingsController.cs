@@ -150,6 +150,8 @@ namespace NWHarvest.Web.Controllers
                 PickupLocations = SelectListPickupLocations()
             };
 
+            ViewBag.GrowerName = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.name;
+
             return View(vm);
         }
 
