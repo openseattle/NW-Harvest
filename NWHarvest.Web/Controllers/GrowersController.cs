@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using NWHarvest.Web.Models;
+using Microsoft.AspNet.Identity;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -11,22 +12,23 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // GET: Growers
         public ActionResult Index()
         {
             return View(db.Growers.ToList());
         }
 
         // todo: use UserRole enum
-        //[Authorize(Roles = "Administrator,Foodbank")]
-        [AllowAnonymous]
-        public ActionResult RoleDetails(string userId)
+        [Authorize(Roles = "Grower")]
+        public ActionResult RoleDetails()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (UserId == null)
             {
-                return View("Error");
+                return HttpNotFound();
             }
-            var grower = db.Growers.Where(fb => fb.UserId == userId).FirstOrDefault();
+
+            var grower = db.Growers
+                .Where(fb => fb.UserId == UserId)
+                .FirstOrDefault();
 
             if (grower == null)
             {
@@ -168,6 +170,8 @@ namespace NWHarvest.Web.Controllers
             db.SaveChanges();
             return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
         }
+
+        private string UserId => User.Identity.GetUserId();
 
         protected override void Dispose(bool disposing)
         {

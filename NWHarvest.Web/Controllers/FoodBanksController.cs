@@ -25,22 +25,22 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
         }
 
-        // GET: FoodBanks
         public ActionResult Index()
         {
             return View(db.FoodBanks.ToList());
         }
 
         // todo: use UserRole enum
-        //[Authorize(Roles = "Administrator,Foodbank")]
-        [AllowAnonymous]
-        public ActionResult RoleDetails(string userId)
+        [Authorize(Roles = "FoodBank")]
+        public ActionResult RoleDetails()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (UserId == null)
             {
-                return View("Error");
+                return HttpNotFound();
             }
-            var foodBank = db.FoodBanks.Where(fb => fb.UserId == userId).FirstOrDefault();
+            var foodBank = db.FoodBanks
+                .Where(fb => fb.UserId == UserId)
+                .FirstOrDefault();
             
             if (foodBank == null)
             {
@@ -50,7 +50,6 @@ namespace NWHarvest.Web.Controllers
             return View(foodBank);
         }
 
-        // GET: FoodBanks/Details/5
         public ActionResult Details(int? id)
         {
             FoodBank foodBank = db.FoodBanks.Find(id);
@@ -61,15 +60,11 @@ namespace NWHarvest.Web.Controllers
             return View(foodBank);
         }
 
-        // GET: FoodBanks/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: FoodBanks/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "id,name,phone,email,address1,address2,address3,address4,city,state,zip")] FoodBank foodBank)
@@ -84,7 +79,6 @@ namespace NWHarvest.Web.Controllers
             return View(foodBank);
         }
 
-        // GET: FoodBanks/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -99,9 +93,6 @@ namespace NWHarvest.Web.Controllers
             return View(foodBank);
         }
 
-        // POST: FoodBanks/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "UserId,NotificationPreference,id,name,phone,email,address1,address2,address3,address4,city,state,zip,IsActive")] FoodBank foodBank)
@@ -115,7 +106,6 @@ namespace NWHarvest.Web.Controllers
             return View(foodBank);
         }
 
-        // GET: FoodBanks/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -130,7 +120,6 @@ namespace NWHarvest.Web.Controllers
             return View(foodBank);
         }
 
-        // POST: FoodBanks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -142,6 +131,8 @@ namespace NWHarvest.Web.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        private string UserId => User.Identity.GetUserId();
 
         protected override void Dispose(bool disposing)
         {

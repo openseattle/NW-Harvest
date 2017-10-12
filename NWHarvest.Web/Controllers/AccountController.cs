@@ -6,9 +6,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NWHarvest.Web.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
 using NWHarvest.Web.Enums;
 using System;
+using System.Security.Principal;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -61,7 +61,6 @@ namespace NWHarvest.Web.Controllers
             return View();
         }
 
-        // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -76,7 +75,7 @@ namespace NWHarvest.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToRole(model.Email);
+                    return RedirectToRole(UserManager.FindByEmail(model.Email));
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -105,28 +104,36 @@ namespace NWHarvest.Web.Controllers
 
         }
 
-        private ActionResult RedirectToRole(string email)
+        private ActionResult RedirectToRole(ApplicationUser user)
         {
-            var user = UserManager.FindByEmail(email);
-            var userRoles = UserManager.GetRoles(user.Id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
 
             // redirect users with no roles to home
-            if (userRoles.Count == 0)
+            if (user.Roles.Count == 0)
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            // todo: handle multiple roles
+            // authorize authenticated user
+            var userRoles = UserManager.GetRoles(user.Id);
+            if (HttpContext.User == null)
+            {
+                var identity = UserManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+                HttpContext.User = new GenericPrincipal(identity, userRoles.ToArray());
+            }
+
+            // default to first user role
             switch (Enum.Parse(typeof(UserRole), userRoles.First()))
             {
                 case UserRole.Administrator:
-                    return RedirectToAction("Index", "Administrator", new { UserId = user.Id });
+                    return RedirectToAction("Index", "Administrator");
                 case UserRole.Grower:
-                    return RedirectToAction("RoleDetails", "Growers", new { UserId = user.Id });
+                    return RedirectToAction("RoleDetails", "Growers");
                 case UserRole.FoodBank:
-                    //var url = Url.Action("RoleDetails", "FoodBanks", new { UserId = user.Id });
-                    //return RedirectToLocal(url);
-                    return RedirectToAction("RoleDetails", "FoodBanks", new { UserId = user.Id });
+                    return RedirectToAction("RoleDetails", "FoodBanks");
                 default:
                     return RedirectToAction("Index", "Home");
             }
@@ -139,8 +146,6 @@ namespace NWHarvest.Web.Controllers
             await UserManager.SendEmailAsync(userId, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
         }
 
-        //
-        // GET: /Account/VerifyCode
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
@@ -152,8 +157,6 @@ namespace NWHarvest.Web.Controllers
             return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/VerifyCode
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -182,24 +185,18 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
-        //
-        // GET: /Account/RegisterRouteView
         [AllowAnonymous]
         public ActionResult RegisterRouteView()
         {
             return View();
         }
 
-        //
-        // GET: /Account/Register
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
 
-        //
-        // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -215,7 +212,7 @@ namespace NWHarvest.Web.Controllers
 
                     if (model.UserType == "IsFoodBank")
                     {
-                        // add user to a Foodbank role
+                        // add user to a FoodBank role
                         UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
 
                         var foodbank = 
@@ -267,9 +264,7 @@ namespace NWHarvest.Web.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
-        //
-        // GET: /Account/ConfirmEmail
+        
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code, bool resend = false, bool registration = false)
         {
@@ -296,16 +291,12 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
-        //
-        // GET: /Account/ForgotPassword
         [AllowAnonymous]
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -342,24 +333,18 @@ namespace NWHarvest.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ForgotPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // GET: /Account/ResetPassword
         [AllowAnonymous]
         public ActionResult ResetPassword(string code)
         {
             return code == null ? View("Error") : View();
         }
 
-        //
-        // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -384,16 +369,12 @@ namespace NWHarvest.Web.Controllers
             return View();
         }
 
-        //
-        // GET: /Account/ResetPasswordConfirmation
         [AllowAnonymous]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
 
-        //
-        // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -403,8 +384,6 @@ namespace NWHarvest.Web.Controllers
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
-        //
-        // GET: /Account/SendCode
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
@@ -418,8 +397,6 @@ namespace NWHarvest.Web.Controllers
             return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
         }
 
-        //
-        // POST: /Account/SendCode
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -438,8 +415,6 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
         }
 
-        //
-        // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
@@ -468,8 +443,6 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
-        //
-        // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -506,8 +479,6 @@ namespace NWHarvest.Web.Controllers
             return View(model);
         }
 
-        //
-        // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
@@ -516,8 +487,6 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
         public ActionResult ExternalLoginFailure()
         {
