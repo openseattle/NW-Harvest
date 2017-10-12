@@ -202,6 +202,10 @@
     <Compile Include="Migrations\201710041937256_Initial.Designer.cs">
       <DependentUpon>201710041937256_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710120537360_UpdateListing.cs" />
+    <Compile Include="Migrations\201710120537360_UpdateListing.Designer.cs">
+      <DependentUpon>201710120537360_UpdateListing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
@@ -219,6 +223,11 @@
     <Compile Include="Models\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AddressViewModel.cs" />
+    <Compile Include="ViewModels\GrowerViewModel.cs" />
+    <Compile Include="ViewModels\ListingViewModel.cs" />
+    <Compile Include="ViewModels\PickupLocationViewModel.cs" />
+    <Compile Include="ViewModels\RoleEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Banner.jpg" />
@@ -312,11 +321,8 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Growers\Create.cshtml" />
-    <Content Include="Views\Growers\Delete.cshtml" />
-    <Content Include="Views\Growers\Details.cshtml" />
     <Content Include="Views\Growers\Edit.cshtml" />
-    <Content Include="Views\Growers\Index.cshtml" />
+    <Content Include="Views\Growers\Profile.cshtml" />
     <Content Include="Views\FoodBanks\Create.cshtml" />
     <Content Include="Views\FoodBanks\Delete.cshtml" />
     <Content Include="Views\FoodBanks\Details.cshtml" />
@@ -340,10 +346,12 @@
     <Content Include="Views\Home\RegistrationComplete.cshtml" />
     <Content Include="Views\Account\ForgotPasswordWithUnconfirmedEmail.cshtml" />
     <Content Include="Views\Account\ForgotPasswordUserDoesNotExist.cshtml" />
-    <Content Include="Views\Growers\RoleDetails.cshtml" />
-    <Content Include="Views\Growers\RoleEdit.cshtml" />
     <Content Include="Views\Administrator\Index.cshtml" />
     <Content Include="Views\FoodBanks\RoleDetails.cshtml" />
+    <Content Include="Views\Growers\_GrowerListing.cshtml" />
+    <Content Include="Views\Growers\_GrowerEditForm.cshtml" />
+    <Content Include="Views\Growers\_GrowerDetail.cshtml" />
+    <Content Include="Views\Shared\_Address.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -357,6 +365,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201710041937256_Initial.resx">
       <DependentUpon>201710041937256_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710120537360_UpdateListing.resx">
+      <DependentUpon>201710120537360_UpdateListing.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

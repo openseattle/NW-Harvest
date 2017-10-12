@@ -1,0 +1,27 @@
+﻿@model NWHarvest.Web.ViewModels.GrowerViewModel
+
+@{
+    ViewBag.Title = "Profile";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            @Html.Partial("_GrowerDetail", Model)
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <div class="btn-group pull-right btn-group-sm">
+                    @Html.ActionLink("Add Listing", "Create", "Listings", null, new { @class = "btn btn-default btn-sm" })
+                </div>
+                <h4>My Listings</h4>
+            </div>
+            @if (Model.Listings?.Count > 0)
+            {
+                @Html.Partial("_GrowerListing", Model.Listings.ToList())
+            }
+        </div>
+    </div>
+</div>

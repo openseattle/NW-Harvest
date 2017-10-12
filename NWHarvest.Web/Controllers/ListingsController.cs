@@ -110,18 +110,17 @@ namespace NWHarvest.Web.Controllers
                                   where b.id.ToString() == listingViewModel.SavedLocationId
                                   select b).FirstOrDefault();
             
-            saveListing.product = listingViewModel.product;
-            saveListing.qtyClaimed = listingViewModel.qtyClaimed;
-            saveListing.qtyOffered = listingViewModel.qtyOffered;
-            saveListing.qtyLabel = listingViewModel.qtyLabel;
-            saveListing.harvested_date = listingViewModel.harvested_date;
-            saveListing.expire_date = listingViewModel.expire_date;
-            saveListing.cost = listingViewModel.cost;
-            saveListing.available = true;
-            saveListing.comments = listingViewModel.comments;
+            saveListing.Product = listingViewModel.product;
+            saveListing.QuantityClaimed = listingViewModel.qtyClaimed.Value;
+            saveListing.QuantityAvailable = listingViewModel.qtyOffered.Value;
+            saveListing.UnitOfMeasure = listingViewModel.qtyLabel;
+            saveListing.HarvestedDate = listingViewModel.harvested_date.Value;
+            saveListing.ExpirationDate = listingViewModel.expire_date.Value;
+            saveListing.CostPerUnit = listingViewModel.cost.Value;
+            saveListing.IsAvailable = true;
+            saveListing.Comments = listingViewModel.comments;
             saveListing.FoodBank = listingViewModel.FoodBank;
-            saveListing.location = "";
-            saveListing.qtyClaimed = 0;
+            saveListing.QuantityClaimed = 0;
 
             CheckListingForErrors(saveListing);
 
@@ -141,37 +140,37 @@ namespace NWHarvest.Web.Controllers
 
         private void CheckListingForErrors(Listing saveListing)
         {
-            if (saveListing.product == null)
+            if (saveListing.Product == null)
             {
                 ModelState.AddModelError("Product", "Product is required.");
             }
 
-            if (saveListing.qtyOffered == null)
+            if (saveListing.QuantityAvailable == null)
             {
                 ModelState.AddModelError("qtyOffered", "Quantity is required.");
             }
 
-            if (saveListing.qtyLabel == null)
+            if (saveListing.UnitOfMeasure == null)
             {
                 ModelState.AddModelError("qtyLabel", "Unit of Measure is required.");
             }
 
-            if (saveListing.expire_date == null)
+            if (saveListing.ExpirationDate == null)
             {
                 ModelState.AddModelError("expire_date", "Expiration Date is required.");
             }
 
-            if (saveListing.expire_date < DateTime.Now)
+            if (saveListing.ExpirationDate < DateTime.Now)
             {
                 ModelState.AddModelError("expire_date", "Expiration Date must be greater than or equal to today's date.");
             }
 
-            if (saveListing.cost == null)
+            if (saveListing.CostPerUnit == null)
             {
                 ModelState.AddModelError("cost", "Cost is required.");
             }
 
-            if (saveListing.available == null)
+            if (saveListing.IsAvailable == null)
             {
                 ModelState.AddModelError("available", "Available is required.");
             }
@@ -201,14 +200,14 @@ namespace NWHarvest.Web.Controllers
             ListingViewModel listingViewModel = new ListingViewModel(db, listing.Grower);
             listingViewModel.id = Convert.ToInt32(id);
             listingViewModel.PopulatePickupLocations(db);
-            listingViewModel.product = listing.product;
-            listingViewModel.qtyOffered = listing.qtyOffered;
-            listingViewModel.qtyLabel = listing.qtyLabel;
-            listingViewModel.harvested_date = listing.harvested_date;
-            listingViewModel.expire_date = listing.expire_date;
-            listingViewModel.cost = listing.cost;
-            listingViewModel.available = listing.available;
-            listingViewModel.comments = listing.comments;
+            listingViewModel.product = listing.Product;
+            listingViewModel.qtyOffered = listing.QuantityAvailable;
+            listingViewModel.qtyLabel = listing.UnitOfMeasure;
+            listingViewModel.harvested_date = listing.HarvestedDate;
+            listingViewModel.expire_date = listing.ExpirationDate;
+            listingViewModel.cost = listing.CostPerUnit;
+            listingViewModel.available = listing.IsAvailable;
+            listingViewModel.comments = listing.Comments;
 
             return View(listingViewModel);
         }
@@ -223,19 +222,19 @@ namespace NWHarvest.Web.Controllers
             listingViewModel.PopulatePickupLocations(db);
             listingViewModel.PopulatePickupLocation(db);
 
-            var saveListing = (from b in db.Listings where b.id == listingViewModel.id select b).FirstOrDefault();
+            var saveListing = (from b in db.Listings where b.Id == listingViewModel.id select b).FirstOrDefault();
 
             var pickupLocationsForGrower = db.PickupLocations.Where(m => m.Grower.Id == saveListing.Grower.Id);
             ViewBag.locationsList = new SelectList(pickupLocationsForGrower, "id", "name", saveListing.PickupLocation.id);
 
-            saveListing.product = listingViewModel.product;
-            saveListing.qtyOffered = listingViewModel.qtyOffered;
-            saveListing.qtyLabel = listingViewModel.qtyLabel;
-            saveListing.harvested_date = listingViewModel.harvested_date;
-            saveListing.expire_date = listingViewModel.expire_date;
-            saveListing.cost = listingViewModel.cost;
-            saveListing.available = listingViewModel.available;
-            saveListing.comments = listingViewModel.comments;
+            saveListing.Product = listingViewModel.product;
+            saveListing.QuantityAvailable = listingViewModel.qtyOffered.Value;
+            saveListing.UnitOfMeasure = listingViewModel.qtyLabel;
+            saveListing.HarvestedDate = listingViewModel.harvested_date.Value;
+            saveListing.ExpirationDate = listingViewModel.expire_date.Value;
+            saveListing.CostPerUnit = listingViewModel.cost.Value;
+            saveListing.IsAvailable = listingViewModel.available.Value;
+            saveListing.Comments = listingViewModel.comments;
             saveListing.PickupLocation = listingViewModel.PickupLocation;
 
             CheckListingForErrors(saveListing);
@@ -287,7 +286,7 @@ namespace NWHarvest.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult PickUp([Bind(Include = "id")] Listing listing)
         {
-            Listing saveListing = db.Listings.Find(listing.id);
+            Listing saveListing = db.Listings.Find(listing.Id);
             saveListing.IsPickedUp = true;
 
             db.Entry(saveListing).State = EntityState.Modified;
@@ -317,10 +316,10 @@ namespace NWHarvest.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Claim([Bind(Include = "id,product,comments")] Listing listing)
         {
-            var id = listing.id;
+            var id = listing.Id;
 
-            var theComments = listing.comments;
-            listing = db.Listings.FirstOrDefault(p => p.id == listing.id);
+            var theComments = listing.Comments;
+            listing = db.Listings.FirstOrDefault(p => p.Id == listing.Id);
 
             var service = new RegisteredUserService();
             var user = service.GetRegisteredUser(this.User);
@@ -358,8 +357,8 @@ namespace NWHarvest.Web.Controllers
 
             listing.FoodBank = foodBank;
 
-            listing.comments = theComments;
-            listing.available = false;
+            listing.Comments = theComments;
+            listing.IsAvailable = false;
 
             db.Entry(listing).State = EntityState.Modified;
             db.SaveChanges();
@@ -368,7 +367,7 @@ namespace NWHarvest.Web.Controllers
 
         private IdentityMessage CreateSMSMessage(ApplicationUser grower, ApplicationUser foodBank, Listing listing)
         {
-            var body = $"Your listing of {listing.product} has been claimed by {foodBank.UserName}, {foodBank.Email}";
+            var body = $"Your listing of {listing.Product} has been claimed by {foodBank.UserName}, {foodBank.Email}";
 
             if(foodBank.PhoneNumber != null && foodBank.PhoneNumber != "")
             {
@@ -387,8 +386,8 @@ namespace NWHarvest.Web.Controllers
 
         private IdentityMessage CreateEmailMessage(ApplicationUser grower, ApplicationUser foodBank, Listing listing)
         {
-            var subject = $"NW Harvest listing of {listing.product} has been claimed by {foodBank.UserName}";
-            var body = $"Your listing of {listing.product} has been claimed by {foodBank.UserName}, {foodBank.Email}";
+            var subject = $"NW Harvest listing of {listing.Product} has been claimed by {foodBank.UserName}";
+            var body = $"Your listing of {listing.Product} has been claimed by {foodBank.UserName}, {foodBank.Email}";
 
             if (foodBank.PhoneNumber != null && foodBank.PhoneNumber != "")
             {

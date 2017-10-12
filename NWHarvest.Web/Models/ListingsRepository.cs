@@ -23,10 +23,10 @@ namespace NWHarvest.Web.Models
         {
             var currentDate = DateTime.Now;
             return (from b in db.Listings
-                    where b.available == true
-                        & b.expire_date >= currentDate
+                    where b.IsAvailable == true
+                        & b.ExpirationDate >= currentDate
                         & b.Grower.IsActive == true
-                    orderby b.id descending
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -35,10 +35,10 @@ namespace NWHarvest.Web.Models
         {
             var oldestAcceptableDate = DateTime.Now.AddDays(-daysSinceCreation);
             return (from b in db.Listings
-                    where (b.available == false
-                    & b.expire_date > oldestAcceptableDate
+                    where (b.IsAvailable == false
+                    & b.ExpirationDate > oldestAcceptableDate
                     & b.IsPickedUp == false)
-                    orderby b.id descending
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -47,10 +47,10 @@ namespace NWHarvest.Web.Models
             var oldestAcceptableDate = DateTime.Now.AddDays(-daysSinceCreation);
             var currentDate = DateTime.Now;
             return (from b in db.Listings
-                    where ((b.available == false
-                        || b.expire_date < currentDate)
-                        & b.expire_date > oldestAcceptableDate)
-                    orderby b.id descending
+                    where ((b.IsAvailable == false
+                        || b.ExpirationDate < currentDate)
+                        & b.ExpirationDate > oldestAcceptableDate)
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -59,10 +59,10 @@ namespace NWHarvest.Web.Models
         {
             var currentDate = DateTime.Now;
             return (from b in db.Listings
-                    where b.available == true 
+                    where b.IsAvailable == true 
                         & b.Grower.Id == growerId
-                        & b.expire_date >= currentDate
-                    orderby b.id descending
+                        & b.ExpirationDate >= currentDate
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -70,11 +70,11 @@ namespace NWHarvest.Web.Models
         {
             var currentDate = DateTime.Now;
             return (from b in db.Listings
-                    where (b.available == false
-                        & b.expire_date >= currentDate
+                    where (b.IsAvailable == false
+                        & b.ExpirationDate >= currentDate
                         & b.Grower.Id == growerId
                         & b.IsPickedUp == false)
-                    orderby b.id descending
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -85,11 +85,11 @@ namespace NWHarvest.Web.Models
             return (from b in db.Listings
                     where (
                         (
-                            (b.expire_date >= oldestAcceptableDate & b.expire_date < currentDate)
+                            (b.ExpirationDate >= oldestAcceptableDate & b.ExpirationDate < currentDate)
                             || b.IsPickedUp == true
                         )
                         & b.Grower.Id == growerId)
-                    orderby b.id descending
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -98,11 +98,11 @@ namespace NWHarvest.Web.Models
         {
             var currentDate = DateTime.Now;    
             return (from b in db.Listings
-                    where (b.available == false
-                        & b.expire_date >= currentDate 
+                    where (b.IsAvailable == false
+                        & b.ExpirationDate >= currentDate 
                         & b.FoodBank.Id == foodBankId
                         & b.IsPickedUp == false)
-                    orderby b.id descending
+                    orderby b.Id descending
                     select b).ToList();
         }
 
@@ -114,10 +114,10 @@ namespace NWHarvest.Web.Models
                     where (
                         (
                             b.IsPickedUp == true
-                            || (b.expire_date > oldestAcceptableDate & b.expire_date < currentDate)
+                            || (b.ExpirationDate > oldestAcceptableDate & b.ExpirationDate < currentDate)
                         )
                         & b.FoodBank.Id == foodBankId)
-                    orderby b.id descending
+                    orderby b.Id descending
                     select b).ToList();
         }
 

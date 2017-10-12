@@ -4,6 +4,7 @@ using System.Net;
 using System.Web.Mvc;
 using NWHarvest.Web.Models;
 using Microsoft.AspNet.Identity;
+using NWHarvest.Web.ViewModels;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -12,155 +13,140 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index()
-        {
-            return View(db.Growers.ToList());
-        }
-
         // todo: use UserRole enum
         [Authorize(Roles = "Grower")]
-        public ActionResult RoleDetails()
+        [ActionName("Profile")]
+        public ActionResult Index()
         {
-            if (UserId == null)
-            {
-                return HttpNotFound();
-            }
 
-            var grower = db.Growers
-                .Where(fb => fb.UserId == UserId)
+            var vm = db.Growers
+                .Where(g => g.UserId == UserId)
+                .Include("PickupLocations")
+                .Include("Listings")
+                .Select(g => new GrowerViewModel
+                {
+                    Id = g.Id,
+                    Name = g.name,
+                    Email = g.email,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = g.address1,
+                        Address2 = g.address2,
+                        Address3 = g.address3,
+                        Address4 = g.address4,
+                        City = g.city,
+                        State = g.state,
+                        Zip = g.zip
+                    },
+                    IsActive = g.IsActive,
+                    NotificationPreference = g.NotificationPreference
+                })
                 .FirstOrDefault();
 
-            if (grower == null)
+            if (vm == null)
             {
                 return HttpNotFound();
             }
 
-            return View(grower);
+            vm.PickupLocations = db.PickupLocations
+                .Where(p => p.Grower.UserId == UserId)
+                .Select(p => new PickupLocationViewModel
+                {
+                    Id = p.id,
+                    Name = p.name,
+                    Comments = p.comments,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = p.address1,
+                        Address2 = p.address2,
+                        Address3 = p.address3,
+                        Address4 = p.address4,
+                        City = p.city,
+                        State = p.state,
+                        Zip = p.zip
+                    }
+                })
+                .ToList();
+
+            vm.Listings = db.Listings
+                .Where(l => l.Grower.UserId == UserId)
+                .Select(l => new ViewModels.ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    ExpirationDate = l.ExpirationDate,
+                    Comments = l.Comments,
+                    IsAvailable = l.IsAvailable,
+                    QuantityClaimed = l.QuantityClaimed,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Name = l.PickupLocation.name
+                    }
+
+                }).ToList();
+
+            return View(vm);
         }
 
-        public ActionResult RoleEdit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
-            {
-                return HttpNotFound();
-            }
-            return View(grower);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult RoleEdit([Bind(Include = "id,UserId,NotificationPreference,name,phone,email,address1,address2,address3,address4,city,state,zip,IsActive")] Grower grower)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(grower).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction(nameof(RoleDetails), new { UserId = grower.UserId });
-            }
-            return View(grower);
-        }
-
-
-        // GET: Growers/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
-            {
-                return HttpNotFound();
-            }
-            return View(grower);
-        }
-
-        // GET: Growers/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Growers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "name,phone,email,address1,address2,address3,address4,city,state,zip")] Grower grower)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Growers.Add(grower);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(grower);
-        }
-
-        // GET: Growers/Edit/5
+        [Authorize(Roles = "Grower")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
+
+            var vm = db.Growers.Select(g => new RoleEditViewModel
+            {
+                Id = g.Id,
+                Name = g.name,
+                Address1 = g.address1,
+                Address2 = g.address2,
+                Address3 = g.address3,
+                Address4 = g.address4,
+                City = g.city,
+                State = g.state,
+                Zip = g.zip,
+                IsActive = g.IsActive,
+                NotificationPreference = g.NotificationPreference
+            })
+            .Where(g => g.Id == id)
+            .FirstOrDefault();
+
+
+            if (vm == null)
             {
                 return HttpNotFound();
             }
-            return View(grower);
+
+            return View(vm);
         }
 
-        // POST: Growers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,UserId,NotificationPreference,name,phone,email,address1,address2,address3,address4,city,state,zip,IsActive")] Grower grower)
+        [Authorize(Roles = "Grower")]
+        public ActionResult Edit(RoleEditViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(grower).State = EntityState.Modified;
+                var grower = db.Growers.Find(vm.Id);
+                grower.name = vm.Name;
+                grower.address1 = vm.Address1;
+                grower.address2 = vm.Address2;
+                grower.address3 = vm.Address3;
+                grower.address4 = vm.Address4;
+                grower.city = vm.City;
+                grower.state = vm.State;
+                grower.zip = vm.Zip;
+                grower.IsActive = vm.IsActive;
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(grower);
-        }
 
-        // GET: Growers/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction(nameof(Profile), new { UserId = grower.UserId });
             }
-            Grower grower = db.Growers.Find(id);
-            if (grower == null)
-            {
-                return HttpNotFound();
-            }
-            return View(grower);
-        }
-
-        // POST: Growers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Grower grower = db.Growers.Find(id);
-            var aspNetUser = db.Users.Find(grower.UserId);
-            db.Growers.Remove(grower);
-            db.Users.Remove(aspNetUser);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            return View(vm);
         }
 
         [AllowAnonymous]
@@ -171,7 +157,7 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
         }
 
-        private string UserId => User.Identity.GetUserId();
+        public string UserId => User.Identity.GetUserId();
 
         protected override void Dispose(bool disposing)
         {
