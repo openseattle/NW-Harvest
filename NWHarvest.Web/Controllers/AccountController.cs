@@ -133,7 +133,7 @@ namespace NWHarvest.Web.Controllers
                 case UserRole.Grower:
                     return RedirectToAction("Profile", "Growers");
                 case UserRole.FoodBank:
-                    return RedirectToAction("RoleDetails", "FoodBanks");
+                    return RedirectToAction("Profile", "FoodBanks");
                 default:
                     return RedirectToAction("Index", "Home");
             }

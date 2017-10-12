@@ -1,0 +1,44 @@
+﻿@model NWHarvest.Web.ViewModels.FoodBankViewModel
+
+@{
+    ViewBag.Title = "Food Bank Details";
+    ViewBag.NavBarTitle = "Food Bank Profile";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">@Html.DisplayFor(model => model.Name)</h2>
+                <div class="card-text">@Html.DisplayFor(model => model.Email)</div>
+                <div class="card-text">@Html.DisplayFor(model => model.Address.Address1)</div>
+                <div class="card-text">@Html.DisplayFor(model => model.Address.Address2)</div>
+                <div class="card-text">@Html.DisplayFor(model => model.Address.Address3)</div>
+                <div class="card-text">@Html.DisplayFor(model => model.Address.Address4)</div>
+                <div class="card-text">@Html.DisplayFor(model => model.Address.City), @Html.DisplayFor(model => model.Address.State) @Html.DisplayFor(model => model.Address.Zip)</div>
+                <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
+                <p>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "card-link btn-sm btn-primary btn-sm" })
+                </p>
+            </div>
+        </div>
+        <br />
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h5>Claimed Listings for Pickup</h5>
+            </div>
+            @if (Model.ClaimedListings?.Count > 0)
+            {
+                @Html.Partial("_ClaimedListing", Model.ClaimedListings.ToList())
+            }
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading clearfix">
+                <h5>Available Grower Listings</h5>
+            </div>
+            @if (Model.AvailableListings?.Count > 0)
+            {
+                @Html.Partial("_Listing", Model.AvailableListings.ToList())
+            }
+        </div>
+    </div>
+</div>

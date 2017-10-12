@@ -176,7 +176,7 @@ namespace NWHarvest.Web.Controllers
                     HarvestedDate = vm.HarvestDate,
                     ExpirationDate = vm.ExpirationDate,
                     CostPerUnit = vm.CostPerUnit,
-                    IsAvailable = vm.IsAvailable,
+                    IsAvailable = true,
                     Comments = vm.Comments,
                     PickupLocation = pickupLocation,
                     Grower = grower
