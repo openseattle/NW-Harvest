@@ -217,7 +217,6 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Listing.cs" />
     <Compile Include="Models\ListingsRepository.cs" />
-    <Compile Include="Models\ListingViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PickupLocation.cs" />
     <Compile Include="Models\RegisteredUserService.cs" />
@@ -227,6 +226,7 @@
     <Compile Include="ViewModels\AddressEditViewModel.cs" />
     <Compile Include="ViewModels\AddressViewModel.cs" />
     <Compile Include="ViewModels\GrowerViewModel.cs" />
+    <Compile Include="ViewModels\ListingEditViewModel.cs" />
     <Compile Include="ViewModels\ListingViewModel.cs" />
     <Compile Include="ViewModels\PickupLocationEditViewModel.cs" />
     <Compile Include="ViewModels\PickupLocationViewModel.cs" />
@@ -364,6 +364,9 @@
     <Content Include="Views\Shared\_AddressForm.cshtml" />
     <Content Include="Views\PickupLocations\Manage.Mobile.cshtml" />
     <Content Include="Views\PickupLocations\Create.Mobile.cshtml" />
+    <Content Include="Views\Listings\Manage.cshtml" />
+    <Content Include="Views\Listings\_ListingDetails.cshtml" />
+    <Content Include="Views\Listings\_PickupLocation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

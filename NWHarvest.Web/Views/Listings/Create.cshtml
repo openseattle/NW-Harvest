@@ -1,103 +1,101 @@
-﻿@model NWHarvest.Web.Models.ListingViewModel
+﻿@model NWHarvest.Web.ViewModels.ListingViewModel
 
 @{
     ViewBag.Title = "Create Listing";
+    ViewBag.NavBarTitle = ViewBag.Title;
 }
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <hr />
         <div class="form-group">
-            @Html.LabelFor(model => model.product, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Product, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.product, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.product, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Product, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Product, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.qtyOffered, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.QuantityAvailable, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.qtyOffered, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.qtyOffered, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.QuantityAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.QuantityAvailable, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.qtyLabel, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.UnitOfMeasure, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.qtyLabel, new { htmlAttributes = new { @class = "form-control", placeholder="Boxes,Lbs, Etc." } })
-                @Html.ValidationMessageFor(model => model.qtyLabel, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.UnitOfMeasure, new { htmlAttributes = new { @class = "form-control", placeholder = "Boxes,Lbs, Etc." } })
+                @Html.ValidationMessageFor(model => model.UnitOfMeasure, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.harvested_date, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.HarvestDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <!--see documentation for datepicker control at http://www.eyecon.ro/bootstrap-datepicker/ -->
                 <div class="input-append date" id="harvdate" data-date="12-1-2016" data-dateformat="dd-mm-yyyy">
-                    @Html.EditorFor(model => model.harvested_date, new { htmlAttributes = new { @class = "form-control span2", size = "16" } })
+                    @Html.EditorFor(model => model.HarvestDate, new { htmlAttributes = new { @class = "form-control span2", size = "16" } })
                     <span class="add-on"><i class="glyphicon-calendar glyphicon"></i></span>
                 </div>
-                @Html.ValidationMessageFor(model => model.harvested_date, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.HarvestDate, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.expire_date, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ExpirationDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <!--see documentation for datepicker control at http://www.eyecon.ro/bootstrap-datepicker/ -->
                 <div class="input-append date" id="expdate" data-date="12-1-2016" data-dateformat="dd-mm-yyyy">
-                    @Html.EditorFor(model => model.expire_date, new {htmlAttributes = new {@class = "form-control span2", size = "16", placeholder="Listing valid until"}})
+                    @Html.EditorFor(model => model.ExpirationDate, new { htmlAttributes = new { @class = "form-control span2", size = "16", placeholder = "Listing valid until" } })
                     <span class="add-on"><i class="glyphicon-calendar glyphicon"></i></span>
                 </div>
-                @Html.ValidationMessageFor(model => model.expire_date, "", new {@class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.ExpirationDate, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.cost, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CostPerUnit, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.cost, new { htmlAttributes = new { @class = "form-control", @Value = "0" } })
-                @Html.ValidationMessageFor(model => model.cost, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.CostPerUnit, new { htmlAttributes = new { @class = "form-control", @Value = "0" } })
+                @Html.ValidationMessageFor(model => model.CostPerUnit, "", new { @class = "text-danger" })
                 <p>If you are not donating your product please change the cost field to reflect the cost to food programs.</p>
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.PickupLocation, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PickupLocationId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(m => m.SavedLocationId, this.Model.PickupLocations, "Select Pickup Location")
+                @Html.DropDownListFor(m => m.PickupLocationId, Model.PickupLocations, "Select Pickup Location")
                 <div>
-                    @Html.ValidationMessageFor(model => model.PickupLocations, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.PickupLocationId, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.comments, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.comments, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.comments, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
                 <p>Please include any relevant scheduling and pickup instructions.</p>
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-success" />
+                @Html.ActionLink("Cancel", "Manage", "Listings", null, new { @class = "btn btn-default" })
             </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

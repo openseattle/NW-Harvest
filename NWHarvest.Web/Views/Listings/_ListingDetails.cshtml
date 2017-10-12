@@ -1,0 +1,9 @@
+﻿@model NWHarvest.Web.ViewModels.ListingViewModel
+
+<div><span class="strong">Product</span>: @Html.DisplayFor(model => model.Product)</div>
+<div><span class="strong">Quantity</span>: @Html.DisplayFor(model => model.QuantityAvailable) @Html.DisplayFor(model => model.UnitOfMeasure)</div>
+<div><span class="strong">Unit Cost</span>: @Html.DisplayFor(model => model.CostPerUnit) / @Html.DisplayFor(model => model.UnitOfMeasure)</div>
+<div><span class="strong">Expiration</span>: @Html.DisplayFor(model => model.ExpirationDate)</div>
+<div><span class="strong">Harvested Date</span>: @Html.DisplayFor(model => model.HarvestDate)</div>
+<div><span class="strong">Status</span>: @(Model.IsAvailable ? "Available" : "Unavailable")</div>
+<div><span class="strong">Comments</span>: @Model.Comments</div>
