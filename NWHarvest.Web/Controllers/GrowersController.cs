@@ -152,6 +152,20 @@ namespace NWHarvest.Web.Controllers
         [AllowAnonymous]
         public ActionResult Register(Grower grower)
         {
+            // create default pickup location for new user
+            var pickupLocation = new PickupLocation
+            {
+                name = "Default",
+                address1 = grower.address1,
+                address2 = grower.address2,
+                address3 = grower.address3,
+                address4 = grower.address4,
+                city = grower.city,
+                state = grower.state,
+                zip = grower.zip
+            };
+
+            grower.PickupLocations.Add(pickupLocation);
             db.Growers.Add(grower);
             db.SaveChanges();
             return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
