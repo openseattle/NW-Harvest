@@ -2,30 +2,30 @@
 
 namespace NWHarvest.Web.ViewModels
 {
-    public class AddressEditViewModel
+    public class AddressEditViewModel : AddressViewModel
     {
-        [Display(Name = "Address 1")]
-        public virtual string Address1 { get; set; }
+        [Required]
+        public override string Address1 { get; set; }
 
         [StringLength(200)]
-        [Display(Name = "Address 2")]
-        public virtual string Address2 { get; set; }
+        public override string Address2 { get; set; }
 
         [StringLength(200)]
-        [Display(Name = "Address 3")]
-        public virtual string Address3 { get; set; }
+        public override string Address3 { get; set; }
 
         [StringLength(200)]
-        [Display(Name = "Address 4")]
-        public virtual string Address4 { get; set; }
+        public override string Address4 { get; set; }
 
+        [Required]
         [StringLength(100)]
-        public virtual string City { get; set; }
+        public override string City { get; set; }
 
+        [Required]
         [StringLength(2)]
-        public virtual string State { get; set; }
+        public override string State { get; set; }
 
+        [Required]
         [StringLength(9)]
-        public virtual string Zip { get; set; }
+        public override string Zip { get; set; }
     }
 }
