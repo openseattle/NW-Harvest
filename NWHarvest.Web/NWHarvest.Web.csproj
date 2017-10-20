@@ -399,6 +399,8 @@
     <Content Include="Views\Manage\_VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Manage\VerifyPhoneNumber.Mobile.cshtml" />
     <Content Include="Views\Manage\Notification.cshtml" />
+    <Content Include="Views\Manage\_Notification.cshtml" />
+    <Content Include="Views\Manage\Notification.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

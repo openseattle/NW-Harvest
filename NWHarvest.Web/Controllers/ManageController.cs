@@ -63,7 +63,7 @@ namespace NWHarvest.Web.Controllers
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.ChangePhoneSuccess ? "Your phone number has been changed."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : message == ManageMessageId.ChangeNotification ? "Your notification preferences has been changed."
+                : message == ManageMessageId.ChangeNotification ? "Your notification preference has been changed."
                 : "";
 
             var vm = await GetUser();
