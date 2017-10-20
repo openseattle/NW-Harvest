@@ -194,6 +194,7 @@
     <Compile Include="Controllers\ListingsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PickupLocationsController.cs" />
+    <Compile Include="Enums\UserNotification.cs" />
     <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -232,6 +233,9 @@
     <Compile Include="ViewModels\PickupLocationEditViewModel.cs" />
     <Compile Include="ViewModels\PickupLocationViewModel.cs" />
     <Compile Include="ViewModels\FoodBankEditViewModel.cs" />
+    <Compile Include="ViewModels\UserEditViewModel.cs" />
+    <Compile Include="ViewModels\PhoneNumberViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="ViewModels\RoleEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -318,7 +322,7 @@
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\SendCode.cshtml" />
     <Content Include="Views\Account\VerifyCode.cshtml" />
-    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
+    <Content Include="Views\Manage\PhoneNumber.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
     <Content Include="Views\Manage\ManageLogins.cshtml" />
@@ -381,6 +385,10 @@
     <Content Include="Views\FoodBanks\Edit.Mobile.cshtml" />
     <Content Include="Views\FoodBanks\Claim.Mobile.cshtml" />
     <Content Include="Views\FoodBanks\_Listing.Mobile.cshtml" />
+    <Content Include="Views\Manage\Index.Mobile.cshtml" />
+    <Content Include="Views\Manage\_Index.cshtml" />
+    <Content Include="Views\Manage\ChangeNotification.cshtml" />
+    <Content Include="Views\Manage\RemovePhoneNumber.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

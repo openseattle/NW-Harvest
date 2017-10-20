@@ -1,0 +1,37 @@
+﻿@model NWHarvest.Web.ViewModels.PhoneNumberViewModel
+
+@{
+    ViewBag.Title = $"{Model.Action } Phone Number";
+    if (Model.Action == "Update")
+    {
+        ViewBag.Title = "Manage Phone Number";
+        ViewBag.RemoveActionLink = Html.ActionLink("Remove", "RemovePhoneNumber", null, new { @class = "btn btn-default btn-danger" });
+    }
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+@using (Html.BeginForm("PhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Message)
+    @Html.HiddenFor(model => model.Action)
+    <div class="form-group">
+        @Html.LabelFor(m => m.Number, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Number, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-success" value="@Model.Action" />
+            @ViewBag.RemoveActionLink
+            @Html.ActionLink("Cancel", "Index", null, new { @class="btn btn-default"})
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

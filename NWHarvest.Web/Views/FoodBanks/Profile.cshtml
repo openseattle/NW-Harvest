@@ -17,7 +17,8 @@
                 <div class="card-text">@Html.DisplayFor(model => model.Address.City), @Html.DisplayFor(model => model.Address.State) @Html.DisplayFor(model => model.Address.Zip)</div>
                 <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
                 <p>
-                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "card-link btn-sm btn-primary btn-sm" })
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "card-link btn btn-primary" })
+                    @Html.ActionLink("Settings", "Settings", null, new { @class = "card-link btn btn-primary " })
                 </p>
             </div>
         </div>

@@ -322,6 +322,11 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction(nameof(Profile));
         }
 
+        public ActionResult Settings()
+        {
+            return RedirectToAction("Index", "Manage");
+        }
+
         private string UserId => User.Identity.GetUserId();
 
         // send sms and or email to grower

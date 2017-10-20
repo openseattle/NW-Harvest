@@ -171,6 +171,11 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
         }
 
+        public ActionResult Settings()
+        {
+            return RedirectToAction("Index", "Manage");
+        }
+
         public string UserId => User.Identity.GetUserId();
 
         protected override void Dispose(bool disposing)

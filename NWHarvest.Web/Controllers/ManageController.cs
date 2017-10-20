@@ -7,6 +7,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NWHarvest.Web.Models;
+using NWHarvest.Web.Enums;
+using NWHarvest.Web.ViewModels;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -15,6 +17,7 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _db = new ApplicationDbContext();
 
         public ManageController()
         {
@@ -32,9 +35,9 @@ namespace NWHarvest.Web.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -50,8 +53,6 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
-        //
-        // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
@@ -60,19 +61,14 @@ namespace NWHarvest.Web.Controllers
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
+                : message == ManageMessageId.ChangePhoneSuccess ? "Your phone number has been changed."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : "";
 
-            var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
-            {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-            };
-            return View(model);
+            var vm = await GetUser();
+
+            UpdateNotification(vm);
+            return View(vm);
         }
 
         //
@@ -99,25 +95,58 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("ManageLogins", new { Message = message });
         }
 
-        //
-        // GET: /Manage/AddPhoneNumber
-        public ActionResult AddPhoneNumber()
+        public async Task<ActionResult> PhoneNumber()
         {
-            return View();
+            var model = new PhoneNumberViewModel
+            {
+                Number = await UserManager.GetPhoneNumberAsync(UserId)
+            };
+
+            if (string.IsNullOrWhiteSpace(model.Number))
+            {
+                model.Message = ManageMessageId.AddPhoneSuccess;
+                model.Action = "Add";
+            } else
+            {
+                model.Message = ManageMessageId.ChangePhoneSuccess;
+                model.Action = "Update";
+            }
+
+            return View(model);
         }
 
-        //
-        // POST: /Manage/AddPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
+        public async Task<ActionResult> PhoneNumber(PhoneNumberViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+
+            // do nothing if phone is the same
+            var user = await GetUser();
+            if (user.PhoneNumber == model.Number)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Don't verify FoodBank phone number, primarily uses landline
+            if (UserManager.IsInRole(UserId, UserRole.FoodBank.ToString()))
+            {
+                var result = await SetPhoneNumber(model.Number);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Index), new { Message = model.Message });
+                }
+
+                ModelState.AddModelError("", "Unable to add phone number.  Please contact administrator for assistance");
+                return View(model);
+            }
+
+            // verify phone number of growers
             // Generate the token and send it
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
+            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(UserId, model.Number);
             if (UserManager.SmsService != null)
             {
                 var message = new IdentityMessage
@@ -127,7 +156,39 @@ namespace NWHarvest.Web.Controllers
                 };
                 await UserManager.SmsService.SendAsync(message);
             }
+
             return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> RemovePhoneNumber()
+        {
+            var user = await GetUser();
+            var model = new UserViewModel
+            {
+                Name = user.Name,
+                PhoneNumber = await UserManager.GetPhoneNumberAsync(UserId)
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ActionName("RemovePhoneNumber")]
+        public async Task<ActionResult> RemovePhoneNumberConfirmed()
+        {
+            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
+            if (!result.Succeeded)
+            {
+                return RedirectToAction("Index", new { Message = ManageMessageId.Error });
+            }
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (user != null)
+            {
+                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+            }
+            return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
 
         //
@@ -160,8 +221,6 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("Index", "Manage");
         }
 
-        //
-        // GET: /Manage/VerifyPhoneNumber
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
@@ -169,8 +228,6 @@ namespace NWHarvest.Web.Controllers
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
 
-        //
-        // POST: /Manage/VerifyPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
@@ -179,7 +236,7 @@ namespace NWHarvest.Web.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
+            var result = await UserManager.ChangePhoneNumberAsync(UserId, model.PhoneNumber, model.Code);
             if (result.Succeeded)
             {
                 var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -189,28 +246,10 @@ namespace NWHarvest.Web.Controllers
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
             }
-            // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("", "Failed to verify phone");
-            return View(model);
-        }
 
-        //
-        // POST: /Manage/RemovePhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RemovePhoneNumber()
-        {
-            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
-            if (!result.Succeeded)
-            {
-                return RedirectToAction("Index", new { Message = ManageMessageId.Error });
-            }
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
+            // If we got this far, something failed, redisplay form
+            ModelState.AddModelError("", "Failed to verify phone.  The code entered is not valid.");
+            return View(model);
         }
 
         //
@@ -333,7 +372,89 @@ namespace NWHarvest.Web.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
+
+
+        // returns user role with highest privileges
+        private async Task<UserViewModel> GetUser()
+        {
+            var userRoles = UserManager.GetRoles(UserId);
+            UserViewModel vm;
+            if (userRoles.Contains(UserRole.Administrator.ToString()))
+            {
+                return new UserViewModel
+                {
+                    Name = UserRole.Administrator.ToString(),
+                    ProfileUrl = Url.Action("Profile", "Administrators"),
+                    PhoneNumber = await UserManager.GetPhoneNumberAsync(UserId),
+                    HasPassword = HasPassword()
+                };
+            }
+
+            if (userRoles.Contains(UserRole.FoodBank.ToString()))
+            {
+
+                vm = _db.FoodBanks
+                    .Where(f => f.UserId == UserId)
+                    .Select(u => new UserViewModel
+                    {
+                        Id = u.Id,
+                        Name = u.name,
+                        NotificationPreference = u.NotificationPreference
+                    })
+                    .FirstOrDefault();
+
+                vm.ProfileUrl = Url.Action("Profile", "FoodBanks");
+                vm.PhoneNumber = await UserManager.GetPhoneNumberAsync(UserId);
+                vm.HasPassword = HasPassword();
+                return vm;
+            }
+
+            if (userRoles.Contains(UserRole.Grower.ToString()))
+            {
+                vm = _db.Growers
+                    .Where(f => f.UserId == UserId)
+                    .Select(u => new UserViewModel
+                    {
+                        Id = u.Id,
+                        Name = u.name,
+                        NotificationPreference = u.NotificationPreference
+                    })
+                    .FirstOrDefault();
+                vm.ProfileUrl = Url.Action("Profile", "Growers");
+                vm.PhoneNumber = await UserManager.GetPhoneNumberAsync(UserId);
+                vm.HasPassword = HasPassword();
+                return vm;
+            }
+
+            return new UserViewModel();
+        }
+
+        private async Task<IdentityResult> SetPhoneNumber(string phoneNumber)
+        {
+            return await UserManager.SetPhoneNumberAsync(UserId, phoneNumber);
+        }
+
+        // helper method
+        // todo: update register page form to use UserNotification enum
+        private string UserId => User.Identity.GetUserId();
+        private void UpdateNotification(UserViewModel vm)
+        {
+            switch (vm.NotificationPreference)
+            {
+                case "emailNote":
+                    vm.NotificationPreference = UserNotification.Email.ToString();
+                    break;
+                case "textNote":
+                    vm.NotificationPreference = UserNotification.Sms.ToString();
+                    break;
+                case "both":
+                    vm.NotificationPreference = UserNotification.Both.ToString();
+                    break;
+                default:
+                    break;
+            }
+        }
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -376,6 +497,7 @@ namespace NWHarvest.Web.Controllers
         public enum ManageMessageId
         {
             AddPhoneSuccess,
+            ChangePhoneSuccess,
             ChangePasswordSuccess,
             SetTwoFactorSuccess,
             SetPasswordSuccess,
@@ -384,6 +506,6 @@ namespace NWHarvest.Web.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

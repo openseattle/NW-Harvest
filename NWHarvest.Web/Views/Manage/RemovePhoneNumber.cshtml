@@ -1,0 +1,19 @@
+﻿@model NWHarvest.Web.ViewModels.UserViewModel
+
+@{
+    ViewBag.Title = "Remove Phone Number";
+}
+
+<h2>@ViewBag.Title</h2>
+<h3><a href="@Model.ProfileUrl">@Html.DisplayFor(model => model.Name)</a></h3>
+<hr />
+<p>Are you sure you want to remove this number: @Model.PhoneNumber?</p>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="Remove" class="btn btn-danger" />
+            @Html.ActionLink("Cancel", "Index", "Manage", null, new { @class = "btn btn-default" })
+        </div>
+    }
