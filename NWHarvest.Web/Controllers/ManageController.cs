@@ -63,6 +63,7 @@ namespace NWHarvest.Web.Controllers
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.ChangePhoneSuccess ? "Your phone number has been changed."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                : message == ManageMessageId.ChangeNotification ? "Your notification preferences has been changed."
                 : "";
 
             var vm = await GetUser();
@@ -191,6 +192,63 @@ namespace NWHarvest.Web.Controllers
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
+        }
+
+        public async Task<ActionResult> Notification()
+        {
+            var user = await GetUser();
+
+            var model = new NotificationViewModel
+            {
+                UserName = user.Name,
+                Method = NotificationStringToUserNotification(user.NotificationPreference),
+                Message = ManageMessageId.ChangeNotification
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Notification(NotificationViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userRoles = await UserManager.GetRolesAsync(UserId);
+                if (userRoles.Contains(UserRole.Administrator.ToString()))
+                {
+                    // todo: implement with administrator profile
+                    return RedirectToAction(nameof(Index), new { Message = model.Message });
+                }
+
+                if (userRoles.Contains(UserRole.FoodBank.ToString()))
+                {
+                    var foodbank = _db.FoodBanks.Where(f => f.UserId == UserId).FirstOrDefault();
+                    if (foodbank == null)
+                    {
+                        return View("Error");
+                    }
+
+                    foodbank.NotificationPreference = UserNotificationToString(model.Method);
+                    _db.SaveChanges();
+                    return RedirectToAction(nameof(Index), new { Message = model.Message });
+                }
+
+                if (userRoles.Contains(UserRole.Grower.ToString()))
+                {
+                    var grower = _db.Growers.Where(g => g.UserId == UserId).FirstOrDefault();
+                    if (grower == null)
+                    {
+                        return View("Error");
+                    }
+                    grower.NotificationPreference = UserNotificationToString(model.Method);
+                    _db.SaveChanges();
+
+                    return RedirectToAction(nameof(Index), new { Message = model.Message });
+                }
+            }
+            
+            return View(model);
         }
 
         //
@@ -454,6 +512,36 @@ namespace NWHarvest.Web.Controllers
 
         // helper method
         // todo: update register page form to use UserNotification enum
+        private UserNotification NotificationStringToUserNotification(string notification)
+        {
+            switch (notification)
+            {
+                case "both":
+                    return UserNotification.Both;
+                case "emailNote":
+                    return UserNotification.Email;
+                case "textNote":
+                    return UserNotification.Text;
+                default:
+                    return UserNotification.Text;
+            }
+        }
+
+        private string UserNotificationToString(UserNotification notification)
+        {
+            switch (notification)
+            {
+                case UserNotification.Both:
+                    return "both";
+                case UserNotification.Email:
+                    return "emailNote";
+                case UserNotification.Text:
+                    return "textNote";
+                default:
+                    return "emailNote";
+            }
+        }
+
         private string UserId => User.Identity.GetUserId();
         private void UpdateNotification(UserViewModel vm)
         {
@@ -463,7 +551,7 @@ namespace NWHarvest.Web.Controllers
                     vm.NotificationPreference = UserNotification.Email.ToString();
                     break;
                 case "textNote":
-                    vm.NotificationPreference = UserNotification.Sms.ToString();
+                    vm.NotificationPreference = UserNotification.Text.ToString();
                     break;
                 case "both":
                     vm.NotificationPreference = UserNotification.Both.ToString();
@@ -520,6 +608,7 @@ namespace NWHarvest.Web.Controllers
             SetPasswordSuccess,
             RemoveLoginSuccess,
             RemovePhoneSuccess,
+            ChangeNotification,
             Error
         }
 

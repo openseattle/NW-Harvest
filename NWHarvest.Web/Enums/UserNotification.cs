@@ -2,9 +2,8 @@
 {
     public enum UserNotification
     {
-        None,
         Email,
-        Sms,
+        Text,
         Both
     }
 }

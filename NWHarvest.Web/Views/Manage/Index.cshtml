@@ -9,6 +9,8 @@
     var phoneNumberActionLink = String.IsNullOrWhiteSpace(Model.PhoneNumber) ?
         Html.ActionLink("Add Phone Number", "PhoneNumber", null, new { @class = "btn btn-primary" }) :
         Html.ActionLink("Manage Phone Number", "PhoneNumber", null, new { @class = "btn btn-primary" });
+
+    var notificationActionLink = Html.ActionLink("Change Notification", "Notification", null, new { @class = "btn btn-primary" });
 }
 
 <h2>@ViewBag.Title</h2>
@@ -18,5 +20,5 @@
 @Html.Partial("_Index", Model)
 
 <div>
-    @passwordActionLink @phoneNumberActionLink
+    @passwordActionLink @phoneNumberActionLink @notificationActionLink
 </div>

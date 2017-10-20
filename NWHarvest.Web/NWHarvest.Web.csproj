@@ -230,6 +230,7 @@
     <Compile Include="ViewModels\GrowerViewModel.cs" />
     <Compile Include="ViewModels\ListingEditViewModel.cs" />
     <Compile Include="ViewModels\ListingViewModel.cs" />
+    <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PickupLocationEditViewModel.cs" />
     <Compile Include="ViewModels\PickupLocationViewModel.cs" />
     <Compile Include="ViewModels\FoodBankEditViewModel.cs" />
@@ -396,6 +397,8 @@
     <Content Include="Views\Manage\_RemovePhoneNumber.cshtml" />
     <Content Include="Views\Manage\RemovePhoneNumber.Mobile.cshtml" />
     <Content Include="Views\Manage\_VerifyPhoneNumber.cshtml" />
+    <Content Include="Views\Manage\VerifyPhoneNumber.Mobile.cshtml" />
+    <Content Include="Views\Manage\Notification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
