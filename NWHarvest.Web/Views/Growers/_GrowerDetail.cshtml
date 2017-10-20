@@ -8,9 +8,16 @@
         @Html.Partial("_Address", Model.Address)
         <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
         <p>
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "card-link btn btn-primary" })
-            @Html.ActionLink("Manage Locations", "Manage", "PickupLocations", null, new { @class = "card-link btn btn-primary" })
-            @Html.ActionLink("Settings", "Settings", "Growers", null, new { @class = "card-link btn btn-primary " })
+            <div>
+                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("Manage", "PickupLocations")" class="btn btn-primary">Manage Locations</a>
+                    <a href="@Url.Action("Settings")" class="btn btn-primary">Settings</a>
+                    <input type="submit" value="Logout" class="btn btn-primary" />
+                }
+            </div>
         </p>
     </div>
 </div>

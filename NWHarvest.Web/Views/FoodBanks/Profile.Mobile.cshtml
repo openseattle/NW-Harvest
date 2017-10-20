@@ -13,7 +13,10 @@
                 @Html.Partial("_Address", Model.Address)
                 <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
                 <p>
-                    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "card-link btn-sm btn-primary btn-sm" })
+                    <div>
+                        <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Settings")" class="btn btn-primary">Settings</a>
+                    </div>
                 </p>
             </div>
         </div>
