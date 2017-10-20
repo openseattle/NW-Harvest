@@ -2,14 +2,16 @@
 
 @{
     ViewBag.Title = $"{Model.Action } Phone Number";
+
     if (Model.Action == "Update")
     {
         ViewBag.Title = "Manage Phone Number";
         ViewBag.RemoveActionLink = Html.ActionLink("Remove", "RemovePhoneNumber", null, new { @class = "btn btn-default btn-danger" });
     }
+
+    ViewBag.NavBarTitle = ViewBag.Title;
 }
 
-<h2>@ViewBag.Title</h2>
 <h3>@Model.UserName</h3>
 <hr />
 

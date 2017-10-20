@@ -1,0 +1,61 @@
+﻿@model NWHarvest.Web.ViewModels.UserViewModel
+@{
+    ViewBag.Title = "Settings";
+    ViewBag.NavBarTitle = ViewBag.Title;
+
+    string passwordLabel;
+    string changePasswordUrl;
+    if (Model.HasPassword)
+    {
+        passwordLabel = "Change";
+        changePasswordUrl = Url.Action("ChangePassword");
+        ViewBag.Password = "*******";
+    }
+    else
+    {
+        passwordLabel = "Create";
+        changePasswordUrl = Url.Action("SetPassword");
+        ViewBag.Password = "";
+    }
+
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>@Model.Name</h4>
+    </div>
+    <div class="panel-body">
+        <div class="text-success">@ViewBag.StatusMessage</div>
+            <label for="password">Password</label>
+            <div class="input-group">
+                <input type="text" class="form-control disabled" placeholder="Username" id="password" aria-describedby="basic-addon1" value="@ViewBag.Password" />
+                <span class="input-group-btn">
+                    <a href="@changePasswordUrl" class="btn btn-danger">@passwordLabel</a>
+                </span>
+            </div>
+        
+        <br />
+            <label for="phoneNumber">Phone Number</label>
+            <div class="input-group">
+                <input type="text" class="form-control disabled" id="phoneNumber" aria-describedby="basic-addon2" value="@(Model.PhoneNumber ?? "None")" />
+                <span class="input-group-btn">
+                    <a href="@Url.Action("PhoneNumber")" class="btn btn-primary">Manage</a>
+                </span>
+            </div>
+        @*<br />
+        <label for="notification">Notification</label>
+        <div class="input-group">
+            <input type="text" class="form-control disabled" id="notification" placeholder="Username" aria-describedby="basic-addon3" value="@Model.NotificationPreference" />
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">Change</button>
+            </span>
+        </div>*@
+        <br />
+        <p>
+            <a href="@Model.ProfileUrl" class="btn btn-success">Back to Profile</a>
+        </p>
+    </div>
+</div>
+
+
+

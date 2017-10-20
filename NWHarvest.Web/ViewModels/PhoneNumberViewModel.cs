@@ -12,5 +12,7 @@ namespace NWHarvest.Web.ViewModels
 
         public ManageMessageId Message { get; set; }
         public string Action { get; set; }
+
+        public string UserName { get; set; }
     }
 }

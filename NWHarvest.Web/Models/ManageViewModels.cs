@@ -41,6 +41,8 @@ namespace NWHarvest.Web.Models
 
     public class ChangePasswordViewModel
     {
+        public string UserName { get; set; }
+
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
@@ -68,6 +70,8 @@ namespace NWHarvest.Web.Models
 
     public class VerifyPhoneNumberViewModel
     {
+        public string UserName { get; set; }
+
         [Required]
         [Display(Name = "Code")]
         public string Code { get; set; }

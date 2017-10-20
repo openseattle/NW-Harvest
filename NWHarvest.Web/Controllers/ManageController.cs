@@ -97,9 +97,11 @@ namespace NWHarvest.Web.Controllers
 
         public async Task<ActionResult> PhoneNumber()
         {
+            var user = await GetUser();
             var model = new PhoneNumberViewModel
             {
-                Number = await UserManager.GetPhoneNumberAsync(UserId)
+                Number = await UserManager.GetPhoneNumberAsync(UserId),
+                UserName = user.Name
             };
 
             if (string.IsNullOrWhiteSpace(model.Number))
@@ -157,7 +159,7 @@ namespace NWHarvest.Web.Controllers
                 await UserManager.SmsService.SendAsync(message);
             }
 
-            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
+            return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.Number });
         }
 
         [HttpGet]
@@ -223,9 +225,20 @@ namespace NWHarvest.Web.Controllers
 
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
-            // Send an SMS through the SMS provider to verify the phone number
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
+            if (phoneNumber == null)
+            {
+                return View("Error");
+            }
+
+            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(UserId, phoneNumber);
+            var user = await GetUser();
+            var model = new VerifyPhoneNumberViewModel
+            {
+                UserName = user.Name,
+                PhoneNumber = phoneNumber
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -251,12 +264,16 @@ namespace NWHarvest.Web.Controllers
             ModelState.AddModelError("", "Failed to verify phone.  The code entered is not valid.");
             return View(model);
         }
-
-        //
-        // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword()
+        
+        public async Task<ActionResult> ChangePassword()
         {
-            return View();
+            var user = await GetUser();
+            var model = new ChangePasswordViewModel
+            {
+                UserName = user.Name
+            };
+
+            return View(model);
         }
 
         //

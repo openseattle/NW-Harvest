@@ -389,6 +389,13 @@
     <Content Include="Views\Manage\_Index.cshtml" />
     <Content Include="Views\Manage\ChangeNotification.cshtml" />
     <Content Include="Views\Manage\RemovePhoneNumber.cshtml" />
+    <Content Include="Views\Manage\_ChangePassword.cshtml" />
+    <Content Include="Views\Manage\ChangePassword.Mobile.cshtml" />
+    <Content Include="Views\Manage\_PhoneNumber.cshtml" />
+    <Content Include="Views\Manage\PhoneNumber.Mobile.cshtml" />
+    <Content Include="Views\Manage\_RemovePhoneNumber.cshtml" />
+    <Content Include="Views\Manage\RemovePhoneNumber.Mobile.cshtml" />
+    <Content Include="Views\Manage\_VerifyPhoneNumber.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
