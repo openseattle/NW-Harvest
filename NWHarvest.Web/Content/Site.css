@@ -108,12 +108,20 @@ textarea {
 .navbar-brand {
     position: absolute;
     width: 100%;
-    left: 0;
+    left: 10px;
     top: 14px;
     text-align: center;
     margin: auto;
     padding: 0;
     color: #fff !important;
+}
+
+.navbar-brand-title {
+    text-align: center;
+    margin-left: -70px;
+}
+.navbar-brand a {
+    color: #ffffff;
 }
 
 .navbar-toggle {

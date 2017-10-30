@@ -17,7 +17,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">@ViewBag.NavBarTitle</a>
+                <div class="navbar-brand">
+                    <span class="navbar-brand-title">@ViewBag.NavBarTitle</span>
+                    <a class="glyphicon glyphicon-home pull-left" href="@(ViewBag.Home ?? "/")"></a>
+                </div>
             </div>
 
             <div class="navbar-collapse collapse" id="navbar-collapse-1">
