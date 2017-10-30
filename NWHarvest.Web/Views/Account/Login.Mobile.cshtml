@@ -1,0 +1,57 @@
+﻿@using NWHarvest.Web.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Growing Connections";
+    ViewBag.NavBarTitle = "Login";
+}
+
+<div>
+    <h2>@ViewBag.Title</h2>
+        <div class="text-center">
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "e-mail address" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "password" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div>
+                        <div>
+                            <input type="submit" value="Log in" class="btn btn-success btn-block" /> 
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12 text-left">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                            @Html.ActionLink("Forgot Password", "ForgotPassword", null, new { @class = "btn btn-primary" })
+                        </div>
+                        <div class="btn-group" role="group">
+                        @Html.ActionLink("Register", "Register", null, new { @class = "btn btn-primary" })    
+                        </div>
+                    </div>
+                }
+        </div>
+
+        <p>
+            If you have questions, or encounter problems, please send an email to <a href="mailto:growingconnections@northwestharvest.org?Subject=Growing%20Connections">growingconnections@northwestharvest.org.</a>
+        </p>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

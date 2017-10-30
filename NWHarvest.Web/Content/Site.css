@@ -40,10 +40,6 @@ textarea {
     color: white;
 }
 
-/* todo: stack buttons on small screens */
-@media (max-width: 400px) {
-}
-
 /*smartphone 576 x 527 */
 @media (min-width:0px) and (max-width: 576px) {
     .header {
@@ -53,6 +49,12 @@ textarea {
     .navbar-collapse {
         background-repeat: no-repeat;
         background-size: 100%;
+    }
+
+    input,
+    select,
+    textarea {
+        max-width: 100% !important;
     }
 }
 
@@ -87,6 +89,10 @@ textarea {
     }
 
     .navbar-collapse {
+    }
+
+    .body-content {
+        padding-top: 50px;
     }
 }
 
