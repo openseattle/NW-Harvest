@@ -1,4 +1,4 @@
-﻿@model NWHarvest.Web.Models.RegisterViewModel
+﻿@model NWHarvest.Web.ViewModels.RegisterViewModel
 @{
     ViewBag.Title = "Register for Growing Connections";
 }
@@ -57,15 +57,15 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.StreetAddress1, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Address1, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.StreetAddress1, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Address1, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.StreetAddress2, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Address2, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.StreetAddress2, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Address2, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group">
@@ -81,9 +81,9 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.ZipCode, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Zip, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.ZipCode, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Zip, new { @class = "form-control" })
         </div>
     </div>
     List<SelectListItem> listItems = new List<SelectListItem>();

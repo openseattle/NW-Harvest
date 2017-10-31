@@ -9,6 +9,7 @@ using NWHarvest.Web.Models;
 using NWHarvest.Web.Enums;
 using System;
 using System.Security.Principal;
+using NWHarvest.Web.ViewModels;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -221,13 +222,13 @@ namespace NWHarvest.Web.Controllers
                                 UserId = user.Id,
                                 name = model.Name,
                                 email = model.Email,
-                                address1 = model.StreetAddress1,
-                                address2 = model.StreetAddress2 == null ? "" : model.StreetAddress2,
+                                address1 = model.Address1,
+                                address2 = model.Address2 == null ? "" : model.Address2,
                                 address3 = "",
                                 address4 = "",
                                 city = model.City,
                                 state = model.State,
-                                zip = model.ZipCode,
+                                zip = model.Zip,
                                 NotificationPreference = model.Notification,
                                 IsActive = true
                             };
@@ -244,13 +245,13 @@ namespace NWHarvest.Web.Controllers
                             UserId = user.Id,
                             name = model.Name,
                             email = model.Email,
-                            address1 = model.StreetAddress1,
-                            address2 = model.StreetAddress2 == null ? "" : model.StreetAddress2,
+                            address1 = model.Address1,
+                            address2 = model.Address2 == null ? "" : model.Address2,
                             address3 = "",
                             address4 = "",
                             city = model.City,
                             state = model.State,
-                            zip = model.ZipCode,
+                            zip = model.Zip,
                             NotificationPreference = model.Notification,
                             IsActive = true
                         };
