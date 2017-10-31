@@ -21,6 +21,7 @@ namespace NWHarvest.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/bootstrap-select.min.js",
                       "~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/respond.js"));
 
@@ -31,6 +32,7 @@ namespace NWHarvest.Web
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
+                      "~/Content/bootstrap-select.min.css",
                       "~/Content/datepicker.css",
                       "~/Content/site.css",
                       "~/Content/DataTables/css/autoFill.foundation.css",
