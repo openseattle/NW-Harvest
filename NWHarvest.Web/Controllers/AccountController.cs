@@ -196,7 +196,6 @@ namespace NWHarvest.Web.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-
             RegisterViewBag();
             return View();
         }

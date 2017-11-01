@@ -410,7 +410,10 @@
     <Content Include="Views\Home\Index.Mobile.cshtml" />
     <Content Include="Views\Account\Login.Mobile.cshtml" />
     <Content Include="Views\Account\Register.Mobile.cshtml" />
+    <Content Include="Views\Account\_RegisterForm.Mobile.cshtml" />
     <Content Include="Views\Account\_RegisterForm.cshtml" />
+    <Content Include="Views\Account\ConfirmEmail.Mobile.cshtml" />
+    <Content Include="Views\Account\_ConfirmEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
