@@ -1,0 +1,12 @@
+﻿<div>
+    @if (ViewBag.Confirmed)
+    {
+        <p>
+            Thank you for confirming your email. Please @Html.ActionLink("Click here to Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+        </p>
+    }
+    else
+    {
+        <p>To complete your registration, please check your email and click on the link to confirm your email address.</p>
+    }
+</div>
