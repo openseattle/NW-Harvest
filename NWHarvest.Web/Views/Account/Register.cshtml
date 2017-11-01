@@ -2,6 +2,11 @@
 @{
     ViewBag.Title = "Register for Growing Connections";
 }
+<style>
+    .body-content {
+        padding-top:0px;
+    }
+</style>
 
 <h2 id="registerTitle">@ViewBag.Title</h2>
 
@@ -9,106 +14,97 @@
 {
     @Html.AntiForgeryToken()
     <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    List<SelectListItem> userTypeListItems = new List<SelectListItem>();
-    userTypeListItems.Add(new SelectListItem
-    {
-        Text = "Grower",
-        Value = "IsGrower"
-    });
-    userTypeListItems.Add(new SelectListItem
-    {
-        Text = "Food Program",
-        Value = "IsFoodBank"
-    });
-    <div class="userType">
-        <p>Please select whether you are a food program or a grower</p>
-        @Html.DropDownListFor(m => m.UserType, userTypeListItems, " ")
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserType, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.UserType, ViewBag.UserTypes as IEnumerable<SelectListItem>, "Select User Type", new { @class = "form-control"})
+            <div>@Html.ValidationMessageFor(m => m.UserType, "", new { @class = "text-danger" })</div>
+        </div>
     </div>
-    <hr/>
     <div class="form-group">
         @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.ConfirmEmail, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.ConfirmEmail, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ConfirmEmail, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Address1, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Address1, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address1, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Address2, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Address2, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Address2, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.City, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.City, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.State, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.State, new { @class = "form-control" })
+            @Html.DropDownListFor(m => m.State, ViewBag.States as List<SelectListItem>, "Select State", new { @class = "form-control"})
+            <div>@Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })</div>
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Zip, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Zip, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Zip, "", new { @class = "text-danger" })
         </div>
     </div>
-    List<SelectListItem> listItems = new List<SelectListItem>();
-    listItems.Add(new SelectListItem
-    {
-        Text = "Both (Recommended)",
-        Value = "both"
-    });
-    listItems.Add(new SelectListItem
-    {
-        Text = "Text Notifications",
-        Value = "textNote"
-    });
-    listItems.Add(new SelectListItem
-    {
-        Text = "E-Mail Notification",
-        Value = "emailNote"
-    });
-    <hr />
-    <div class="notifType">
-        <p>How you would like to receive notifications when listings are claimed?</p>&nbsp;
-        @Html.DropDownListFor(m => m.Notification, listItems, " ")
+    <div class="form-group">
+        @Html.LabelFor(m => m.Notification, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.Notification, ViewBag.Notifications as List<SelectListItem>, "Select Notification Method", new { @class= "form-control"})
+            <div>@Html.ValidationMessageFor(m => m.Notification, "", new { @class = "text-danger" })</div>
+        </div>
+        
     </div>
-    <div class="col-md-offset-2 col-md-10">
-        <input type="submit" class="btn btn-default customRegister" value="Register" />
+    <div class="form-group">
+        <label class="col-md-2 control-label">&nbsp;</label>
+        <div class="col-md-10">
+            <input type="submit" class="btn btn-success" value="Register" />
+        </div>
     </div>
 }
 

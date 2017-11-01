@@ -10,6 +10,7 @@ using NWHarvest.Web.Enums;
 using System;
 using System.Security.Principal;
 using NWHarvest.Web.ViewModels;
+using System.Collections.Generic;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -55,7 +56,7 @@ namespace NWHarvest.Web.Controllers
                 _userManager = value;
             }
         }
-        
+
         [AllowAnonymous]
         public ActionResult Login(string returnUrl, string loginType)
         {
@@ -71,7 +72,7 @@ namespace NWHarvest.Web.Controllers
             {
                 return View(model);
             }
-            
+
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
@@ -195,6 +196,8 @@ namespace NWHarvest.Web.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+
+            RegisterViewBag();
             return View();
         }
 
@@ -216,7 +219,7 @@ namespace NWHarvest.Web.Controllers
                         // add user to a FoodBank role
                         UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
 
-                        var foodbank = 
+                        var foodbank =
                             new FoodBank()
                             {
                                 UserId = user.Id,
@@ -263,9 +266,10 @@ namespace NWHarvest.Web.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            RegisterViewBag();
             return View(model);
         }
-        
+
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code, bool resend = false, bool registration = false)
         {
@@ -282,11 +286,12 @@ namespace NWHarvest.Web.Controllers
             }
 
             var result = await UserManager.ConfirmEmailAsync(userId, code);
-            if(result.Succeeded)
+            if (result.Succeeded)
             {
                 ViewBag.Confirmed = true;
                 return View();
-            } else
+            }
+            else
             {
                 return View("Error");
             }
@@ -515,6 +520,51 @@ namespace NWHarvest.Web.Controllers
         }
 
         #region Helpers
+        private void RegisterViewBag()
+        {
+            ViewBag.UserTypes = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Grower",
+                    Value = "IsGrower"
+                },
+                new SelectListItem
+                {
+                    Text = "Food Program",
+                    Value = "IsFoodBank"
+                }
+            };
+
+            ViewBag.Notifications = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Both",
+                    Value = "both"
+                },
+                new SelectListItem
+                {
+                    Text = "Text",
+                    Value = "textNote"
+                },
+                new SelectListItem
+                {
+                    Text = "E-Mail",
+                    Value = "emailNote"
+                }
+            };
+
+            ViewBag.States = new List<SelectListItem>()
+            {
+                new SelectListItem
+                {
+                    Text = "Washington",
+                    Value = "WA",
+                    Selected = true
+                }
+            };
+        }
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
