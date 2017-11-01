@@ -36,8 +36,19 @@ namespace NWHarvest.Web.ViewModels
         public string ConfirmPassword { get; set; }
 
         [Required]
-        [Display(Name = "Address 1")]
         public override string Address1 { get; set; }
+
+        [Required]
+        public override string City { get; set; }
+
+        [Required]
+        public override string State { get; set; }
+
+        [Required]
+        [DataType(DataType.PostalCode)]
+        [RegularExpression(@"^\d{5}(?:[-\s]\d{4})?$", ErrorMessage = "The zip code is not valid.")]
+        [Display(Name = "Zip Code")]
+        public override string Zip { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
