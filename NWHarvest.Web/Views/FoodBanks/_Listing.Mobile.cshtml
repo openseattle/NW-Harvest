@@ -11,9 +11,7 @@
                         <h4 class="card-title">@listing.Product</h4>
                         <div class="card-text">Quantity: @listing.QuantityAvailable @listing.UnitOfMeasure</div>
                         <div class="card-text">Unit Cost: @listing.CostPerUnit / @listing.UnitOfMeasure</div>
-                        <div class="card-text">Claimed: @listing.QuantityClaimed</div>
                         <div class="card-text">Expiration: @(listing.ExpirationDate.ToShortDateString())</div>
-                        <div class="card-text">Available: @(listing.IsAvailable ? "Yes" : "No")</div>
                     </div>
                 </div>
                 <div class="col-xs-6 pull-right">
