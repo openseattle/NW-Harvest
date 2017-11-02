@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using NWHarvest.Web.Models;
 using NWHarvest.Web.ViewModels;
 using System.Collections.Generic;
+using NWHarvest.Web.Enums;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -61,6 +62,34 @@ namespace NWHarvest.Web.Controllers
             return View(listingsViewModel);
         }
 
+        [Authorize(Roles = "FoodBank")]
+        public ActionResult Search(string searchString, ListingStatus status = ListingStatus.Available)
+        {
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["ListingStatus"] = status.ToString();
+
+            var query = db.Listings.Where(l => l.IsAvailable == true);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(s => s.Product.Contains(searchString));
+            }
+
+            var vm = query.ToList().Select(l => new ListingViewModel
+            {
+                Id = l.Id,
+                Product = l.Product,
+                QuantityAvailable = l.QuantityAvailable,
+                UnitOfMeasure = l.UnitOfMeasure,
+                CostPerUnit = l.CostPerUnit,
+                ExpirationDate = l.ExpirationDate,
+                Comments = l.Comments
+            });
+
+            return View(vm);
+        }
+
+        // todo: refactor manage grower listing
         public ActionResult Manage()
         {
             var vm = db.Listings
