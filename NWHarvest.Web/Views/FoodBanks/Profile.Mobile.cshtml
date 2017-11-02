@@ -33,6 +33,7 @@
         <br />
         <div class="panel panel-default">
             <div class="panel-heading clearfix">
+                @Html.ActionLink("Search", "Search", "Listings", null, new { @class="btn btn-primary pull-right"})
                 <h5>Available Grower Listings</h5>
             </div>
             @if (Model.AvailableListings?.Count > 0)

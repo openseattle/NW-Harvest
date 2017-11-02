@@ -1,0 +1,29 @@
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+
+@* Available Grower Listings *@
+<ul class="list-group">
+    @foreach (var listing in Model)
+    {
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-6 card">
+                    <div class="card-body">
+                        <h4 class="card-title">@listing.Product</h4>
+                        <div class="card-text">Quantity: @listing.QuantityAvailable @listing.UnitOfMeasure</div>
+                        <div class="card-text">Unit Cost: @listing.CostPerUnit / @listing.UnitOfMeasure</div>
+                        <div class="card-text">Expiration: @(listing.ExpirationDate.ToShortDateString())</div>
+                    </div>
+                </div>
+                <div class="col-xs-6 pull-right">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @Html.ActionLink("Claim", "Claim", "FoodBanks", new { ListingId = listing.Id }, new { @class = "btn btn-default btn-sm" })
+                        </h5>
+                        <div class="card-text">Comments: </div>
+                        <div class="card-text">@listing.Comments </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    }
+</ul>

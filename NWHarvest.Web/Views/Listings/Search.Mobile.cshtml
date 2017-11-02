@@ -1,0 +1,45 @@
+﻿@using NWHarvest.Web.Enums
+@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+
+@{
+    ViewBag.Title = "Search Listings";
+    ViewBag.NavBarTitle = "Search Listings";
+}
+
+@using (Html.BeginForm(actionName:"search", controllerName:"Listings", method: FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="input-group">
+                @Html.Hidden("status", ViewData["ListingStatus"])
+                <input type="text" class="form-control" name="searchString" required placeholder="Search for produce" value="@ViewData["CurrentFilter"]" />
+                <span class="input-group-btn">
+                    <input type="submit" class="btn btn-success" value="Go!" />
+                </span>
+            </div>
+        </div>
+    </div>
+}
+<br />
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-xs-12">
+            @if (Model?.Count() > 0)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading clearfix">
+                        <h5>@ViewData["ListingStatus"] Listings <span class="badge">@Model.Count()</span></h5>
+                    </div>
+                    @Html.Partial("_ListingsSearchResult", Model)
+                </div>
+            }
+            else
+            {
+                <div>No listings found</div>
+            }
+        </div>
+    </div>
+}
+
+
