@@ -91,9 +91,6 @@ textarea {
     .navbar-collapse {
     }
 
-    .body-content {
-        padding-top: 50px;
-    }
 }
 
 .header {
@@ -128,7 +125,6 @@ textarea {
     z-index: 1;
 }
 
-
 .body-content h2, body .body-content #registerTitle {
     color: #F4AA00;
     font-family: Arial;
@@ -161,7 +157,6 @@ div.body-content div.text-center a.btn {
 .strong {
     font-weight: bold;
 }
-
 
 /* bootstrap-select */
 .bootstrap-select > .dropdown-toggle.bs-placeholder, 
