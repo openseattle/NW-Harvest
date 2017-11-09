@@ -45,6 +45,9 @@ namespace NWHarvest.Web.ViewModels
         public override string State { get; set; }
 
         [Required]
+        public override string County { get; set; }
+
+        [Required]
         [DataType(DataType.PostalCode)]
         [RegularExpression(@"^\d{5}(?:[-\s]\d{4})?$", ErrorMessage = "The zip code is not valid.")]
         [Display(Name = "Zip Code")]

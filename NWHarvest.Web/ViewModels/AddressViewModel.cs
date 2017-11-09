@@ -20,6 +20,8 @@ namespace NWHarvest.Web.ViewModels
 
         public virtual string State { get; set; }
 
+        public virtual string County { get; set; }
+
         public virtual string Zip { get; set; }
     }
 }

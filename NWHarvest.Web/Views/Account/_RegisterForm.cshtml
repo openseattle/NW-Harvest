@@ -69,6 +69,13 @@
         </div>
     </div>
     <div class="form-group">
+        @Html.LabelFor(m => m.County, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.County, ViewBag.Counties as List<SelectListItem>, "Select County", new { @class = "form-control" })
+            <div>@Html.ValidationMessageFor(m => m.County, "", new { @class = "text-danger" })</div>
+        </div>
+    </div>
+    <div class="form-group">
         @Html.LabelFor(m => m.State, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.DropDownListFor(m => m.State, ViewBag.States as List<SelectListItem>, "Select State", new { @class = "form-control" })
