@@ -209,6 +209,10 @@
     <Compile Include="Migrations\201710120537360_UpdateListing.Designer.cs">
       <DependentUpon>201710120537360_UpdateListing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711090052067_AddCounty.cs" />
+    <Compile Include="Migrations\201711090052067_AddCounty.Designer.cs">
+      <DependentUpon>201711090052067_AddCounty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
@@ -446,6 +450,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710120537360_UpdateListing.resx">
       <DependentUpon>201710120537360_UpdateListing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711090052067_AddCounty.resx">
+      <DependentUpon>201711090052067_AddCounty.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
