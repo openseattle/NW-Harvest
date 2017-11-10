@@ -13,7 +13,7 @@ namespace NWHarvest.Web.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201711090052067_AddCounty"; }
+            get { return "201711100225483_AddCounty"; }
         }
         
         string IMigrationMetadata.Source

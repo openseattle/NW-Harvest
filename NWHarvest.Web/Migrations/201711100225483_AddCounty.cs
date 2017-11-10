@@ -3,7 +3,7 @@ namespace NWHarvest.Web.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class StateAndCountyModels : DbMigration
+    public partial class AddCounty : DbMigration
     {
         public override void Up()
         {
@@ -29,12 +29,18 @@ namespace NWHarvest.Web.Migrations
                     })
                 .PrimaryKey(t => t.Id);
             
+            AddColumn("dbo.FoodBank", "county", c => c.String(nullable: false, maxLength: 50, defaultValue: "Unknown"));
+            AddColumn("dbo.Grower", "county", c => c.String(nullable: false, maxLength: 50, defaultValue: "Unknown"));
+            AddColumn("dbo.PickupLocation", "county", c => c.String(nullable: false, maxLength: 50, defaultValue: "Unknown"));
         }
         
         public override void Down()
         {
             DropForeignKey("dbo.County", "StateId", "dbo.State");
             DropIndex("dbo.County", new[] { "StateId" });
+            DropColumn("dbo.PickupLocation", "county");
+            DropColumn("dbo.Grower", "county");
+            DropColumn("dbo.FoodBank", "county");
             DropTable("dbo.State");
             DropTable("dbo.County");
         }
