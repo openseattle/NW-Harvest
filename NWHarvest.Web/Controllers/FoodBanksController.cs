@@ -169,7 +169,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
-            RegisterViewBag();
+            RegisterViewData();
             return View(vm);
         }
 
@@ -234,7 +234,7 @@ namespace NWHarvest.Web.Controllers
                 return RedirectToAction(nameof(Profile));
             }
 
-            RegisterViewBag();
+            RegisterViewData();
             return View(vm);
         }
 
@@ -469,9 +469,9 @@ namespace NWHarvest.Web.Controllers
         }
 
         #region Helpers
-        private void RegisterViewBag()
+        private void RegisterViewData()
         {
-            ViewBag.States = db.States
+            ViewData["States"] = db.States
                  .Select(s => new SelectListItem
                  {
                      Text = s.Name,
@@ -481,7 +481,7 @@ namespace NWHarvest.Web.Controllers
 
             // NOTE: Since the website is currently scoped to Washington State only, we can pre-load all the counties here.
             // In future, if the website is opened to other states as well, this list will have to loaded on client side based on the selected state
-            ViewBag.Counties = db.Counties
+            ViewData["Counties"] = db.Counties
                 .Select(c => new SelectListItem
                 {
                     Text = c.Name,
