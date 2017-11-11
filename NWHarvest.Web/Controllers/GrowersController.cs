@@ -163,6 +163,8 @@ namespace NWHarvest.Web.Controllers
 
                 return RedirectToAction(nameof(Profile), new { UserId = grower.UserId });
             }
+
+            RegisterViewBag();
             return View(vm);
         }
 
