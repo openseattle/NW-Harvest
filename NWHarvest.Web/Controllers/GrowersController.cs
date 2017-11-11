@@ -35,6 +35,7 @@ namespace NWHarvest.Web.Controllers
                         Address3 = g.address3,
                         Address4 = g.address4,
                         City = g.city,
+                        County = g.county,
                         State = g.state,
                         Zip = g.zip
                     },
@@ -67,6 +68,7 @@ namespace NWHarvest.Web.Controllers
                         Address3 = p.address3,
                         Address4 = p.address4,
                         City = p.city,
+                        County = p.county,
                         State = p.state,
                         Zip = p.zip
                     }
@@ -120,6 +122,7 @@ namespace NWHarvest.Web.Controllers
                 Address3 = g.address3,
                 Address4 = g.address4,
                 City = g.city,
+                County = g.county,
                 State = g.state,
                 Zip = g.zip,
                 IsActive = g.IsActive,
@@ -134,6 +137,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
+            RegisterViewBag();
             return View(vm);
         }
 
@@ -151,6 +155,7 @@ namespace NWHarvest.Web.Controllers
                 grower.address3 = vm.Address3;
                 grower.address4 = vm.Address4;
                 grower.city = vm.City;
+                grower.county = vm.County;
                 grower.state = vm.State;
                 grower.zip = vm.Zip;
                 grower.IsActive = vm.IsActive;
@@ -173,6 +178,7 @@ namespace NWHarvest.Web.Controllers
                 address3 = grower.address3,
                 address4 = grower.address4,
                 city = grower.city,
+                county = grower.county,
                 state = grower.state,
                 zip = grower.zip
             };
@@ -198,5 +204,28 @@ namespace NWHarvest.Web.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #region Helpers
+        private void RegisterViewBag()
+        {
+           ViewBag.States = db.States
+                .Select(s => new SelectListItem
+                {
+                    Text = s.Name,
+                    Value = s.ShortName,
+                    Selected = false
+                }).ToList();
+
+            // NOTE: Since the website is currently scoped to Washington State only, we can pre-load all the counties here.
+            // In future, if the website is opened to other states as well, this list will have to loaded on client side based on the selected state
+            ViewBag.Counties = db.Counties
+                .Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.Name,
+                    Selected = false
+                }).ToList();
+        }
+        #endregion
     }
 }

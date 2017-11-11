@@ -60,6 +60,7 @@ namespace NWHarvest.Web.Controllers
                         Address3 = fb.address3,
                         Address4 = fb.address4,
                         City = fb.city,
+                        County = fb.county,
                         State = fb.state,
                         Zip = fb.zip
                     }
@@ -111,6 +112,7 @@ namespace NWHarvest.Web.Controllers
                             Address3 = l.PickupLocation.address3,
                             Address4 = l.PickupLocation.address4,
                             City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
                             State = l.PickupLocation.state,
                             Zip = l.PickupLocation.zip
                         }
@@ -186,6 +188,7 @@ namespace NWHarvest.Web.Controllers
                         Address3 = fb.address3,
                         Address4 = fb.address4,
                         City = fb.city,
+                        County = fb.county,
                         State = fb.state,
                         Zip = fb.zip
                     },
@@ -220,6 +223,10 @@ namespace NWHarvest.Web.Controllers
                 foodBank.address2 = vm.Address.Address2;
                 foodBank.address3 = vm.Address.Address3;
                 foodBank.address4 = vm.Address.Address4;
+                foodBank.city = vm.Address.City;
+                foodBank.county = vm.Address.County;
+                foodBank.state = vm.Address.State;
+                foodBank.zip = vm.Address.Zip;
                 foodBank.IsActive = vm.IsActive;
 
                 db.SaveChanges();
@@ -344,6 +351,7 @@ namespace NWHarvest.Web.Controllers
                         Address3 = l.PickupLocation.address3,
                         Address4 = l.PickupLocation.address4,
                         City = l.PickupLocation.city,
+                        County = l.PickupLocation.county,
                         State = l.PickupLocation.state,
                         Zip = l.PickupLocation.zip
                     }

@@ -28,6 +28,10 @@ namespace NWHarvest.Web.ViewModels
         public string City { get; set; }
 
         [Required]
+        [StringLength(50)]
+        public string County { get; set; }
+
+        [Required]
         [StringLength(2)]
         public string State { get; set; }
 
