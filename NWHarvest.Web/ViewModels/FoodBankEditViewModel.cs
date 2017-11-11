@@ -12,7 +12,7 @@ namespace NWHarvest.Web.ViewModels
         [Display(Name = "Food Program")]
         public string Name { get; set; }
 
-        public AddressViewModel Address { get; set; }
+        public AddressEditViewModel Address { get; set; }
 
         [Required]
         [Display(Name = "Active")]

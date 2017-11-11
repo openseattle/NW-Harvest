@@ -25,6 +25,10 @@ namespace NWHarvest.Web.ViewModels
         public override string State { get; set; }
 
         [Required]
+        [StringLength(50)]
+        public override string County { get; set; }
+
+        [Required]
         [StringLength(9)]
         public override string Zip { get; set; }
     }

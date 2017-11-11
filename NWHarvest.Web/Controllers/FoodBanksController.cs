@@ -182,7 +182,7 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = fb.Id,
                     Name = fb.name,
-                    Address = new AddressViewModel
+                    Address = new AddressEditViewModel
                     {
                         Address1 = fb.address1,
                         Address2 = fb.address2,
