@@ -417,6 +417,9 @@
     <Content Include="Views\Account\_ConfirmEmail.cshtml" />
     <Content Include="Views\Listings\Search.Mobile.cshtml" />
     <Content Include="Views\Listings\_ListingsSearchResult.Mobile.cshtml" />
+    <Content Include="Views\Growers\__GrowerAvailableTableListing.cshtml" />
+    <Content Include="Views\Growers\__GrowerClaimedForPickupTableListing.cshtml" />
+    <Content Include="Views\Growers\__GrowerClaimedOrExpiredTableListing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,31 +1,37 @@
 ﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
 
-<ul class="list-group">
-    @foreach (var listing in Model)
-    {
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-xs-8 card">
-                    <div class="card-body">
-                        <h4 class="card-title">@listing.Product</h4>
-                        <div class="card-text"><span class="strong">Quantity</span>: @listing.QuantityAvailable @listing.UnitOfMeasure</div>
-                        <div class="card-text"><span class="strong">Claimed</span>: @listing.QuantityClaimed</div>
-                        <div class="card-text"><span class="strong">Expiration</span>: @(listing.ExpirationDate.ToShortDateString())</div>
-                        <div class="card-text"><span class="strong">Available</span>: @(listing.IsAvailable ? "Yes" : "No")</div>
-                        <div class="card-text"><span class="strong">Comments</span>: @listing.Comments</div>
-                    </div>
-                </div>
-                <div class="col-xs-4 pull-right">
-                    <div class="card-body">
-                        <h5 class="card-title pull-right">
-                            @*@Html.ActionLink("Edit", "Edit", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })*@
-                            @Html.ActionLink("Details", "Details", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })
-                            @*@Html.ActionLink("Delete", "Delete", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })*@
-                        </h5>
+@{ 
+    var availableListings = Model.Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow);
+    var claimedForPickupListings = Model.Where(l => l.IsAvailable == false && l.ExpirationDate > DateTime.UtcNow);
+    var claimedOrExpiredListings = Model.Where(l => l.IsAvailable == false && l.IsPickedUp == true && l.ExpirationDate < DateTime.UtcNow);
+}
 
-                    </div>
-                </div>
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#availableListings" aria-controls="firstList" role="tab" data-toggle="tab">Available</a></li>
+        <li role="presentation"><a href="#claimedForPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
+        <li role="presentation"><a href="#claimedOrExpiredListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed/Expired</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="availableListings">
+            <p>
+                @Html.ActionLink("Create New", "Create", "Listings")
+            </p>
+            <div>
+                @Html.Partial("__GrowerAvailableTableListing", availableListings)
             </div>
-        </li>
-    }
-</ul>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="claimedForPickupListings">
+            <div>
+                @Html.Partial("__GrowerClaimedForPickupTableListing", claimedForPickupListings)
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="claimedOrExpiredListings">
+            <div>
+                @Html.Partial("__GrowerClaimedOrExpiredTableListing", claimedOrExpiredListings)
+            </div>
+        </div>
+    </div>
+</div>
+

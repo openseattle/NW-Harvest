@@ -77,13 +77,20 @@ namespace NWHarvest.Web.Controllers
                     QuantityAvailable = l.QuantityAvailable,
                     CostPerUnit = l.CostPerUnit,
                     UnitOfMeasure = l.UnitOfMeasure,
+                    HarvestDate = l.HarvestedDate,
                     ExpirationDate = l.ExpirationDate,
                     Comments = l.Comments,
                     IsAvailable = l.IsAvailable,
+                    IsPickedUp = l.IsPickedUp,
                     QuantityClaimed = l.QuantityClaimed,
                     PickupLocation = new PickupLocationViewModel
                     {
-                        Name = l.PickupLocation.name
+                        Name = l.PickupLocation.name,
+                        Address = new AddressViewModel
+                        {
+                            City = l.PickupLocation.city,
+                            Zip = l.PickupLocation.zip
+                        }
                     }
 
                 }).ToList();

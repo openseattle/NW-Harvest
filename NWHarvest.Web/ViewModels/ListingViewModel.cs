@@ -42,6 +42,8 @@ namespace NWHarvest.Web.ViewModels
         [DisplayName("Is Available")]
         public bool IsAvailable { get; set; }
 
+        public bool IsPickedUp { get; set; }
+
         [DisplayName("Comments")]
         public string Comments { get; set; }
 

@@ -6,22 +6,47 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-md-12">
             @Html.Partial("_GrowerDetail", Model)
         </div>
     </div>
     <div class="row">
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <div class="btn-group pull-right btn-group-sm">
-                    @Html.ActionLink("Add Listing", "Create", "Listings", null, new { @class = "btn btn-default btn-sm" })
-                </div>
-                <h4>My Listings</h4>
-            </div>
-            @if (Model.Listings?.Count > 0)
-            {
-                @Html.Partial("_GrowerListing", Model.Listings.ToList())
-            }
+        <div class="col-md-12">
+            <h4>My Listings</h4>
+            @Html.Partial("_GrowerListing", Model.Listings.ToList())
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                console.log('show tab');
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                .dataTable({
+                    "responsive": true,
+                    "bAutowidth": false,
+
+                    "columnDefs": [{
+                        targets: [1, 2, 3],
+                        render: function (data, type, row) {
+                            return type === 'display' && data.length > 10 ?
+                                data.substr(0, 10) + '…' :
+                                data;
+                        }
+                    }]
+
+                });
+
+        });
+    </script>
+}
