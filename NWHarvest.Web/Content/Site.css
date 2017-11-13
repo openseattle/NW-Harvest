@@ -165,3 +165,7 @@ div.body-content div.text-center a.btn {
 .bootstrap-select > .dropdown-toggle.bs-placeholder:hover { 
     color: black;
 }
+
+.nav-tabs {
+    border-bottom: 0px solid #ddd !important;
+}

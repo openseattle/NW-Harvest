@@ -11,23 +11,26 @@
     <li role="presentation"><a href="#pendingPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
     <li role="presentation"><a href="#claimedListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed</a></li>
 </ul>
-<br />
+
 <!-- Tab panes -->
-<div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="availableListings">
-        <div>
-            @Html.Partial("__FoodBankAvailableTableListing", availableListings)
-        </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="pendingPickupListings">
-        <div>
-            @Html.Partial("__FoodBankPendingPickupTableListing", pendingPickupListings)
-        </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="claimedListings">
-        <div>
-            @Html.Partial("__FoodBankClaimedTableListing", claimedListings)
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="availableListings">
+                <div>
+                    @Html.Partial("__FoodBankAvailableTableListing", availableListings)
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="pendingPickupListings">
+                <div>
+                    @Html.Partial("__FoodBankPendingPickupTableListing", pendingPickupListings)
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="claimedListings">
+                <div>
+                    @Html.Partial("__FoodBankClaimedTableListing", claimedListings)
+                </div>
+            </div>
         </div>
     </div>
 </div>
-

@@ -12,22 +12,25 @@
         <li role="presentation"><a href="#pendingPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
         <li role="presentation"><a href="#claimedOrExpiredListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed/Expired</a></li>
     </ul>
-    <br />
     <!-- Tab panes -->
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="availableListings">
-            <div>
-                @Html.Partial("__GrowerAvailableTableListing", availableListings)
-            </div>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="pendingPickupListings">
-            <div>
-                @Html.Partial("__GrowerPendingPickupTableListing", pendingPickupListings)
-            </div>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="claimedOrExpiredListings">
-            <div>
-                @Html.Partial("__GrowerClaimedOrExpiredTableListing", claimedOrExpiredListings)
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="availableListings">
+                    <div>
+                        @Html.Partial("__GrowerAvailableTableListing", availableListings)
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="pendingPickupListings">
+                    <div>
+                        @Html.Partial("__GrowerPendingPickupTableListing", pendingPickupListings)
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="claimedOrExpiredListings">
+                    <div>
+                        @Html.Partial("__GrowerClaimedOrExpiredTableListing", claimedOrExpiredListings)
+                    </div>
+                </div>
             </div>
         </div>
     </div>
