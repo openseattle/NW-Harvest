@@ -12,12 +12,10 @@
         <li role="presentation"><a href="#pendingPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
         <li role="presentation"><a href="#claimedOrExpiredListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed/Expired</a></li>
     </ul>
+    <br />
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="availableListings">
-            <p>
-                @Html.ActionLink("Create New", "Create", "Listings")
-            </p>
             <div>
                 @Html.Partial("__GrowerAvailableTableListing", availableListings)
             </div>
