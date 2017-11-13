@@ -2,14 +2,14 @@
 
 @{ 
     var availableListings = Model.Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow);
-    var claimedForPickupListings = Model.Where(l => l.IsAvailable == false && l.ExpirationDate > DateTime.UtcNow);
+    var pendingPickupListings = Model.Where(l => l.IsAvailable == false && l.ExpirationDate > DateTime.UtcNow);
     var claimedOrExpiredListings = Model.Where(l => l.IsAvailable == false && l.IsPickedUp == true && l.ExpirationDate < DateTime.UtcNow);
 }
 
 <div>
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#availableListings" aria-controls="firstList" role="tab" data-toggle="tab">Available</a></li>
-        <li role="presentation"><a href="#claimedForPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
+        <li role="presentation"><a href="#pendingPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
         <li role="presentation"><a href="#claimedOrExpiredListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed/Expired</a></li>
     </ul>
     <!-- Tab panes -->
@@ -22,9 +22,9 @@
                 @Html.Partial("__GrowerAvailableTableListing", availableListings)
             </div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="claimedForPickupListings">
+        <div role="tabpanel" class="tab-pane" id="pendingPickupListings">
             <div>
-                @Html.Partial("__GrowerClaimedForPickupTableListing", claimedForPickupListings)
+                @Html.Partial("__GrowerPendingPickupTableListing", pendingPickupListings)
             </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="claimedOrExpiredListings">
