@@ -114,6 +114,44 @@ namespace NWHarvest.Web.Controllers
                     }
                 }).ToList();
 
+            vm.Listings = db.Listings
+                .Select(l => new ViewModels.ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    HarvestDate = l.HarvestedDate,
+                    ExpirationDate = l.ExpirationDate,
+                    Comments = l.Comments,
+                    IsAvailable = l.IsAvailable,
+                    IsPickedUp = l.IsPickedUp,
+                    QuantityClaimed = l.QuantityClaimed,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Name = l.PickupLocation.name,
+                        Address = new AddressViewModel
+                        {
+                            Address1 = l.PickupLocation.address1,
+                            Address2 = l.PickupLocation.address2,
+                            Address3 = l.PickupLocation.address3,
+                            Address4 = l.PickupLocation.address4,
+                            City = l.PickupLocation.city,
+                            State = l.PickupLocation.state,
+                            Zip = l.PickupLocation.zip
+                        }
+                    },
+                    Grower = new GrowerViewModel
+                    {
+                        IsActive = l.Grower.IsActive
+                    },
+                    FoodBank = new FoodBankViewModel
+                    {
+                        UserId = l.FoodBank.UserId
+                    },
+                }).ToList();
+
             if (vm == null)
             {
                 return HttpNotFound();

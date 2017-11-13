@@ -420,6 +420,11 @@
     <Content Include="Views\Growers\__GrowerAvailableTableListing.cshtml" />
     <Content Include="Views\Growers\__GrowerClaimedForPickupTableListing.cshtml" />
     <Content Include="Views\Growers\__GrowerClaimedOrExpiredTableListing.cshtml" />
+    <Content Include="Views\FoodBanks\_FoodBankDetail.cshtml" />
+    <Content Include="Views\FoodBanks\_FoodBankTableListing.cshtml" />
+    <Content Include="Views\FoodBanks\__FoodBankClaimedTableListing.cshtml" />
+    <Content Include="Views\FoodBanks\__FoodBankPendingPickupTableListing.cshtml" />
+    <Content Include="Views\FoodBanks\__FoodBankAvailableTableListing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

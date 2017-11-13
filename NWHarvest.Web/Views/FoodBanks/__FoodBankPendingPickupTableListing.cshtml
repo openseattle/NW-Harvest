@@ -1,0 +1,33 @@
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+
+<table class="table table-striped table-bordered table-hover table-responsive dataTables_scroll" id="secondTable" width="100%">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Product)</th>
+            <th>@Html.DisplayNameFor(model => model.QuantityAvailable)</th>
+            <th>@Html.DisplayNameFor(model => model.UnitOfMeasure)</th>
+            <th>@Html.DisplayNameFor(model => model.HarvestDate)</th>
+            <th>@Html.DisplayNameFor(model => model.ExpirationDate)</th>
+            <th>@Html.DisplayNameFor(model => model.CostPerUnit)</th>
+            <th>@Html.DisplayNameFor(model => model.Comments)</th>
+            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
+            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Product)</td>
+            <td>@Html.DisplayFor(modelItem => item.QuantityAvailable)</td>
+            <td>@Html.DisplayFor(modelItem => item.UnitOfMeasure)</td>
+            <td>@Html.DisplayFor(modelItem => item.HarvestDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.ExpirationDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.CostPerUnit)</td>
+            <td>@Html.DisplayFor(modelItem => item.Comments)</td>
+            <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
+            <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.Zip)</td>
+            <td>@Html.ActionLink("Pickup", "Pickup", new { ListingId = item.Id }, null)</td>
+        </tr>
+    }
+</table>

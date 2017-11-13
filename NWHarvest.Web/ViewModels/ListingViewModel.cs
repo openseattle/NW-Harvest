@@ -50,6 +50,7 @@ namespace NWHarvest.Web.ViewModels
         public IEnumerable<SelectListItem> PickupLocations { get; set; }
 
         public GrowerViewModel Grower { get; set; }
+        public FoodBankViewModel FoodBank { get; set; }
 
         [DisplayName("Grower")]
         public string GrowerName { get; set; }

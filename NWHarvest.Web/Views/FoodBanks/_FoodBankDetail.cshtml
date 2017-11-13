@@ -1,0 +1,23 @@
+﻿@model NWHarvest.Web.ViewModels.FoodBankViewModel
+
+<div class="card">
+    <div class="card-body">
+        <h2 class="card-title">@Html.DisplayFor(model => model.Name)</h2>
+        <div class="card-text">@Html.DisplayFor(model => model.Email)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.Address.Address1)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.Address.Address2)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.Address.Address3)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.Address.Address4)</div>
+        <div class="card-text">@Html.DisplayFor(model => model.Address.City), @Html.DisplayFor(model => model.Address.State) @Html.DisplayFor(model => model.Address.Zip)</div>
+        <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
+        <div class="btn-group">
+            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+                    <a href="@Url.Action("Settings")" class="btn btn-primary">Settings</a>
+                        <input type="submit" value="Logout" class="btn btn-primary" />
+            }
+        </div>
+    </div>
+</div>

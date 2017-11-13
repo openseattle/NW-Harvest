@@ -9,45 +9,43 @@
 }
 <div class="container-fluid">
     <div class="row">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title">@Html.DisplayFor(model => model.Name)</h2>
-                <div class="card-text">@Html.DisplayFor(model => model.Email)</div>
-                <div class="card-text">@Html.DisplayFor(model => model.Address.Address1)</div>
-                <div class="card-text">@Html.DisplayFor(model => model.Address.Address2)</div>
-                <div class="card-text">@Html.DisplayFor(model => model.Address.Address3)</div>
-                <div class="card-text">@Html.DisplayFor(model => model.Address.Address4)</div>
-                <div class="card-text">@Html.DisplayFor(model => model.Address.City), @Html.DisplayFor(model => model.Address.State) @Html.DisplayFor(model => model.Address.Zip)</div>
-                <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
-                <div class="btn-group">
-                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
-                        <a href="@Url.Action("Settings")" class="btn btn-primary">Settings</a>
-                        <input type="submit" value="Logout" class="btn btn-primary" />
-                    }
-                </div>
-            </div>
-        </div>
-        <br />
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <h5>Claimed Listings for Pickup</h5>
-            </div>
-            @if (Model.ClaimedListings?.Count > 0)
-            {
-                @Html.Partial("_ClaimedListing", Model.ClaimedListings.ToList())
-            }
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <h5>Available Grower Listings</h5>
-            </div>
-            @if (Model.AvailableListings?.Count > 0)
-            {
-                @Html.Partial("_Listing", Model.AvailableListings.ToList())
-            }
-        </div>
+        @Html.Partial("_FoodBankDetail", Model)
+    </div>
+    <div class="row">
+        <h3>Listings</h3>
+        @Html.Partial("_FoodBankTableListing", Model.Listings.ToList())
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                console.log('show tab');
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                .dataTable({
+                    "responsive": true,
+                    "bAutowidth": false,
+
+                    "columnDefs": [{
+                        targets: [1, 2, 3],
+                        render: function (data, type, row) {
+                            return type === 'display' && data.length > 10 ?
+                                data.substr(0, 10) + '…' :
+                                data;
+                        }
+                    }]
+
+                });
+
+        });
+    </script>
+}
