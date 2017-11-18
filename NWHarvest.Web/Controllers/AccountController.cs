@@ -561,7 +561,7 @@ namespace NWHarvest.Web.Controllers
                 {
                     Text = s.Name,
                     Value = s.ShortName,
-                    Selected = false
+                    Selected = s.ShortName == "WA"
                 }).ToList();
 
             // NOTE: Since the website is currently scoped to Washington State only, we can pre-load all the counties here.
