@@ -227,6 +227,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddressEditViewModel.cs" />
     <Compile Include="ViewModels\AddressViewModel.cs" />
+    <Compile Include="ViewModels\AdministratorViewModel.cs" />
     <Compile Include="ViewModels\FoodBankViewModel.cs" />
     <Compile Include="ViewModels\GrowerViewModel.cs" />
     <Compile Include="ViewModels\ListingEditViewModel.cs" />
@@ -425,6 +426,7 @@
     <Content Include="Views\FoodBanks\__FoodBankClaimedTableListing.cshtml" />
     <Content Include="Views\FoodBanks\__FoodBankPendingPickupTableListing.cshtml" />
     <Content Include="Views\FoodBanks\__FoodBankAvailableTableListing.cshtml" />
+    <Content Include="Views\Administrator\ManageGrowers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
