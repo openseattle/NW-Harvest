@@ -27,6 +27,11 @@
                         <td>@Model.NumberOfGrowers</td>
                         <td>@Html.ActionLink("Manage", "ManageUser", new { UserRole = UserRole.Grower }, new { @class="" })</td>
                     </tr>
+                    <tr>
+                        <td>FoodBanks</td>
+                        <td>@Model.NumberOfFoodBanks</td>
+                        <td>@Html.ActionLink("Manage", "ManageUser", new { UserRole = UserRole.FoodBank }, new { @class = "" })</td>
+                    </tr>
                 </table>
             </div>
         </div>

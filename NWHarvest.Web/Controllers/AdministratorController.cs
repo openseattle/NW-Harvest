@@ -3,6 +3,7 @@ using NWHarvest.Web.Models;
 using NWHarvest.Web.ViewModels;
 using System.Linq;
 using System.Web.Mvc;
+using System;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -18,6 +19,7 @@ namespace NWHarvest.Web.Controllers
         {
             var vm = new AdministratorViewModel();
             vm.NumberOfGrowers = db.Growers.Count();
+            vm.NumberOfFoodBanks = db.FoodBanks.Count();
 
             return View(vm);
         }
@@ -32,12 +34,27 @@ namespace NWHarvest.Web.Controllers
                 case UserRole.Grower:
                     return RedirectToAction(nameof(ManageGrowers));
                 case UserRole.FoodBank:
-                    break;
+                    return RedirectToAction(nameof(ManageFoodBanks));
                 default:
                     break;
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult ManageFoodBanks()
+        {
+            var vm = db.FoodBanks
+                .OrderBy(g => g.name)
+                .Select(g => new FoodBankViewModel
+                {
+                    Id = g.Id,
+                    Name = g.name,
+                    IsActive = g.IsActive
+                }).ToList();
+
+            return View(vm);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -61,14 +78,20 @@ namespace NWHarvest.Web.Controllers
             switch (userRole)
             {
                 case UserRole.Grower:
-                    var user = db.Growers.Find(userId);
-                    if (user != null)
+                    var grower = db.Growers.Find(userId);
+                    if (grower != null)
                     {
-                        user.IsActive = !user.IsActive;
+                        grower.IsActive = !grower.IsActive;
                         db.SaveChanges();
                     }
                     break;
                 case UserRole.FoodBank:
+                    var foodbank = db.FoodBanks.Find(userId);
+                    if (foodbank != null)
+                    {
+                        foodbank.IsActive = !foodbank.IsActive;
+                        db.SaveChanges();
+                    }
                     break;
                 default:
                     break;
