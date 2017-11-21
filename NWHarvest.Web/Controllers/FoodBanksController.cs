@@ -66,6 +66,16 @@ namespace NWHarvest.Web.Controllers
                 })
                 .FirstOrDefault();
 
+            if (vm == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (!vm.IsActive)
+            {
+                return View("DisabledUser");
+            }
+
             // available grower listings
             vm.AvailableListings = db.Listings
                 .Where(l => l.IsAvailable == true)
