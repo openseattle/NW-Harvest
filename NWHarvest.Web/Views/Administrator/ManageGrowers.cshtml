@@ -1,4 +1,5 @@
-﻿@model IEnumerable<NWHarvest.Web.ViewModels.GrowerViewModel>
+﻿@using NWHarvest.Web.Enums
+@model IEnumerable<NWHarvest.Web.ViewModels.GrowerViewModel>
 
 @{
     ViewBag.Title = "Manage Growers";
@@ -27,6 +28,7 @@
                             <td>@item.Name</td>
                             <td>@(item.IsActive ? "Yes" : "No")</td>
                             <td>
+                                @(item.IsActive ? Html.ActionLink("Disable", "ToggleEnableDisableUser", new { UserRole = UserRole.Grower, userId = item.Id }, new { @class = "" }) : Html.ActionLink("Enable", "ToggleEnableDisableUser", new { UserRole = UserRole.Grower, userId = item.Id }, new { @class = "" }))
                             </td>
                         </tr>
                     }

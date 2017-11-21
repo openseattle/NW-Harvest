@@ -54,5 +54,27 @@ namespace NWHarvest.Web.Controllers
 
             return View(vm);
         }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult ToggleEnableDisableUser(UserRole userRole, int userId)
+        {
+            switch (userRole)
+            {
+                case UserRole.Grower:
+                    var user = db.Growers.Find(userId);
+                    if (user != null)
+                    {
+                        user.IsActive = !user.IsActive;
+                        db.SaveChanges();
+                    }
+                    break;
+                case UserRole.FoodBank:
+                    break;
+                default:
+                    break;
+            }
+
+            return RedirectToAction(nameof(ManageUser), new { UserRole = userRole });
+        }
     }
 }
