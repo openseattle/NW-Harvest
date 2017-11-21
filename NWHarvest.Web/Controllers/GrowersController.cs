@@ -48,6 +48,11 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
+            if (!vm.IsActive)
+            {
+                return View("DisabledUser");
+            }
+
             vm.PickupLocations = db.PickupLocations
                 .Where(p => p.Grower.UserId == UserId)
                 .Select(p => new PickupLocationViewModel

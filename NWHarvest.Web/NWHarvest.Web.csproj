@@ -427,6 +427,7 @@
     <Content Include="Views\FoodBanks\__FoodBankPendingPickupTableListing.cshtml" />
     <Content Include="Views\FoodBanks\__FoodBankAvailableTableListing.cshtml" />
     <Content Include="Views\Administrator\ManageGrowers.cshtml" />
+    <Content Include="Views\Shared\DisabledUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
