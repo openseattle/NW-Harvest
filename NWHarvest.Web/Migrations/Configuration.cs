@@ -52,6 +52,7 @@ namespace NWHarvest.Web.Migrations
         private void CreateUsers(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             CreateGrowers(context, userManager);
+            CreateFoodBanks(context, userManager);
         }
 
         private void CreateGrowers(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
@@ -95,6 +96,42 @@ namespace NWHarvest.Web.Migrations
                 };
                 
                 context.Growers.AddOrUpdate<Grower>(growerToAdd);
+            }
+
+            context.SaveChanges();
+        }
+
+        private void CreateFoodBanks(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            var foodBankName = "FoodBank";
+            var emailDomain = "example.com";
+            var foodBankPassword = "Pass@word!";
+            for (int i = 1; i < 25; i++)
+            {
+                var user = new ApplicationUser
+                {
+                    Email = $"{foodBankName}{i}@{emailDomain}",
+                    UserName = $"{foodBankName}{i}@{emailDomain}",
+                    PasswordHash = new PasswordHasher().HashPassword(foodBankPassword),
+                    EmailConfirmed = true
+                };
+                userManager.Create(user);
+
+                var foodBankToAdd = new FoodBank
+                {
+                    Id = i,
+                    UserId = user.Id,
+                    name = $"{foodBankName} {i}",
+                    email = $"{foodBankName}{i}@{emailDomain}",
+                    address1 = $"{i} Broad St",
+                    city = "Seattle",
+                    state = "WA",
+                    zip = "98102",
+                    NotificationPreference = UserNotification.Email.ToString(),
+                    IsActive = true
+                };
+
+                context.FoodBanks.AddOrUpdate<FoodBank>(foodBankToAdd);
             }
 
             context.SaveChanges();
