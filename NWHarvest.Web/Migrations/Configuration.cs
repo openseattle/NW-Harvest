@@ -73,7 +73,7 @@ namespace NWHarvest.Web.Migrations
                     var listing = new Listing
                     {
                         Id = i,
-                        Product = "Product1",
+                        Product = RandomProduct(),
                         QuantityAvailable = 10,
                         QuantityClaimed = 0,
                         UnitOfMeasure = "lbs",
@@ -189,6 +189,20 @@ namespace NWHarvest.Web.Migrations
                 var role = new IdentityRole(item.ToString());
                 roleManager.Create(role);
             }
+        }
+
+        private string RandomProduct()
+        {
+            var maxNumberOfProducts = 10;
+            string[] products = new string[maxNumberOfProducts];
+            for (int i = 0; i < maxNumberOfProducts; i++)
+            {
+                products[i] = $"Product {i + 1}";
+            }
+
+            Random random = new Random();
+            
+            return products[random.Next(0, maxNumberOfProducts)];
         }
 
         /// <summary>
