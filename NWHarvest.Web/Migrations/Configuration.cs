@@ -65,6 +65,7 @@ namespace NWHarvest.Web.Migrations
             Random random = new Random();
             for (int i = 1; i < 400; i++)
             {
+                var harvestDate = RandomDateTime();
                 var growerId = random.Next(1, numberOfGrowers);
                 var grower = context.Growers.Find(growerId);
                 var pickupLocationId = context.PickupLocations.Where(p => p.Grower.Id == growerId).First().id;
@@ -77,8 +78,8 @@ namespace NWHarvest.Web.Migrations
                         QuantityAvailable = 10,
                         QuantityClaimed = 0,
                         UnitOfMeasure = "lbs",
-                        HarvestedDate = DateTime.UtcNow,
-                        ExpirationDate = DateTime.UtcNow.AddDays(30),
+                        HarvestedDate = harvestDate,
+                        ExpirationDate = harvestDate.AddDays(30),
                         CostPerUnit = 0,
                         IsAvailable = true,
                         IsPickedUp = false,
@@ -203,6 +204,17 @@ namespace NWHarvest.Web.Migrations
             Random random = new Random();
             
             return products[random.Next(0, maxNumberOfProducts)];
+        }
+
+        // randomly create dates within six months (past/future) of the current date
+        private DateTime RandomDateTime()
+        {
+            Random random = new Random();
+            DateTime start = DateTime.UtcNow.AddDays(-180);
+            DateTime end = DateTime.Today.AddDays(180);
+            int range = (end - start).Days;
+
+            return start.AddDays(random.Next(range));
         }
 
         /// <summary>
