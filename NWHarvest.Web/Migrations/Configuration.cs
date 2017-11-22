@@ -50,6 +50,7 @@ namespace NWHarvest.Web.Migrations
 
             CreateUsers(context, userManager);
             CreateGrowerListings(context);
+            FoodBankRandomClaims(context);
         }
 
         private void CreateGrowerListings(ApplicationDbContext context)
@@ -217,6 +218,37 @@ namespace NWHarvest.Web.Migrations
             return start.AddDays(random.Next(range));
         }
 
+        // set half of expired listings as claimed by a random food bank
+        private void FoodBankRandomClaims(ApplicationDbContext context)
+        {
+            // abort if there is no listings or foodbanks
+            if (!context.Listings.Any() || !context.FoodBanks.Any())
+            {
+                return;
+            }
+
+            var today = DateTime.UtcNow;
+            var expiredListings = context.Listings
+                .Where(l => l.ExpirationDate < today)
+                .ToList();
+
+            bool isOdd = true;
+            var numberOfFoodBanks = context.FoodBanks.Count();
+            var random = new Random();
+            foreach (var listing in expiredListings)
+            {
+                if (isOdd)
+                {
+                    var foodBank = context.FoodBanks.Find(random.Next(1, numberOfFoodBanks));
+                    listing.IsAvailable = false;
+                    listing.IsPickedUp = true;
+                    listing.FoodBank = foodBank;
+                    context.SaveChanges();
+                }
+                isOdd = !isOdd;
+            }
+        }
+        
         /// <summary>
         /// Wrapper for SaveChanges adding the Validation Messages to the generated exception
         /// </summary>
