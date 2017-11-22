@@ -144,8 +144,10 @@ namespace NWHarvest.Web.Controllers
                     return HttpNotFound();
             }
 
+            ViewBag.ReturnUrl = Url.Action(nameof(ManageListings), "Administrator", new { ListingStatus = listingStatus });
             var listings = query.Select(l => new ListingViewModel
             {
+                Id = l.Id,
                 GrowerName = l.Grower.name,
                 FoodBank = new FoodBankViewModel
                 {

@@ -366,19 +366,30 @@ namespace NWHarvest.Web.Controllers
             return View(listing);
         }
 
-        [Authorize(Roles = "Grower")]
-        public ActionResult Delete(int id)
+        [Authorize(Roles = "Grower,Administrator")]
+        public ActionResult Delete(int id, string returnUrl = null)
         {
-            var userId = UserId;
-            if (userId == null)
+            if (UserId == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var vm = db.Listings
+            var query = db.Listings
                 .Include("PickupLocation")
                 .Include("Grower")
-                .Where(l => l.Grower.UserId == userId && l.Id == id)
+                .AsQueryable();
+
+            if (User.IsInRole(UserRole.Administrator.ToString()))
+            {
+                ViewBag.CancelActionLink = returnUrl;
+                query = query.Where(l => l.Id == id);
+            } else
+            {
+                ViewBag.CancelActionLink = Url.Action("Profile", "Growers", null);
+                query = query.Where(l => l.Grower.UserId == UserId && l.Id == id);
+            }
+
+            var vm = query
                 .Select(l => new ListingViewModel
                 {
                     Id = l.Id,
@@ -425,11 +436,17 @@ namespace NWHarvest.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id, string returnUrl = null)
         {
             Listing listing = db.Listings.Find(id);
             db.Listings.Remove(listing);
             db.SaveChanges();
+
+            if (returnUrl != null)
+            {
+                return Redirect(returnUrl);
+            }
+
             return RedirectToAction(nameof(Manage));
         }
 

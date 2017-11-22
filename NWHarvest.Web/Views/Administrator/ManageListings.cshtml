@@ -19,7 +19,7 @@
                             <th>Grower</th>
                             <th>FoodBank</th>
                             <th>Product</th>
-                            <th>Quantity</th>
+                            <th></th>
                         </tr>
                     </thead>
                     @foreach (var item in Model)
@@ -28,7 +28,7 @@
                             <td>@item.GrowerName</td>
                             <td>@item.FoodBank.Name</td>
                             <td>@item.Product</td>
-                            <td>@item.QuantityAvailable</td>
+                            <td>@Html.ActionLink("Delete", "Delete", "Listings", new { Id = item.Id, ReturnUrl = ViewBag.ReturnUrl }, null)</td>
                         </tr>
                     }
                 </table>

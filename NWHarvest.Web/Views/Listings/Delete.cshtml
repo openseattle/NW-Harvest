@@ -31,7 +31,7 @@
         @Html.HiddenFor(model => model.Id)
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-danger" />
-            @Html.ActionLink("Cancel", "Profile", "Growers", null, new { @class = "btn btn-default" })
+            <a href="@ViewBag.CancelActionLink" class="btn btn-default">Cancel</a>
         </div>
     }
 </div>
