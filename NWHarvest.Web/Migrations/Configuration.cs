@@ -7,6 +7,8 @@ using System.Linq;
 using NWHarvest.Web.Enums;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace NWHarvest.Web.Migrations
 {
@@ -47,6 +49,48 @@ namespace NWHarvest.Web.Migrations
             userManager.AddToRole(adminuser.Id, UserRole.Administrator.ToString());
 
             CreateUsers(context, userManager);
+            CreateGrowerListings(context);
+        }
+
+        private void CreateGrowerListings(ApplicationDbContext context)
+        {
+            // abort if no growers
+            if (!context.Growers.Any())
+            {
+                return;
+            }
+
+            var numberOfGrowers = context.Growers.Count();
+            // create listing for random growers
+            Random random = new Random();
+            for (int i = 1; i < 400; i++)
+            {
+                var growerId = random.Next(1, numberOfGrowers);
+                var grower = context.Growers.Find(growerId);
+                var pickupLocationId = context.PickupLocations.Where(p => p.Grower.Id == growerId).First().id;
+                if (grower != null)
+                {
+                    var listing = new Listing
+                    {
+                        Id = i,
+                        Product = "Product1",
+                        QuantityAvailable = 10,
+                        QuantityClaimed = 0,
+                        UnitOfMeasure = "lbs",
+                        HarvestedDate = DateTime.UtcNow,
+                        ExpirationDate = DateTime.UtcNow.AddDays(30),
+                        CostPerUnit = 0,
+                        IsAvailable = true,
+                        IsPickedUp = false,
+                        Grower = grower,
+                        PickupLocationId = pickupLocationId
+                    };
+                    
+                    context.Listings.Add(listing);
+                }
+            }
+
+            SaveChanges(context);
         }
 
         private void CreateUsers(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
@@ -98,7 +142,7 @@ namespace NWHarvest.Web.Migrations
                 context.Growers.AddOrUpdate<Grower>(growerToAdd);
             }
 
-            context.SaveChanges();
+            SaveChanges(context);
         }
 
         private void CreateFoodBanks(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
@@ -134,7 +178,7 @@ namespace NWHarvest.Web.Migrations
                 context.FoodBanks.AddOrUpdate<FoodBank>(foodBankToAdd);
             }
 
-            context.SaveChanges();
+            SaveChanges(context);
         }
 
         private void CreateRoles(RoleManager<IdentityRole> roleManager)
@@ -144,6 +188,35 @@ namespace NWHarvest.Web.Migrations
             {
                 var role = new IdentityRole(item.ToString());
                 roleManager.Create(role);
+            }
+        }
+
+        /// <summary>
+        /// Wrapper for SaveChanges adding the Validation Messages to the generated exception
+        /// </summary>
+        /// <param name="context">The context.</param>
+        private void SaveChanges(ApplicationDbContext context)
+        {
+            try
+            {
+                context.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var failure in ex.EntityValidationErrors)
+                {
+                    sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                    foreach (var error in failure.ValidationErrors)
+                    {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                    }
+                }
+
+                // Add the original exception as the innerException
+                throw new DbEntityValidationException("Entity Validation Failed - errors follow:\n" + sb.ToString(), ex); 
             }
         }
     }
