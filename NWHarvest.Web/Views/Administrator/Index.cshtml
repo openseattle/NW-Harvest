@@ -51,20 +51,20 @@
                         </tr>
                     </thead>
                     <tr>
-                        <td>Available</td>
+                        <td>@Html.ActionLink("Available", "ManageListings", new { ListingStatus = ListingStatus.Available })</td>
                         <td class="text-center">@Model.NumberOfAvailableListings</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td>Pending Pickup</td>
+                        <td>@Html.ActionLink("Pending Pickup", "ManageListings", new { ListingStatus = ListingStatus.Pickup })</td>
                         <td class="text-center">@Model.NumberOfPendingPickupClaimListings</td>
                     </tr>
                     <tr>
-                        <td>Claimed</td>
+                        <td>@Html.ActionLink("Claimed", "ManageListings", new { ListingStatus = ListingStatus.Claimed })</td>
                         <td class="text-center">@Model.NumberOfClaimedListings</td>
                     </tr>
                     <tr>
-                        <td>Unavailable*</td>
+                        <td>@Html.ActionLink("Unavailable*", "ManageListings", new { ListingStatus = ListingStatus.Unavailable })</td>
                         <td class="text-center">@Model.NumberOfUnavailableListings</td>
                     </tr>
                 </table>

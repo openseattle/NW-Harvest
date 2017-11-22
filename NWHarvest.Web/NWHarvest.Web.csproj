@@ -429,6 +429,7 @@
     <Content Include="Views\Administrator\ManageGrowers.cshtml" />
     <Content Include="Views\Shared\DisabledUser.cshtml" />
     <Content Include="Views\Administrator\ManageFoodBanks.cshtml" />
+    <Content Include="Views\Administrator\ManageListings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

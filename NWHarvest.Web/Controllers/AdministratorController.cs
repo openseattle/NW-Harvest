@@ -4,6 +4,7 @@ using NWHarvest.Web.ViewModels;
 using System.Linq;
 using System.Web.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -107,6 +108,54 @@ namespace NWHarvest.Web.Controllers
             }
 
             return RedirectToAction(nameof(ManageUser), new { UserRole = userRole });
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult ManageListings(ListingStatus listingStatus)
+        {
+            var today = DateTime.UtcNow;
+            var query = db.Listings.AsQueryable();
+            
+            switch (listingStatus)
+            {
+                case ListingStatus.Available:
+                    ViewBag.PanelHeader = "Available Listings";
+                    query = query.Where(l => l.IsAvailable == true && l.ExpirationDate >= today);
+                    break;
+                case ListingStatus.Pickup:
+                    ViewBag.PanelHeader = "Pending Pickup Listings";
+                    query = query.Where(l => l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate >= today);
+                    break;
+                case ListingStatus.Claimed:
+                    ViewBag.PanelHeader = "Claimed Listings";
+                    query = query.Where(l => l.IsPickedUp == true);
+                    break;
+                case ListingStatus.Expired:
+                    ViewBag.PanelHeader = "Expired Available Listings";
+                    query = query.Where(l => l.IsAvailable == true && l.ExpirationDate < today);
+                    break;
+                case ListingStatus.Unavailable:
+                    ViewBag.PanelHeader = "Unavailable Listings";
+                    query = query.Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
+                                                (l.IsAvailable == true && l.ExpirationDate < today));
+
+                    break;
+                default:
+                    return HttpNotFound();
+            }
+
+            var listings = query.Select(l => new ListingViewModel
+            {
+                GrowerName = l.Grower.name,
+                FoodBank = new FoodBankViewModel
+                {
+                    Name = l.FoodBank.name
+                },
+                Product = l.Product,
+                QuantityAvailable = l.QuantityAvailable
+            }).ToList();
+
+            return View(listings);
         }
     }
 }

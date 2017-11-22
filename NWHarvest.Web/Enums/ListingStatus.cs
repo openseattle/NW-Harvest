@@ -5,6 +5,7 @@
         Available,
         Claimed,
         Pickup,
-        Expired
+        Expired,
+        Unavailable
     }
 }
