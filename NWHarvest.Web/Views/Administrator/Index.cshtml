@@ -18,29 +18,60 @@
                     <thead>
                         <tr>
                             <th>User Type</th>
-                            <th>Total</th>
+                            <th class="text-center">Total</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tr>
                         <td>Growers</td>
-                        <td>@Model.NumberOfGrowers</td>
+                        <td class="text-center">@Model.NumberOfGrowers</td>
                         <td>@Html.ActionLink("Manage", "ManageUser", new { UserRole = UserRole.Grower }, new { @class="" })</td>
                     </tr>
                     <tr>
                         <td>FoodBanks</td>
-                        <td>@Model.NumberOfFoodBanks</td>
+                        <td class="text-center">@Model.NumberOfFoodBanks</td>
                         <td>@Html.ActionLink("Manage", "ManageUser", new { UserRole = UserRole.FoodBank }, new { @class = "" })</td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
-    <hr />
+    
     <div class="row">
-        <div class="col-md-12">
-            <h4>Listings</h4>
-            @*@Html.Partial("_AdministratorTableListing", Model.Listings)*@
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Listings <span class="badge">@Model.NumberOfListings</span></h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover table-responsive dataTables_scroll" id="userTable">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>Available</td>
+                        <td class="text-center">@Model.NumberOfAvailableListings</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Pending Pickup</td>
+                        <td class="text-center">@Model.NumberOfPendingPickupClaimListings</td>
+                    </tr>
+                    <tr>
+                        <td>Claimed</td>
+                        <td class="text-center">@Model.NumberOfClaimedListings</td>
+                    </tr>
+                    <tr>
+                        <td>Unavailable*</td>
+                        <td class="text-center">@Model.NumberOfUnavailableListings</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-footer">
+                *Unavailable: includes unclaimed expired listings
+            </div>
         </div>
     </div>
 </div>

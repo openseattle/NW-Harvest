@@ -28,8 +28,8 @@ namespace NWHarvest.Web.ViewModels
         [Display(Name = "Claimed Listings")]
         public int NumberOfClaimedListings { get; set; }
 
-        [Display(Name = "Expired Listings")]
-        public int NumberOfExpiredListings { get; set; }
+        [Display(Name = "Unavailable Listings")]
+        public int NumberOfUnavailableListings { get; set; }
         
         public ICollection<ListingViewModel> Listings { get; set; }
     }

@@ -17,9 +17,18 @@ namespace NWHarvest.Web.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
+            var today = DateTime.UtcNow;
             var vm = new AdministratorViewModel();
             vm.NumberOfGrowers = db.Growers.Count();
             vm.NumberOfFoodBanks = db.FoodBanks.Count();
+            vm.NumberOfListings = db.Listings.Count();
+            vm.NumberOfAvailableListings = db.Listings.Where(l => l.IsAvailable == true && l.ExpirationDate >= today).Count();
+            vm.NumberOfPendingPickupClaimListings = db.Listings.Where(l => l.IsPickedUp == false && l.IsAvailable == false && l.ExpirationDate >= today).Count();
+            vm.NumberOfClaimedListings = db.Listings.Where(l => l.IsPickedUp == true).Count();
+            vm.NumberOfUnavailableListings = db.Listings
+                .Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
+                    (l.IsAvailable == true && l.ExpirationDate < today))
+                .Count();
 
             return View(vm);
         }
