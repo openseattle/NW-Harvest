@@ -2,8 +2,8 @@
 
 @{ 
     var availableListings = Model.Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow);
-    var pendingPickupListings = Model.Where(l => l.IsAvailable == false && l.ExpirationDate > DateTime.UtcNow);
-    var claimedOrExpiredListings = Model.Where(l => l.IsAvailable == false && l.IsPickedUp == true && l.ExpirationDate < DateTime.UtcNow);
+    var pendingPickupListings = Model.Where(l => l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate > DateTime.UtcNow);
+    var claimedOrExpiredListings = Model.Where(l => l.IsPickedUp == true || (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < DateTime.UtcNow));
 }
 
 <div>
