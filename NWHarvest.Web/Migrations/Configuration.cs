@@ -6,6 +6,7 @@ using System.Data.Entity.Migrations;
 using System.Linq;
 using NWHarvest.Web.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace NWHarvest.Web.Migrations
 {
@@ -44,6 +45,59 @@ namespace NWHarvest.Web.Migrations
 
             userManager.Create(adminuser);
             userManager.AddToRole(adminuser.Id, UserRole.Administrator.ToString());
+
+            CreateUsers(context, userManager);
+        }
+
+        private void CreateUsers(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            CreateGrowers(context, userManager);
+        }
+
+        private void CreateGrowers(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            var growerName = "Grower";
+            var emailDomain = "example.com";
+            var growerPassword = "Pass@word!";
+            for (int i = 1; i < 100; i++)
+            {
+                var user = new ApplicationUser {
+                    Email = $"{growerName}{i}@{emailDomain}",
+                    UserName = $"{growerName}{i}@{emailDomain}",
+                    PasswordHash = new PasswordHasher().HashPassword(growerPassword),
+                    EmailConfirmed = true
+                };
+                userManager.Create(user);
+
+                var growerToAdd = new Grower
+                {
+                    Id = i,
+                    UserId = user.Id,
+                    name = $"{growerName} {i}",
+                    email = $"{growerName}{i}@{emailDomain}",
+                    address1 = $"{i} Main St",
+                    city = "Seattle",
+                    state = "WA",
+                    zip = "98102",
+                    NotificationPreference = UserNotification.Email.ToString(),
+                    IsActive = true,
+                    PickupLocations = new List<PickupLocation>
+                    {
+                        new PickupLocation
+                        {
+                            name = "Default",
+                            address1 = "{i} Main St",
+                            city = "Seattle",
+                            state = "WA",
+                            zip = "98102"
+                        }
+                    }
+                };
+                
+                context.Growers.AddOrUpdate<Grower>(growerToAdd);
+            }
+
+            context.SaveChanges();
         }
 
         private void CreateRoles(RoleManager<IdentityRole> roleManager)
