@@ -30,11 +30,6 @@ namespace NWHarvest.Web.Migrations
 
         protected override void Seed(ApplicationDbContext context)
         {
-            if(!context.States.Any())
-            {
-                AddStatesAndCounties(context);
-            }
-
             if (context.Users.Any(u => u.UserName == adminUsername))
             {
                 return;
@@ -286,62 +281,6 @@ namespace NWHarvest.Web.Migrations
                 // Add the original exception as the innerException
                 throw new DbEntityValidationException("Entity Validation Failed - errors follow:\n" + sb.ToString(), ex);
             }
-        }
-        private void AddStatesAndCounties(ApplicationDbContext context)
-        {
-            
-            var waState = new State()
-            {
-                ShortName = "WA",
-                Name = "Washington",
-                Counties = new List<County>()
-                {
-                    new County() { Name = "Unknown"},
-                    new County() { Name = "Adams"},
-                    new County() { Name = "Asotin"},
-                    new County() { Name = "Benton"},
-                    new County() { Name = "Chelan"},
-                    new County() { Name = "Clallam"},
-                    new County() { Name = "Clark"},
-                    new County() { Name = "Columbia"},
-                    new County() { Name = "Cowlitz"},
-                    new County() { Name = "Douglas"},
-                    new County() { Name = "Ferry"},
-                    new County() { Name = "Franklin"},
-                    new County() { Name = "Garfield"},
-                    new County() { Name = "Grant"},
-                    new County() { Name = "Grays Harbor"},
-                    new County() { Name = "Island"},
-                    new County() { Name = "Jefferson"},
-                    new County() { Name = "King"},
-                    new County() { Name = "Kitsap"},
-                    new County() { Name = "Kittitas"},
-                    new County() { Name = "Klickitat"},
-                    new County() { Name = "Lewis"},
-                    new County() { Name = "Lincoln"},
-                    new County() { Name = "Mason"},
-                    new County() { Name = "Okanogan"},
-                    new County() { Name = "Pacific"},
-                    new County() { Name = "Pend Oreille"},
-                    new County() { Name = "Pierce"},
-                    new County() { Name = "San Juan"},
-                    new County() { Name = "Skagit"},
-                    new County() { Name = "Skamania"},
-                    new County() { Name = "Snohomish"},
-                    new County() { Name = "Spokane"},
-                    new County() { Name = "Stevens"},
-                    new County() { Name = "Thurston"},
-                    new County() { Name = "Wahkiakum"},
-                    new County() { Name = "Walla Walla"},
-                    new County() { Name = "Whatcom"},
-                    new County() { Name = "Whitman"},
-                    new County() { Name = "Yakima"}
-                }
-            };
-
-            context.States.Add(waState);
-            context.Counties.AddRange(waState.Counties);
-            context.SaveChanges();
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using NWHarvest.Web.Helper;
 using NWHarvest.Web.Models;
 using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
@@ -213,21 +215,21 @@ namespace NWHarvest.Web.Controllers
         #region Helpers
         private void RegisterViewData()
         {
-           ViewData["States"] = db.States
-                .Select(s => new SelectListItem
+           ViewData["States"] = new List<SelectListItem>
+            {
+                new SelectListItem
                 {
-                    Text = s.Name,
-                    Value = s.ShortName,
-                    Selected = false
-                }).ToList();
-
-            // NOTE: Since the website is currently scoped to Washington State only, we can pre-load all the counties here.
-            // In future, if the website is opened to other states as well, this list will have to loaded on client side based on the selected state
-            ViewData["Counties"] = db.Counties
-                .Select(c => new SelectListItem
+                    Text = "Washington",
+                    Value = "WA",
+                    Selected = true
+                }
+            };
+            
+            ViewData["Counties"] = WashingtonState.GetCounties()
+                .Select(county => new SelectListItem
                 {
-                    Text = c.Name,
-                    Value = c.Name,
+                    Text = county,
+                    Value = county,
                     Selected = false
                 }).ToList();
         }

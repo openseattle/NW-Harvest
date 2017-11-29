@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using NWHarvest.Web.Models;
 using NWHarvest.Web.Enums;
+using NWHarvest.Web.Helper;
 using System;
 using System.Security.Principal;
 using NWHarvest.Web.ViewModels;
@@ -556,21 +557,21 @@ namespace NWHarvest.Web.Controllers
                 }
             };
 
-            ViewBag.States = db.States
-                .Select(s => new SelectListItem
+            ViewBag.States = new List<SelectListItem>
+            {
+                new SelectListItem
                 {
-                    Text = s.Name,
-                    Value = s.ShortName,
-                    Selected = s.ShortName == "WA"
-                }).ToList();
+                    Text = "Washington",
+                    Value = "WA",
+                    Selected = true
+                }
+            };
 
-            // NOTE: Since the website is currently scoped to Washington State only, we can pre-load all the counties here.
-            // In future, if the website is opened to other states as well, this list will have to loaded on client side based on the selected state
-            ViewBag.Counties = db.Counties
-                .Select(c => new SelectListItem
+            ViewBag.Counties = WashingtonState.GetCounties()
+                .Select(county => new SelectListItem
                 {
-                    Text = c.Name,
-                    Value = c.Name,
+                    Text = county,
+                    Value = county,
                     Selected = false
                 }).ToList();
         }
