@@ -36,5 +36,7 @@ namespace NWHarvest.Web.Models
         public virtual DbSet<PickupLocation> PickupLocations { get; set; }
         public virtual DbSet<DisplayMessage> DisplayMessages { get; set; }
         public virtual DbSet<DisplayDescription> DisplayDescriptions { get; set; }
+        public virtual DbSet<State> States { get; set; }
+        public virtual DbSet<County> Counties { get; set; }
     }
 }

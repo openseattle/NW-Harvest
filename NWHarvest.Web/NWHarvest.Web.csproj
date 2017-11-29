@@ -213,8 +213,13 @@
     <Compile Include="Migrations\201711090052067_AddCounty.Designer.cs">
       <DependentUpon>201711090052067_AddCounty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711100017429_StateAndCountyModels.cs" />
+    <Compile Include="Migrations\201711100017429_StateAndCountyModels.Designer.cs">
+      <DependentUpon>201711100017429_StateAndCountyModels.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\County.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
     <Compile Include="Models\DisplayMessage.cs" />
     <Compile Include="Models\DisplayMessageService.cs" />
@@ -226,6 +231,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PickupLocation.cs" />
     <Compile Include="Models\RegisteredUserService.cs" />
+    <Compile Include="Models\State.cs" />
     <Compile Include="Models\UserRoles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -453,6 +459,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711090052067_AddCounty.resx">
       <DependentUpon>201711090052067_AddCounty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711100017429_StateAndCountyModels.resx">
+      <DependentUpon>201711100017429_StateAndCountyModels.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

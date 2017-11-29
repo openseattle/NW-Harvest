@@ -554,77 +554,23 @@ namespace NWHarvest.Web.Controllers
                 }
             };
 
-            ViewBag.States = new List<SelectListItem>()
+            ViewBag.States = db.States.Select(s => new SelectListItem
             {
-                new SelectListItem
-                {
-                    Text = "Washington",
-                    Value = "WA",
-                    Selected = true
-                }
-            };
+                Text = s.Name,
+                Value = s.ShortName,
+                Selected = false
+            }).ToList();
 
-            ViewBag.Counties = GetCounties();
+            // NOTE: Since the website is currently scoped to Washington State only, we can pre-load all the counties here.
+            // In future, if the website is opened to other states as well, this list will have to loaded on client side based on the selected state
+            ViewBag.Counties = db.Counties.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Name,
+                Selected = false
+            }).ToList();
         }
-
-        private List<SelectListItem> GetCounties()
-        {
-            List<string> counties =
-                new List<string>
-                {
-                    "Unknown",
-                    "Adams",
-                    "Asotin",
-                    "Benton",
-                    "Chelan",
-                    "Clallam",
-                    "Clark",
-                    "Columbia",
-                    "Cowlitz",
-                    "Douglas",
-                    "Ferry",
-                    "Franklin",
-                    "Garfield",
-                    "Grant",
-                    "Grays Harbor",
-                    "Island",
-                    "Jefferson",
-                    "King",
-                    "Kitsap",
-                    "Kittitas",
-                    "Klickitat",
-                    "Lewis",
-                    "Lincoln",
-                    "Mason",
-                    "Okanogan",
-                    "Pacific",
-                    "Pend Oreille",
-                    "Pierce",
-                    "San Juan",
-                    "Skagit",
-                    "Skamania",
-                    "Snohomish",
-                    "Spokane",
-                    "Stevens",
-                    "Thurston",
-                    "Wahkiakum",
-                    "Walla Walla",
-                    "Whatcom",
-                    "Whitman",
-                    "Yakima"
-                };
-
-            List<SelectListItem> countyDropDownList = counties.Select(
-                county => new SelectListItem
-                {
-                    Text = county,
-                    Value = county,
-                    Selected = false
-                }).ToList();
-
-            return countyDropDownList;
-        }
-
+        
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
