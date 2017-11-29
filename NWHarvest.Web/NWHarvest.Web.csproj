@@ -436,6 +436,7 @@
     <Content Include="Views\Shared\DisabledUser.cshtml" />
     <Content Include="Views\Administrator\ManageFoodBanks.cshtml" />
     <Content Include="Views\Administrator\ManageListings.cshtml" />
+    <Content Include="Views\PickupLocations\_PickupLocationAddressForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

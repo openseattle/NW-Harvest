@@ -22,8 +22,8 @@
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        @Html.PartialFor(m => m.Address, "_AddressForm")
+        
+        @Html.PartialFor(model => model.Address, "_PickupLocationAddressForm")
 
         <div class="form-group">
             @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label col-md-2" })

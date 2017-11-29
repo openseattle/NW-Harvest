@@ -93,7 +93,8 @@ namespace NWHarvest.Web.Controllers
                     },
                     Address = new AddressEditViewModel
                     {
-
+                        County = g.county,
+                        State = g.state
                     }
                 })
                 .FirstOrDefault();
@@ -121,6 +122,7 @@ namespace NWHarvest.Web.Controllers
                     address3 = vm.Address.Address3,
                     address4 = vm.Address.Address4,
                     city = vm.Address.City,
+                    county = vm.Address.County,
                     state = vm.Address.State,
                     zip = vm.Address.Zip,
                     comments = vm.Comments,
@@ -158,6 +160,7 @@ namespace NWHarvest.Web.Controllers
                         Address3 = p.address3,
                         Address4 = p.address4,
                         City = p.city,
+                        County = p.county,
                         State = p.state,
                         Zip = p.zip
                     },
@@ -193,7 +196,6 @@ namespace NWHarvest.Web.Controllers
                 pickupLocationToUpdate.address3 = vm.Address.Address3;
                 pickupLocationToUpdate.address4 = vm.Address.Address4;
                 pickupLocationToUpdate.city = vm.Address.City;
-                pickupLocationToUpdate.state = vm.Address.State;
                 pickupLocationToUpdate.zip = vm.Address.Zip;
                 pickupLocationToUpdate.comments = vm.Comments;
 
