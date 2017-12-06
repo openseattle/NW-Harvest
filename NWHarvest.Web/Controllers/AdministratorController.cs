@@ -68,6 +68,34 @@ namespace NWHarvest.Web.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
+        public ActionResult ManageFoodBank(int id)
+        {
+            var foodbank = db.FoodBanks
+                .Where(fb => fb.Id == id)
+                .Select(fb => new FoodBankViewModel
+                {
+                    Id = fb.Id,
+                    Name = fb.name,
+                    IsActive = fb.IsActive,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = fb.address1,
+                        Address2 = fb.address2,
+                        City = fb.city,
+                        State = fb.state,
+                        Zip = fb.zip
+                    }
+                }).FirstOrDefault();
+
+            if (foodbank == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(foodbank);
+        }
+
+        [Authorize(Roles = "Administrator")]
         public ActionResult ManageGrowers()
         {
             var vm = db.Growers

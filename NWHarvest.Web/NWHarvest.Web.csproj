@@ -431,6 +431,7 @@
     <Content Include="Views\Administrator\ManageFoodBanks.cshtml" />
     <Content Include="Views\Administrator\ManageListings.cshtml" />
     <Content Include="Views\Administrator\ManageGrower.cshtml" />
+    <Content Include="Views\Administrator\ManageFoodBank.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
