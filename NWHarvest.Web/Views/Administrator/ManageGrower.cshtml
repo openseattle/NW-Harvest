@@ -1,0 +1,25 @@
+﻿@using NWHarvest.Web.Enums
+@model NWHarvest.Web.ViewModels.GrowerViewModel
+
+@{
+    ViewBag.Title = "Manage Grower";
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>@Model.Name</h4>
+            </div>
+            <div class="panel-body">
+                        <div class="card-text">@Html.DisplayFor(model => model.Email)</div>
+                        @Html.Partial("_Address", Model.Address)
+                        <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
+            </div>
+            <div class="panel-footer">
+                @Html.ActionLink("Back to Manage Growers", "ManageGrowers", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+</div>

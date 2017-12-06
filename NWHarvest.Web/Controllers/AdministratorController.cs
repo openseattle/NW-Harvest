@@ -83,6 +83,35 @@ namespace NWHarvest.Web.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
+        public ActionResult ManageGrower(int id)
+        {
+            var grower = db.Growers
+                .Where(g => g.Id == id)
+                .Select(g => new GrowerViewModel
+                {
+                    Id = g.Id,
+                    Name = g.name,
+                    Email = g.email,
+                    IsActive = g.IsActive,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = g.address1,
+                        Address2 = g.address2,
+                        City = g.city,
+                        State = g.state,
+                        Zip = g.zip
+                    }
+                }).FirstOrDefault();
+
+            if (grower == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(grower);
+        }
+
+        [Authorize(Roles = "Administrator")]
         public ActionResult ToggleEnableDisableUser(UserRole userRole, int userId)
         {
             switch (userRole)
