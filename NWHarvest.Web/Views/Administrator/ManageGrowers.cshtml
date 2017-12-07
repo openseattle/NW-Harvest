@@ -4,7 +4,11 @@
 @{
     ViewBag.Title = "Manage Growers";
 }
-
+<style>
+    table {
+        table-layout:fixed;
+    }
+</style>
 <h2>@ViewBag.Title</h2>
 
 <div class="container-fluid">
@@ -19,7 +23,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Active</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     @foreach (var item in Model)
@@ -46,7 +50,11 @@
     @Scripts.Render("~/bundles/javascript")
     <script type="text/javascript">
             $(document).ready(function () {
-                var table = $('#userTable').dataTable();
+                var table = $('#userTable').dataTable({
+                    "columnDefs": [
+                        { "orderable": false, "targets": [2] }
+                    ]
+                });
             });
     </script>
 }
