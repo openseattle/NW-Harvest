@@ -6,7 +6,11 @@
 }
 <style>
     table {
-        table-layout:fixed;
+        table-layout: fixed;
+    }
+
+    table.dataTable thead th {
+        padding: 10px;
     }
 </style>
 <h2>@ViewBag.Title</h2>
@@ -22,6 +26,8 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>City</th>
+                            <th>Zip</th>
                             <th>Active</th>
                             <th></th>
                         </tr>
@@ -30,6 +36,8 @@
                     {
                         <tr>
                             <td>@Html.ActionLink(item.Name, "ManageGrower", new { Id = item.Id })</td>
+                            <td>@item.Address.City</td>
+                            <td>@item.Address.Zip</td>
                             <td>@(item.IsActive ? "Yes" : "No")</td>
                             <td>
                                 @(item.IsActive ? Html.ActionLink("Disable", "ToggleEnableDisableUser", new { UserRole = UserRole.Grower, userId = item.Id }, new { @class = "" }) : Html.ActionLink("Enable", "ToggleEnableDisableUser", new { UserRole = UserRole.Grower, userId = item.Id }, new { @class = "" }))
@@ -49,12 +57,12 @@
 @section Scripts {
     @Scripts.Render("~/bundles/javascript")
     <script type="text/javascript">
-            $(document).ready(function () {
-                var table = $('#userTable').dataTable({
-                    "columnDefs": [
-                        { "orderable": false, "targets": [2] }
-                    ]
-                });
+        $(document).ready(function () {
+            var table = $('#userTable').dataTable({
+                "columnDefs": [
+                    { "orderable": false, "targets": [4] }
+                ]
             });
+        });
     </script>
 }

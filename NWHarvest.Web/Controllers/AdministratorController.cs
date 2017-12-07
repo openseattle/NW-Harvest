@@ -61,6 +61,10 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = g.Id,
                     Name = g.name,
+                    Address = new AddressViewModel {
+                        City = g.city,
+                        Zip = g.zip
+                    },
                     IsActive = g.IsActive
                 }).ToList();
 
@@ -76,6 +80,7 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = fb.Id,
                     Name = fb.name,
+                    Email = fb.email,
                     IsActive = fb.IsActive,
                     Address = new AddressViewModel
                     {
@@ -104,6 +109,11 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = g.Id,
                     Name = g.name,
+                    Address = new AddressViewModel
+                    {
+                        City = g.city,
+                        Zip = g.zip
+                    },
                     IsActive = g.IsActive
                 }).ToList();
 
