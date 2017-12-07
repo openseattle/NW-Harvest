@@ -177,22 +177,27 @@ namespace NWHarvest.Web.Controllers
             {
                 case ListingStatus.Available:
                     ViewBag.PanelHeader = "Available Listings";
+                    ViewBag.ListingPartialView = "_AvailableListings";
                     query = query.Where(l => l.IsAvailable == true && l.ExpirationDate >= today);
                     break;
                 case ListingStatus.Pickup:
                     ViewBag.PanelHeader = "Pending Pickup Listings";
+                    ViewBag.ListingPartialView = "_PendingPickupListings";
                     query = query.Where(l => l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate >= today);
                     break;
                 case ListingStatus.Claimed:
                     ViewBag.PanelHeader = "Claimed Listings";
+                    ViewBag.ListingPartialView = "_ClaimedListings";
                     query = query.Where(l => l.IsPickedUp == true);
                     break;
                 case ListingStatus.Expired:
                     ViewBag.PanelHeader = "Expired Available Listings";
+                    ViewBag.ListingPartialView = "_ExpiredListings";
                     query = query.Where(l => l.IsAvailable == true && l.ExpirationDate < today);
                     break;
                 case ListingStatus.Unavailable:
                     ViewBag.PanelHeader = "Unavailable Listings";
+                    ViewBag.ListingPartialView = "_UnavailableListings";
                     query = query.Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                                                 (l.IsAvailable == true && l.ExpirationDate < today));
 
