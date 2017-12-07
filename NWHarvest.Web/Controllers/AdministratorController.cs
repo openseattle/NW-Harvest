@@ -211,7 +211,9 @@ namespace NWHarvest.Web.Controllers
                     Name = l.FoodBank.name
                 },
                 Product = l.Product,
-                QuantityAvailable = l.QuantityAvailable
+                QuantityAvailable = l.QuantityAvailable,
+                UnitOfMeasure = l.UnitOfMeasure,
+                ExpirationDate = l.ExpirationDate
             }).ToList();
 
             return View(listings);

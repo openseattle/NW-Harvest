@@ -1,36 +1,47 @@
-﻿@using NWHarvest.Web.Enums
-@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
 @{ 
     ViewBag.Title = "Administrator";
+    var notOrderableColumns = new int[] {2,4};
 }
 
 <h2>@ViewBag.Title</h2>
-
+<style>
+    table {
+        table-layout: fixed;
+    }
+    table.dataTable thead th {
+        padding:10px;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>@ViewBag.PanelHeader <span class="badge">@Model.Count()</span></h4>
             </div>
-            <div class="panel-body">
-                <table class="table table-hover table-responsive dataTables_scroll" id="userTable">
+            <div class="panel-body" id="tableContainer">
+                <table class="table table-hover table-responsive" id="listingTable">
                     <thead>
                         <tr>
                             <th>Grower</th>
-                            <th>FoodBank</th>
                             <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Expires</th>
                             <th></th>
                         </tr>
                     </thead>
+                    <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.GrowerName</td>
-                            <td>@item.FoodBank.Name</td>
+                            <td>@item.GrowerName.Trim()</td>
                             <td>@item.Product</td>
+                            <td>@item.QuantityAvailable @item.UnitOfMeasure</td>
+                            <td>@item.ExpirationDate.ToShortDateString()</td>
                             <td>@Html.ActionLink("Delete", "Delete", "Listings", new { Id = item.Id, ReturnUrl = ViewBag.ReturnUrl }, null)</td>
                         </tr>
                     }
+                     </tbody>
                 </table>
             </div>
             <div class="panel-footer">
@@ -39,3 +50,17 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+    <script type="text/javascript">
+        $(document).ready(function () {
+                var notOrderableColumnArray = @Html.Raw(Json.Encode(notOrderableColumns));
+                var table = $('#listingTable').dataTable({
+                    "columnDefs": [
+                        { "orderable": false, "targets": notOrderableColumnArray }
+                    ]
+                });
+        });
+    </script>
+}
