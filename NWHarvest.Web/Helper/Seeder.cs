@@ -253,16 +253,31 @@ namespace NWHarvest.Web.Helper
 
         private string RandomProduct()
         {
-            var maxNumberOfProducts = 10;
-            string[] products = new string[maxNumberOfProducts];
-            for (int i = 0; i < maxNumberOfProducts; i++)
+            var produces = new string[]
             {
-                products[i] = $"Product {i + 1}";
-            }
-
+                "Kale",
+                "Apples",
+                "Summer Squash",
+                "Blackberries",
+                "Beets",
+                "Melon",
+                "Carrots",
+                "Chard",
+                "Broccoli",
+                "Mushrooms",
+                "Potatoes",
+                "Winter Squash",
+                "Tomatoes",
+                "Peppers",
+                "Onion",
+                "Cucumbers",
+                "Spinach",
+                "Herbs",
+                "Lettuce",
+                "Eggplant"
+            };
             Random random = new Random();
-
-            return products[random.Next(0, maxNumberOfProducts)];
+            return produces[random.Next(0, produces.Count()-1)];
         }
 
         /// <summary>
