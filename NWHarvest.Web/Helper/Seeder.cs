@@ -121,6 +121,7 @@ namespace NWHarvest.Web.Helper
 
         private void CreateGrowers()
         {
+            var random = new Random();
             var growerName = "Grower";
             var emailDomain = "example.com";
             var growerPassword = "Pass@word!";
@@ -136,6 +137,7 @@ namespace NWHarvest.Web.Helper
                 _userManager.Create(user);
                 _userManager.AddToRole(user.Id, UserRole.Grower.ToString());
 
+                var createdOn = DateTime.Today.AddDays(random.Next(-180, 0));
                 var growerToAdd = new Grower
                 {
                     Id = i,
@@ -148,6 +150,8 @@ namespace NWHarvest.Web.Helper
                     zip = "98102",
                     NotificationPreference = UserNotification.Email.ToString(),
                     IsActive = true,
+                    CreatedOn = createdOn,
+                    ModifiedOn = createdOn,
                     PickupLocations = new List<PickupLocation>
                     {
                         new PickupLocation
