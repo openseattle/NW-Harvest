@@ -172,7 +172,7 @@ namespace NWHarvest.Web.Helper
 
         private void CreateAdministrators()
         {
-            string username = ConfigurationManager.AppSettings["adminUsername"] ?? "admin@northwestharvest.com";
+            string username = ConfigurationManager.AppSettings["adminUsername"] ?? "admin@northwestharvest.org";
             string password = ConfigurationManager.AppSettings["adminPassword"] ?? "Pass@word1";
             var user = new ApplicationUser
             {

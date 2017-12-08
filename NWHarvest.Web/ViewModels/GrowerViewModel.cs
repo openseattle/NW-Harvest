@@ -1,4 +1,5 @@
 ﻿using NWHarvest.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,7 +14,7 @@ namespace NWHarvest.Web.ViewModels
         public string NotificationPreference { get; set; }
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
-
+        public DateTime CreatedOn { get; set; }
         public AddressViewModel Address { get; set; }
         public ICollection<PickupLocationViewModel> PickupLocations { get; set; }
 

@@ -109,6 +109,7 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = g.Id,
                     Name = g.name,
+                    CreatedOn = g.CreatedOn,
                     Address = new AddressViewModel
                     {
                         City = g.city,
