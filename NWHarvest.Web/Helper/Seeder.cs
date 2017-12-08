@@ -97,6 +97,7 @@ namespace NWHarvest.Web.Helper
                     EmailConfirmed = true
                 };
                 _userManager.Create(user);
+                _userManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
 
                 var foodBankToAdd = new FoodBank
                 {
@@ -133,6 +134,7 @@ namespace NWHarvest.Web.Helper
                     EmailConfirmed = true
                 };
                 _userManager.Create(user);
+                _userManager.AddToRole(user.Id, UserRole.Grower.ToString());
 
                 var growerToAdd = new Grower
                 {
