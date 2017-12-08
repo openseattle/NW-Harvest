@@ -12,15 +12,32 @@ namespace NWHarvest.Web.Controllers
     public class AdministratorController : Controller
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
+        const int _daysInAWeek = 7;
+        const int _daysInAMonth = 30;
+        const int _daysInAYear = 365;
         private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
 
         [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
+            var wtd = DateTime.Today.AddDays(-_daysInAWeek).Date;
+            var mtd = DateTime.Today.AddDays(-_daysInAMonth).Date;
+            var ytd = DateTime.Today.AddDays(-_daysInAYear).Date;
             var today = DateTime.UtcNow;
             var vm = new AdministratorViewModel();
+            // growers
             vm.NumberOfGrowers = db.Growers.Count();
+            vm.NumberOfGrowersWeekToDate = db.Growers.Where(g => g.CreatedOn >= wtd).Count();
+            vm.NumberOfGrowersMonthToDate = db.Growers.Where(g => g.CreatedOn >= mtd).Count();
+            vm.NumberOfGrowersYearToDate = db.Growers.Where(g => g.CreatedOn >= ytd).Count();
+
+            // foodbanks
             vm.NumberOfFoodBanks = db.FoodBanks.Count();
+            vm.NumberOfFoodBanksWeekToDate = db.FoodBanks.Where(fb => fb.CreatedOn >= wtd).Count();
+            vm.NumberOfFoodBanksMonthToDate = db.FoodBanks.Where(fb => fb.CreatedOn >= mtd).Count();
+            vm.NumberOfFoodBanksYearToDate = db.FoodBanks.Where(fb => fb.CreatedOn >= ytd).Count();
+
+            // listings
             vm.NumberOfListings = db.Listings.Count();
             vm.NumberOfAvailableListings = db.Listings.Where(l => l.IsAvailable == true && l.ExpirationDate >= today).Count();
             vm.NumberOfPendingPickupClaimListings = db.Listings.Where(l => l.IsPickedUp == false && l.IsAvailable == false && l.ExpirationDate >= today).Count();
@@ -29,7 +46,7 @@ namespace NWHarvest.Web.Controllers
                 .Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                     (l.IsAvailable == true && l.ExpirationDate < today))
                 .Count();
-
+            
             return View(vm);
         }
 

@@ -18,15 +18,24 @@
                     <thead>
                         <tr>
                             <th>User Type</th>
+                            <th class="text-center">WTD</th>
+                            <th class="text-center">MTD</th>
+                            <th class="text-center">YTD</th>
                             <th class="text-center">Total</th>
                         </tr>
                     </thead>
                     <tr>
                         <td>@Html.ActionLink("Growers", "ManageUser", new { UserRole = UserRole.Grower }, new { @class = "" })</td>
+                        <td class="text-center">@Model.NumberOfGrowersWeekToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowersMonthToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowersYearToDate</td>
                         <td class="text-center">@Model.NumberOfGrowers</td>
                     </tr>
                     <tr>
                         <td>@Html.ActionLink("Foodbanks", "ManageUser", new { UserRole = UserRole.FoodBank }, new { @class = "" })</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksWeekToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksMonthToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksYearToDate</td>
                         <td class="text-center">@Model.NumberOfFoodBanks</td>
                     </tr>
                 </table>
