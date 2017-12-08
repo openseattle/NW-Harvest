@@ -200,6 +200,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Seeder.cs" />
     <Compile Include="Helper\MvcHtmlHelper.cs" />
     <Compile Include="Migrations\201710041937256_Initial.cs" />
     <Compile Include="Migrations\201710041937256_Initial.Designer.cs">
@@ -215,7 +216,6 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\UserEntity.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
     <Compile Include="Models\DisplayMessage.cs" />
     <Compile Include="Models\DisplayMessageService.cs" />
