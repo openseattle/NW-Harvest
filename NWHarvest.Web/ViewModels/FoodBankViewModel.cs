@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NWHarvest.Web.ViewModels
@@ -27,6 +28,8 @@ namespace NWHarvest.Web.ViewModels
         [Required]
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
+
+        public DateTime CreatedOn { get; set; }
 
         public ICollection<ListingViewModel> Listings { get; set; }
         public ICollection<ListingViewModel> AvailableListings { get; set; }

@@ -214,6 +214,10 @@
     <Compile Include="Migrations\201712072157341_AddGrowerCreateModifiedDate.Designer.cs">
       <DependentUpon>201712072157341_AddGrowerCreateModifiedDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712080307188_AddFoodBankCreateAndModifiedDate.cs" />
+    <Compile Include="Migrations\201712080307188_AddFoodBankCreateAndModifiedDate.Designer.cs">
+      <DependentUpon>201712080307188_AddFoodBankCreateAndModifiedDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
@@ -461,6 +465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712072157341_AddGrowerCreateModifiedDate.resx">
       <DependentUpon>201712072157341_AddGrowerCreateModifiedDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712080307188_AddFoodBankCreateAndModifiedDate.resx">
+      <DependentUpon>201712080307188_AddFoodBankCreateAndModifiedDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

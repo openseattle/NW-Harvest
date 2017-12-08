@@ -14,7 +14,6 @@ namespace NWHarvest.Web.Controllers
         private readonly ApplicationDbContext db = new ApplicationDbContext();
         private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
 
-
         [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
@@ -61,11 +60,12 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = g.Id,
                     Name = g.name,
+                    IsActive = g.IsActive,
+                    CreatedOn = g.CreatedOn,
                     Address = new AddressViewModel {
                         City = g.city,
                         Zip = g.zip
-                    },
-                    IsActive = g.IsActive
+                    }
                 }).ToList();
 
             return View(vm);

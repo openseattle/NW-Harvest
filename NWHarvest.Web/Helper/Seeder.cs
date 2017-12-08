@@ -84,6 +84,7 @@ namespace NWHarvest.Web.Helper
 
         private void CreateFoodBanks()
         {
+            var random = new Random();
             var foodBankName = "FoodBank";
             var emailDomain = "example.com";
             var foodBankPassword = "Pass@word!";
@@ -99,6 +100,7 @@ namespace NWHarvest.Web.Helper
                 _userManager.Create(user);
                 _userManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
 
+                var createdOn = DateTime.Today.AddDays(random.Next(-180, 0));
                 var foodBankToAdd = new FoodBank
                 {
                     Id = i,
@@ -110,7 +112,9 @@ namespace NWHarvest.Web.Helper
                     state = "WA",
                     zip = "98102",
                     NotificationPreference = UserNotification.Email.ToString(),
-                    IsActive = true
+                    IsActive = true,
+                    CreatedOn = createdOn,
+                    ModifiedOn = createdOn
                 };
 
                 _context.FoodBanks.AddOrUpdate<FoodBank>(foodBankToAdd);
