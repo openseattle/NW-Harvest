@@ -204,6 +204,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
+            RegisterViewData();
             return View(vm);
         }
 
