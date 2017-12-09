@@ -201,6 +201,8 @@ namespace NWHarvest.Web.Controllers
                 pickupLocationToUpdate.address3 = vm.Address.Address3;
                 pickupLocationToUpdate.address4 = vm.Address.Address4;
                 pickupLocationToUpdate.city = vm.Address.City;
+                pickupLocationToUpdate.state = vm.Address.State;
+                pickupLocationToUpdate.county = vm.Address.County;
                 pickupLocationToUpdate.zip = vm.Address.Zip;
                 pickupLocationToUpdate.comments = vm.Comments;
 
