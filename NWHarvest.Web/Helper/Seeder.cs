@@ -114,6 +114,7 @@ namespace NWHarvest.Web.Helper
                     address1 = $"{i} Broad St",
                     city = city,
                     state = "WA",
+                    county = "Unknown",
                     zip = zip.ToString(),
                     NotificationPreference = UserNotification.Email.ToString(),
                     IsActive = true,
@@ -158,6 +159,7 @@ namespace NWHarvest.Web.Helper
                     address1 = $"{i} Main St",
                     city = city,
                     state = "WA",
+                    county = "Unknown",
                     zip = zip.ToString(),
                     NotificationPreference = UserNotification.Email.ToString(),
                     IsActive = true,
@@ -171,6 +173,7 @@ namespace NWHarvest.Web.Helper
                             address1 = $"{i} Main St",
                             city = city,
                             state = "WA",
+                            county = "Unknown",
                             zip = zip.ToString()
                         }
                     }
