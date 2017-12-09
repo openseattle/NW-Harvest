@@ -12,16 +12,32 @@ namespace NWHarvest.Web.Controllers
     public class AdministratorController : Controller
     {
         private readonly ApplicationDbContext db = new ApplicationDbContext();
+        const int _daysInAWeek = 7;
+        const int _daysInAMonth = 30;
+        const int _daysInAYear = 365;
         private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
-
 
         [Authorize(Roles = "Administrator")]
         public ActionResult Index()
         {
+            var wtd = DateTime.Today.AddDays(-_daysInAWeek).Date;
+            var mtd = DateTime.Today.AddDays(-_daysInAMonth).Date;
+            var ytd = DateTime.Today.AddDays(-_daysInAYear).Date;
             var today = DateTime.UtcNow;
             var vm = new AdministratorViewModel();
+            // growers
             vm.NumberOfGrowers = db.Growers.Count();
+            vm.NumberOfGrowersWeekToDate = db.Growers.Where(g => g.CreatedOn >= wtd).Count();
+            vm.NumberOfGrowersMonthToDate = db.Growers.Where(g => g.CreatedOn >= mtd).Count();
+            vm.NumberOfGrowersYearToDate = db.Growers.Where(g => g.CreatedOn >= ytd).Count();
+
+            // foodbanks
             vm.NumberOfFoodBanks = db.FoodBanks.Count();
+            vm.NumberOfFoodBanksWeekToDate = db.FoodBanks.Where(fb => fb.CreatedOn >= wtd).Count();
+            vm.NumberOfFoodBanksMonthToDate = db.FoodBanks.Where(fb => fb.CreatedOn >= mtd).Count();
+            vm.NumberOfFoodBanksYearToDate = db.FoodBanks.Where(fb => fb.CreatedOn >= ytd).Count();
+
+            // listings
             vm.NumberOfListings = db.Listings.Count();
             vm.NumberOfAvailableListings = db.Listings.Where(l => l.IsAvailable == true && l.ExpirationDate >= today).Count();
             vm.NumberOfPendingPickupClaimListings = db.Listings.Where(l => l.IsPickedUp == false && l.IsAvailable == false && l.ExpirationDate >= today).Count();
@@ -30,7 +46,7 @@ namespace NWHarvest.Web.Controllers
                 .Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                     (l.IsAvailable == true && l.ExpirationDate < today))
                 .Count();
-
+            
             return View(vm);
         }
 
@@ -61,10 +77,44 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = g.Id,
                     Name = g.name,
-                    IsActive = g.IsActive
+                    IsActive = g.IsActive,
+                    CreatedOn = g.CreatedOn,
+                    Address = new AddressViewModel {
+                        City = g.city,
+                        Zip = g.zip
+                    }
                 }).ToList();
 
             return View(vm);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult ManageFoodBank(int id)
+        {
+            var foodbank = db.FoodBanks
+                .Where(fb => fb.Id == id)
+                .Select(fb => new FoodBankViewModel
+                {
+                    Id = fb.Id,
+                    Name = fb.name,
+                    Email = fb.email,
+                    IsActive = fb.IsActive,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = fb.address1,
+                        Address2 = fb.address2,
+                        City = fb.city,
+                        State = fb.state,
+                        Zip = fb.zip
+                    }
+                }).FirstOrDefault();
+
+            if (foodbank == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(foodbank);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -76,10 +126,45 @@ namespace NWHarvest.Web.Controllers
                 {
                     Id = g.Id,
                     Name = g.name,
+                    CreatedOn = g.CreatedOn,
+                    Address = new AddressViewModel
+                    {
+                        City = g.city,
+                        Zip = g.zip
+                    },
                     IsActive = g.IsActive
                 }).ToList();
 
             return View(vm);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public ActionResult ManageGrower(int id)
+        {
+            var grower = db.Growers
+                .Where(g => g.Id == id)
+                .Select(g => new GrowerViewModel
+                {
+                    Id = g.Id,
+                    Name = g.name,
+                    Email = g.email,
+                    IsActive = g.IsActive,
+                    Address = new AddressViewModel
+                    {
+                        Address1 = g.address1,
+                        Address2 = g.address2,
+                        City = g.city,
+                        State = g.state,
+                        Zip = g.zip
+                    }
+                }).FirstOrDefault();
+
+            if (grower == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(grower);
         }
 
         [Authorize(Roles = "Administrator")]
@@ -120,22 +205,27 @@ namespace NWHarvest.Web.Controllers
             {
                 case ListingStatus.Available:
                     ViewBag.PanelHeader = "Available Listings";
+                    ViewBag.ListingPartialView = "_AvailableListings";
                     query = query.Where(l => l.IsAvailable == true && l.ExpirationDate >= today);
                     break;
                 case ListingStatus.Pickup:
                     ViewBag.PanelHeader = "Pending Pickup Listings";
+                    ViewBag.ListingPartialView = "_PendingPickupListings";
                     query = query.Where(l => l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate >= today);
                     break;
                 case ListingStatus.Claimed:
                     ViewBag.PanelHeader = "Claimed Listings";
+                    ViewBag.ListingPartialView = "_ClaimedListings";
                     query = query.Where(l => l.IsPickedUp == true);
                     break;
                 case ListingStatus.Expired:
                     ViewBag.PanelHeader = "Expired Available Listings";
+                    ViewBag.ListingPartialView = "_ExpiredListings";
                     query = query.Where(l => l.IsAvailable == true && l.ExpirationDate < today);
                     break;
                 case ListingStatus.Unavailable:
                     ViewBag.PanelHeader = "Unavailable Listings";
+                    ViewBag.ListingPartialView = "_UnavailableListings";
                     query = query.Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                                                 (l.IsAvailable == true && l.ExpirationDate < today));
 
@@ -154,7 +244,9 @@ namespace NWHarvest.Web.Controllers
                     Name = l.FoodBank.name
                 },
                 Product = l.Product,
-                QuantityAvailable = l.QuantityAvailable
+                QuantityAvailable = l.QuantityAvailable,
+                UnitOfMeasure = l.UnitOfMeasure,
+                ExpirationDate = l.ExpirationDate
             }).ToList();
 
             return View(listings);

@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 
-
 namespace NWHarvest.Web.Helper
 {
     public static class MvcHtmlHelper

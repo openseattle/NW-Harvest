@@ -2,30 +2,44 @@
 @model IEnumerable<NWHarvest.Web.ViewModels.GrowerViewModel>
 
 @{
-    ViewBag.Title = "Manage Growers";
+    ViewBag.Title = "Administrator";
 }
+<style>
+    table {
+        table-layout: fixed;
+    }
 
+    table.dataTable thead th {
+        padding: 10px;
+    }
+</style>
 <h2>@ViewBag.Title</h2>
 
 <div class="container-fluid">
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4>Growers <span class="badge">@Model.Count()</span></h4>
+                <h4>Manage Growers <span class="badge">@Model.Count()</span></h4>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-responsive dataTables_scroll" id="userTable">
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>City</th>
+                            <th>Zip</th>
+                            <th>CreatedOn</th>
                             <th>Active</th>
-                            <th>Actions</th>
+                            <th></th>
                         </tr>
                     </thead>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.Name</td>
+                            <td>@Html.ActionLink(item.Name, "ManageGrower", new { Id = item.Id })</td>
+                            <td>@item.Address.City</td>
+                            <td>@item.Address.Zip</td>
+                            <td>@item.CreatedOn.ToShortDateString()</td>
                             <td>@(item.IsActive ? "Yes" : "No")</td>
                             <td>
                                 @(item.IsActive ? Html.ActionLink("Disable", "ToggleEnableDisableUser", new { UserRole = UserRole.Grower, userId = item.Id }, new { @class = "" }) : Html.ActionLink("Enable", "ToggleEnableDisableUser", new { UserRole = UserRole.Grower, userId = item.Id }, new { @class = "" }))
@@ -40,3 +54,17 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $('#userTable').dataTable({
+                "columnDefs": [
+                    { "orderable": false, "targets": [5] }
+                ]
+            });
+        });
+    </script>
+}

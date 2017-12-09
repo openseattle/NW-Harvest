@@ -5,10 +5,10 @@ namespace NWHarvest.Web.Models
 {
 
     [Table("FoodBank")]
-    public partial class FoodBank
+    public partial class FoodBank : BaseEntity
     {
         [Key]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [Required]
         public string UserId { get; set; }

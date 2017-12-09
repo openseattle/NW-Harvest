@@ -18,19 +18,25 @@
                     <thead>
                         <tr>
                             <th>User Type</th>
+                            <th class="text-center">WTD</th>
+                            <th class="text-center">MTD</th>
+                            <th class="text-center">YTD</th>
                             <th class="text-center">Total</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tr>
-                        <td>Growers</td>
+                        <td>@Html.ActionLink("Growers", "ManageUser", new { UserRole = UserRole.Grower }, new { @class = "" })</td>
+                        <td class="text-center">@Model.NumberOfGrowersWeekToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowersMonthToDate</td>
+                        <td class="text-center">@Model.NumberOfGrowersYearToDate</td>
                         <td class="text-center">@Model.NumberOfGrowers</td>
-                        <td>@Html.ActionLink("Manage", "ManageUser", new { UserRole = UserRole.Grower }, new { @class="" })</td>
                     </tr>
                     <tr>
-                        <td>FoodBanks</td>
+                        <td>@Html.ActionLink("Foodbanks", "ManageUser", new { UserRole = UserRole.FoodBank }, new { @class = "" })</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksWeekToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksMonthToDate</td>
+                        <td class="text-center">@Model.NumberOfFoodBanksYearToDate</td>
                         <td class="text-center">@Model.NumberOfFoodBanks</td>
-                        <td>@Html.ActionLink("Manage", "ManageUser", new { UserRole = UserRole.FoodBank }, new { @class = "" })</td>
                     </tr>
                 </table>
             </div>
@@ -53,7 +59,6 @@
                     <tr>
                         <td>@Html.ActionLink("Available", "ManageListings", new { ListingStatus = ListingStatus.Available })</td>
                         <td class="text-center">@Model.NumberOfAvailableListings</td>
-                        <td></td>
                     </tr>
                     <tr>
                         <td>@Html.ActionLink("Pending Pickup", "ManageListings", new { ListingStatus = ListingStatus.Pickup })</td>

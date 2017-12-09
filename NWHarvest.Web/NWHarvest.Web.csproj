@@ -200,6 +200,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\Seeder.cs" />
     <Compile Include="Helper\MvcHtmlHelper.cs" />
     <Compile Include="Helper\WashingtonState.cs" />
     <Compile Include="Migrations\201710041937256_Initial.cs" />
@@ -214,11 +215,20 @@
     <Compile Include="Migrations\201711100225483_AddCounty.Designer.cs">
       <DependentUpon>201711100225483_AddCounty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712072157341_AddGrowerCreateModifiedDate.cs" />
+    <Compile Include="Migrations\201712072157341_AddGrowerCreateModifiedDate.Designer.cs">
+      <DependentUpon>201712072157341_AddGrowerCreateModifiedDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712080307188_AddFoodBankCreateAndModifiedDate.cs" />
+    <Compile Include="Migrations\201712080307188_AddFoodBankCreateAndModifiedDate.Designer.cs">
+      <DependentUpon>201712080307188_AddFoodBankCreateAndModifiedDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
     <Compile Include="Models\DisplayMessage.cs" />
     <Compile Include="Models\DisplayMessageService.cs" />
+    <Compile Include="Models\BaseEntity.cs" />
     <Compile Include="Models\Grower.cs" />
     <Compile Include="Models\FoodBank.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -436,6 +446,12 @@
     <Content Include="Views\Administrator\ManageFoodBanks.cshtml" />
     <Content Include="Views\Administrator\ManageListings.cshtml" />
     <Content Include="Views\PickupLocations\_PickupLocationAddressForm.cshtml" />
+    <Content Include="Views\Administrator\ManageGrower.cshtml" />
+    <Content Include="Views\Administrator\ManageFoodBank.cshtml" />
+    <Content Include="Views\Administrator\_AvailableListings.cshtml" />
+    <Content Include="Views\Administrator\_PendingPickupListings.cshtml" />
+    <Content Include="Views\Administrator\_ClaimedListings.cshtml" />
+    <Content Include="Views\Administrator\_UnavailableListings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -455,6 +471,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711100225483_AddCounty.resx">
       <DependentUpon>201711100225483_AddCounty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712072157341_AddGrowerCreateModifiedDate.resx">
+      <DependentUpon>201712072157341_AddGrowerCreateModifiedDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712080307188_AddFoodBankCreateAndModifiedDate.resx">
+      <DependentUpon>201712080307188_AddFoodBankCreateAndModifiedDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

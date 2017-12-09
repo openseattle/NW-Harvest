@@ -4,18 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NWHarvest.Web.Models
 {
-
     [Table("Grower")]
-    public partial class Grower
+    public partial class Grower : BaseEntity
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Grower()
         {
             PickupLocations = new HashSet<PickupLocation>();
         }
 
         [Key]
-        public int Id { get; set; }
+        public override int Id { get; set; }
 
         [Required]
         public string UserId { get; set; }
