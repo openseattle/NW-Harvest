@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web.Mvc;
+using NWHarvest.Web.Helper;
 using NWHarvest.Web.Models;
 using NWHarvest.Web.ViewModels;
 using Microsoft.AspNet.Identity;
@@ -104,6 +106,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
+            RegisterViewData();
             return View(vm);
         }
 
@@ -135,6 +138,7 @@ namespace NWHarvest.Web.Controllers
                 return RedirectToAction(nameof(Manage));
             }
 
+            RegisterViewData();
             return View(vm);
         }
 
@@ -176,6 +180,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
+            RegisterViewData();
             return View(vm);
         }
 
@@ -203,6 +208,7 @@ namespace NWHarvest.Web.Controllers
                 return RedirectToAction(nameof(Manage));
             }
 
+            RegisterViewData();
             return View(vm);
         }
 
@@ -332,5 +338,28 @@ namespace NWHarvest.Web.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #region Helpers
+        private void RegisterViewData()
+        {
+            ViewData["States"] = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Washington",
+                    Value = "WA",
+                    Selected = true
+                }
+            };
+
+            ViewData["Counties"] = WashingtonState.GetCounties()
+                .Select(county => new SelectListItem
+                {
+                    Text = county,
+                    Value = county,
+                    Selected = false
+                }).ToList();
+        }
+        #endregion
     }
 }
