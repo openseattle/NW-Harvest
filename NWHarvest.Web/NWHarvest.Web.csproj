@@ -223,8 +223,13 @@
     <Compile Include="Migrations\201712090310286_AddCounty.Designer.cs">
       <DependentUpon>201712090310286_AddCounty.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801112347326_AddFoodBankClaimTable.cs" />
+    <Compile Include="Migrations\201801112347326_AddFoodBankClaimTable.Designer.cs">
+      <DependentUpon>201801112347326_AddFoodBankClaimTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Address.cs" />
     <Compile Include="Models\DisplayDescription.cs" />
     <Compile Include="Models\DisplayMessage.cs" />
     <Compile Include="Models\DisplayMessageService.cs" />
@@ -232,6 +237,7 @@
     <Compile Include="Models\Grower.cs" />
     <Compile Include="Models\FoodBank.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\FoodBankClaim.cs" />
     <Compile Include="Models\Listing.cs" />
     <Compile Include="Models\ListingsRepository.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -476,6 +482,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712090310286_AddCounty.resx">
       <DependentUpon>201712090310286_AddCounty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801112347326_AddFoodBankClaimTable.resx">
+      <DependentUpon>201801112347326_AddFoodBankClaimTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

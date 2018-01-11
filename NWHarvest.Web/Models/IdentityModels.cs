@@ -36,5 +36,23 @@ namespace NWHarvest.Web.Models
         public virtual DbSet<PickupLocation> PickupLocations { get; set; }
         public virtual DbSet<DisplayMessage> DisplayMessages { get; set; }
         public virtual DbSet<DisplayDescription> DisplayDescriptions { get; set; }
+        public virtual DbSet<FoodBankClaim> FoodBankClaims { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.Address1).HasColumnName("Address1"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.Address2).HasColumnName("Address2"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.City).HasColumnName("City"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.State).HasColumnName("State"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.County).HasColumnName("County"));
+            modelBuilder.Types<FoodBankClaim>()
+                .Configure(fbc => fbc.Property(a => a.Address.Zip).HasColumnName("Zip"));
+        }
     }
 }
