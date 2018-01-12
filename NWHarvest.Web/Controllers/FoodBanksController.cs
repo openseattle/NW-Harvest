@@ -8,6 +8,7 @@ using NWHarvest.Web.Models;
 using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
 using Microsoft.AspNet.Identity.Owin;
+using System.Data.Entity;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -300,6 +301,18 @@ namespace NWHarvest.Web.Controllers
                         UserId = l.Grower.UserId,
                         Email = l.Grower.email,
                         NotificationPreference = l.Grower.NotificationPreference
+                    },
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Address = new AddressViewModel
+                        {
+                            Address1 = l.PickupLocation.address1,
+                            Address2 = l.PickupLocation.address2,
+                            City = l.PickupLocation.city,
+                            State = l.PickupLocation.state,
+                            County = l.PickupLocation.county,
+                            Zip = l.PickupLocation.zip
+                        }
                     }
                 })
                 .FirstOrDefault();
@@ -316,10 +329,32 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
-            // update db
-            listing.IsAvailable = false;
-            listing.QuantityClaimed = listing.QuantityClaimed;
-            listing.FoodBank = foodBank;
+            db.Listings.Remove(listing);
+            
+            //listing.IsAvailable = false;
+            //listing.QuantityClaimed = listing.QuantityClaimed;
+            //listing.FoodBank = foodBank;
+            //db.SaveChanges();
+
+            // copy listing details to FoodBankClaim table
+            var foodbankClaim = new FoodBankClaim
+            {
+                Product = vm.Product,
+                Quantity = (int)vm.QuantityAvailable,
+                CostPerUnit = vm.CostPerUnit,
+                Address = new Address
+                {
+                    Address1 = vm.PickupLocation.Address.Address1,
+                    Address2 = vm.PickupLocation.Address.Address2,
+                    City = vm.PickupLocation.Address.City,
+                    State = vm.PickupLocation.Address.State,
+                    County = vm.PickupLocation.Address.County,
+                    Zip = vm.PickupLocation.Address.Zip
+                },
+                FoodBank = foodBank,
+                GrowerId = vm.Grower.Id
+            };
+            db.FoodBankClaims.Add(foodbankClaim);
             db.SaveChanges();
 
             // send notification(s)
