@@ -152,6 +152,7 @@ namespace NWHarvest.Web.Controllers
                             Address3 = l.PickupLocation.address3,
                             Address4 = l.PickupLocation.address4,
                             City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
                             State = l.PickupLocation.state,
                             Zip = l.PickupLocation.zip
                         }

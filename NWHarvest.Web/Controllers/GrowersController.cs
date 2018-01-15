@@ -98,6 +98,7 @@ namespace NWHarvest.Web.Controllers
                         Address = new AddressViewModel
                         {
                             City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
                             Zip = l.PickupLocation.zip
                         }
                     }

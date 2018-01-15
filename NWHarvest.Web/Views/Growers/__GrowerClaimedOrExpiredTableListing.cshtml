@@ -12,6 +12,7 @@
             <th>@Html.DisplayNameFor(model => model.IsAvailable)</th>
             <th>@Html.DisplayNameFor(model => model.IsPickedUp)</th>
             <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
+            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.County)</th>
             <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
             <th>Actions</th>
         </tr>
@@ -29,6 +30,7 @@
                 <td>@(item.IsAvailable ? "No" : "Yes")</td>
                 <td>@(item.IsPickedUp ? "Yes" : "No")</td>
                 <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
+                <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.County)</td>
                 <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.Zip)</td>
                 <td>
                     @Html.ActionLink("Details", "Details", "Listings", new { id = item.Id }, null)

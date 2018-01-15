@@ -11,6 +11,7 @@
             <th>@Html.DisplayNameFor(model => model.CostPerUnit)</th>
             <th>@Html.DisplayNameFor(model => model.Comments)</th>
             <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
+            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.County)</th>
             <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
             <th>Actions</th>
         </tr>
@@ -26,6 +27,7 @@
             <td>@Html.DisplayFor(modelItem => item.CostPerUnit)</td>
             <td>@Html.DisplayFor(modelItem => item.Comments)</td>
             <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
+            <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.County)</td>
             <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.Zip)</td>
             <td>
                 @Html.ActionLink("Details", "Details", "Listings", new { id = item.Id }, null)
