@@ -26,7 +26,7 @@
                 <td>@Html.DisplayFor(modelItem => item.HarvestDate)</td>
                 <td>@Html.DisplayFor(modelItem => item.ExpirationDate)</td>
                 <td>@Html.DisplayFor(modelItem => item.CostPerUnit)</td>
-                <td>@(item.IsAvailable ? "No" : "Yes")</td>
+                <td>@(item.IsAvailable ? "Yes" : "No")</td>
                 <td>@(item.IsPickedUp ? "Yes" : "No")</td>
                 <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
                 <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.County)</td>
