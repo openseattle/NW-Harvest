@@ -136,6 +136,15 @@ div.body-content div.text-center a.btn {
     background-color: #548ac8;
 }
 
+/* datatables */
+table {
+    table-layout: fixed;
+}
+
+table.dataTable thead th {
+    padding: 10px;
+}
+
 .tableDetails dd {
     margin-bottom: 10px;
 }
@@ -169,3 +178,4 @@ div.body-content div.text-center a.btn {
 .nav-tabs {
     border-bottom: 0px solid #ddd !important;
 }
+
