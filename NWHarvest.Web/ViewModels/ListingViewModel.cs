@@ -17,7 +17,7 @@ namespace NWHarvest.Web.ViewModels
         public virtual string Product { get; set; }
 
         [Required]
-        [DisplayName("Quantity Available")]
+        [DisplayName("Quantity")]
         public virtual decimal QuantityAvailable { get; set; }
 
         [DisplayName("Quantity Claimed")]
