@@ -5,8 +5,18 @@
     ViewBag.NavBarTitle = "Food Bank Profile";
     var editActionLink = Html.ActionLink("Edit", "Edit", new
     {
-        id = Model.Id }, new { @class = "btn btn-primary" });
+        id = Model.Id
+    }, new { @class = "btn btn-primary" });
 }
+<style>
+    table {
+        table-layout: fixed;
+    }
+
+    table.dataTable thead th {
+        padding: 10px;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
@@ -17,7 +27,7 @@
     <div class="row">
         <div class="col-md-12">
             <h4>Listings</h4>
-            @Html.Partial("_FoodBankTableListing", Model.Listings.ToList())
+            @Html.Partial("_FoodBankTableListing", Model)
         </div>
     </div>
 </div>

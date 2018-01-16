@@ -97,7 +97,16 @@ namespace NWHarvest.Web.Controllers
                     {
                         Id = l.Grower.Id,
                         Name = l.Grower.name
-                    }
+                    },
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Address = new AddressViewModel
+                        {
+                            City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
+                            Zip = l.PickupLocation.zip
+                        }
+                    },
                 }).ToList();
 
             // claimed listings for pickup
@@ -168,6 +177,28 @@ namespace NWHarvest.Web.Controllers
                         UserId = l.FoodBank.UserId
                     },
                 }).ToList();
+
+            vm.Claims = db.FoodBankClaims
+                .Where(c => c.FoodBankId == vm.Id)
+                .Select(c => new ClaimViewModel
+                {
+                    ClaimedOn = c.CreatedOn,
+                    Product = c.Product,
+                    Quantity = c.Quantity,
+                    CostPerUnit = c.CostPerUnit,
+                    Grower = new GrowerViewModel
+                    {
+                        Id = c.GrowerId,
+                        Name = c.Grower.name
+                    },
+                    Address = new AddressViewModel
+                    {
+                        City = c.Address.City,
+                        County = c.Address.County,
+                        Zip = c.Address.Zip
+                    }
+                })
+                .ToList();
 
             if (vm == null)
             {
@@ -342,10 +373,12 @@ namespace NWHarvest.Web.Controllers
             if (decimal.Compare(listing.QuantityAvailable, claim.Quantity) == 0)
             {
                 db.Listings.Remove(listing);
-            } else {
+            }
+            else
+            {
                 listing.QuantityAvailable = listing.QuantityAvailable - claim.Quantity;
             }
-            
+
             db.SaveChanges();
 
             SendNotification(vm);
@@ -525,7 +558,7 @@ namespace NWHarvest.Web.Controllers
                     Selected = true
                 }
             };
-            
+
             ViewData["Counties"] = WashingtonState.GetCounties()
                 .Select(county => new SelectListItem
                 {

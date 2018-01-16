@@ -1,9 +1,9 @@
 ﻿@using Microsoft.AspNet.Identity
-@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+@model NWHarvest.Web.ViewModels.FoodBankViewModel
 @{
-    var availableListings = Model.Where(l => l.IsAvailable == true && l.ExpirationDate >= DateTime.UtcNow && l.Grower.IsActive == true);
-    var pendingPickupListings = Model.Where(l => l.IsAvailable == false && l.IsPickedUp == false  && l.ExpirationDate >= DateTime.UtcNow && l.FoodBank.UserId == User.Identity.GetUserId());
-    var claimedListings = Model.Where(l => l.IsPickedUp == true && l.FoodBank.UserId == User.Identity.GetUserId());
+    var availableListings = Model.AvailableListings;
+    var pendingPickupListings = Model.Listings.Where(l => l.IsAvailable == false && l.IsPickedUp == false  && l.ExpirationDate >= DateTime.UtcNow && l.FoodBank.UserId == User.Identity.GetUserId());
+    var claimedListings = Model.Claims;
 }
 
 <ul class="nav nav-tabs" role="tablist">

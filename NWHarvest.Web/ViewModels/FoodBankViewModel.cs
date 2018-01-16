@@ -34,5 +34,6 @@ namespace NWHarvest.Web.ViewModels
         public ICollection<ListingViewModel> Listings { get; set; }
         public ICollection<ListingViewModel> AvailableListings { get; set; }
         public ICollection<ListingViewModel> ClaimedListings { get; set; }
+        public ICollection<ClaimViewModel> Claims { get; set; }
     }
 }
