@@ -2,13 +2,11 @@
 @model NWHarvest.Web.ViewModels.FoodBankViewModel
 @{
     var availableListings = Model.AvailableListings;
-    var pendingPickupListings = Model.Listings.Where(l => l.IsAvailable == false && l.IsPickedUp == false  && l.ExpirationDate >= DateTime.UtcNow && l.FoodBank.UserId == User.Identity.GetUserId());
     var claimedListings = Model.Claims;
 }
 
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#availableListings" aria-controls="firstList" role="tab" data-toggle="tab">Available</a></li>
-    <li role="presentation"><a href="#pendingPickupListings" aria-controls="secondList" role="tab" data-toggle="tab">Pending Pickup</a></li>
     <li role="presentation"><a href="#claimedListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed</a></li>
 </ul>
 
@@ -19,11 +17,6 @@
             <div role="tabpanel" class="tab-pane active" id="availableListings">
                 <div>
                     @Html.Partial("__FoodBankAvailableTableListing", availableListings)
-                </div>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="pendingPickupListings">
-                <div>
-                    @Html.Partial("__FoodBankPendingPickupTableListing", pendingPickupListings)
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="claimedListings">
