@@ -249,6 +249,7 @@
     <Compile Include="ViewModels\AddressEditViewModel.cs" />
     <Compile Include="ViewModels\AddressViewModel.cs" />
     <Compile Include="ViewModels\AdministratorViewModel.cs" />
+    <Compile Include="ViewModels\ClaimViewModel.cs" />
     <Compile Include="ViewModels\FoodBankViewModel.cs" />
     <Compile Include="ViewModels\GrowerViewModel.cs" />
     <Compile Include="ViewModels\ListingEditViewModel.cs" />
