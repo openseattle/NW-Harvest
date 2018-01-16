@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
+using System;
 //using System.Web.Http;
 
 namespace NWHarvest.Web.Controllers
@@ -83,7 +84,7 @@ namespace NWHarvest.Web.Controllers
 
             // available grower listings
             vm.AvailableListings = db.Listings
-                .Where(l => l.IsAvailable == true)
+                .Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow)
                 .Select(l => new ListingViewModel
                 {
                     Id = l.Id,
