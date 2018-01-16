@@ -108,76 +108,7 @@ namespace NWHarvest.Web.Controllers
                         }
                     },
                 }).ToList();
-
-            // claimed listings for pickup
-            vm.ClaimedListings = db.Listings
-                .Where(l => l.FoodBank.Id == vm.Id && l.IsPickedUp == false)
-                .Select(l => new ListingViewModel
-                {
-                    Id = l.Id,
-                    Product = l.Product,
-                    PickupLocation = new PickupLocationViewModel
-                    {
-                        Address = new AddressViewModel
-                        {
-                            Address1 = l.PickupLocation.address1,
-                            Address2 = l.PickupLocation.address2,
-                            Address3 = l.PickupLocation.address3,
-                            Address4 = l.PickupLocation.address4,
-                            City = l.PickupLocation.city,
-                            County = l.PickupLocation.county,
-                            State = l.PickupLocation.state,
-                            Zip = l.PickupLocation.zip
-                        }
-                    },
-                    QuantityAvailable = l.QuantityAvailable,
-                    Comments = l.Comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        Name = l.Grower.name
-                    }
-                }).ToList();
-
-            vm.Listings = db.Listings
-                .Select(l => new ViewModels.ListingViewModel
-                {
-                    Id = l.Id,
-                    Product = l.Product,
-                    QuantityAvailable = l.QuantityAvailable,
-                    CostPerUnit = l.CostPerUnit,
-                    UnitOfMeasure = l.UnitOfMeasure,
-                    HarvestDate = l.HarvestedDate,
-                    ExpirationDate = l.ExpirationDate,
-                    Comments = l.Comments,
-                    IsAvailable = l.IsAvailable,
-                    IsPickedUp = l.IsPickedUp,
-                    QuantityClaimed = l.QuantityClaimed,
-                    PickupLocation = new PickupLocationViewModel
-                    {
-                        Name = l.PickupLocation.name,
-                        Address = new AddressViewModel
-                        {
-                            Address1 = l.PickupLocation.address1,
-                            Address2 = l.PickupLocation.address2,
-                            Address3 = l.PickupLocation.address3,
-                            Address4 = l.PickupLocation.address4,
-                            City = l.PickupLocation.city,
-                            County = l.PickupLocation.county,
-                            State = l.PickupLocation.state,
-                            Zip = l.PickupLocation.zip
-                        }
-                    },
-                    Grower = new GrowerViewModel
-                    {
-                        IsActive = l.Grower.IsActive
-                    },
-                    FoodBank = new FoodBankViewModel
-                    {
-                        UserId = l.FoodBank.UserId
-                    },
-                }).ToList();
-
+            
             vm.Claims = db.FoodBankClaims
                 .Where(c => c.FoodBankId == vm.Id)
                 .Select(c => new ClaimViewModel
