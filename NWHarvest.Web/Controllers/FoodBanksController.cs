@@ -92,7 +92,6 @@ namespace NWHarvest.Web.Controllers
                     CostPerUnit = l.CostPerUnit,
                     UnitOfMeasure = l.UnitOfMeasure,
                     ExpirationDate = l.ExpirationDate,
-                    Comments = l.Comments,
                     Grower = new GrowerViewModel
                     {
                         Id = l.Grower.Id,
