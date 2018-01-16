@@ -252,6 +252,7 @@
     <Compile Include="ViewModels\FoodBankViewModel.cs" />
     <Compile Include="ViewModels\GrowerViewModel.cs" />
     <Compile Include="ViewModels\ListingEditViewModel.cs" />
+    <Compile Include="ViewModels\ClaimListingViewModel.cs" />
     <Compile Include="ViewModels\ListingViewModel.cs" />
     <Compile Include="ViewModels\NotificationViewModel.cs" />
     <Compile Include="ViewModels\PickupLocationEditViewModel.cs" />

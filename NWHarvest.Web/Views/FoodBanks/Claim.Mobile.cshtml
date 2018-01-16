@@ -1,20 +1,14 @@
 ﻿@model NWHarvest.Web.ViewModels.ListingViewModel
 
 @{
-    ViewBag.Title = "Confirm Claim Listing";
+    ViewBag.Title = "Claim Form";
     ViewBag.NavBarTitle = ViewBag.Title;
-    var totalCost = (Model.QuantityAvailable * Model.CostPerUnit).ToString("C");
 }
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12 card">
             <div class="card-body">
-                <h4 class="card-title">@Model.Product from @Model.Grower.Name</h4>
-                <div class="card-text">Quantity: @Model.QuantityAvailable</div>
-                <div class="card-text">Unit Cost: @Model.CostPerUnit / @Model.UnitOfMeasure</div>
-                <div class="card-text">Total Cost: @totalCost</div>
-
                 @Html.Partial("_ClaimForm", Model)
             </div>
         </div>

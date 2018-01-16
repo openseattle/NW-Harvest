@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
 using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
+//using System.Web.Http;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -247,28 +248,7 @@ namespace NWHarvest.Web.Controllers
         [Authorize(Roles = "FoodBank")]
         public ActionResult Claim(int ListingId)
         {
-            var vm = db.Listings
-                .Where(l => l.Id == ListingId)
-                .Select(l => new ListingViewModel
-                {
-                    Id = l.Id,
-                    Product = l.Product,
-                    QuantityAvailable = l.QuantityAvailable,
-                    CostPerUnit = l.CostPerUnit,
-                    UnitOfMeasure = l.UnitOfMeasure,
-                    ExpirationDate = l.ExpirationDate,
-                    Comments = l.Comments,
-                    PickupLocation = new PickupLocationViewModel
-                    {
-
-                    },
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        Name = l.Grower.name
-                    }
-                })
-                .FirstOrDefault();
+            var vm = GetClaimListingViewModel(ListingId);
 
             if (vm == null)
             {
@@ -281,11 +261,15 @@ namespace NWHarvest.Web.Controllers
         [HttpPost]
         [Authorize(Roles = "FoodBank")]
         [ValidateAntiForgeryToken]
-        [ActionName("Claim")]
-        public ActionResult ClaimConfirm(int ListingId)
+        public ActionResult Claim([Bind(Include = "Quantity,ListingId")]ClaimListingViewModel claim)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(GetClaimListingViewModel(claim.ListingId));
+            }
+
             var vm = db.Listings
-                .Where(l => l.Id == ListingId)
+                .Where(l => l.Id == claim.ListingId)
                 .Select(l => new ListingViewModel
                 {
                     Id = l.Id,
@@ -315,7 +299,14 @@ namespace NWHarvest.Web.Controllers
                         }
                     }
                 })
+                .AsNoTracking()
                 .FirstOrDefault();
+
+            if (claim.Quantity <= 0 || claim.Quantity > vm.QuantityAvailable)
+            {
+                ModelState.AddModelError("RangeException", "Invalid quantity.");
+                return View(GetClaimListingViewModel(claim.ListingId));
+            }
 
             if (vm == null)
             {
@@ -329,18 +320,10 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
-            db.Listings.Remove(listing);
-            
-            //listing.IsAvailable = false;
-            //listing.QuantityClaimed = listing.QuantityClaimed;
-            //listing.FoodBank = foodBank;
-            //db.SaveChanges();
-
-            // copy listing details to FoodBankClaim table
             var foodbankClaim = new FoodBankClaim
             {
                 Product = vm.Product,
-                Quantity = (int)vm.QuantityAvailable,
+                Quantity = (int)claim.Quantity,
                 CostPerUnit = vm.CostPerUnit,
                 Address = new Address
                 {
@@ -354,10 +337,17 @@ namespace NWHarvest.Web.Controllers
                 FoodBank = foodBank,
                 GrowerId = vm.Grower.Id
             };
+
             db.FoodBankClaims.Add(foodbankClaim);
+            if (decimal.Compare(listing.QuantityAvailable, claim.Quantity) == 0)
+            {
+                db.Listings.Remove(listing);
+            } else {
+                listing.QuantityAvailable = listing.QuantityAvailable - claim.Quantity;
+            }
+            
             db.SaveChanges();
 
-            // send notification(s)
             SendNotification(vm);
 
             return RedirectToAction(nameof(Profile));
@@ -508,6 +498,22 @@ namespace NWHarvest.Web.Controllers
         }
 
         #region Helpers
+        private ClaimListingViewModel GetClaimListingViewModel(int listingId)
+        {
+            return db.Listings
+                    .Where(l => l.Id == listingId)
+                    .Select(l => new ClaimListingViewModel
+                    {
+                        ListingId = l.Id,
+                        Product = l.Product,
+                        Available = l.QuantityAvailable,
+                        CostPerUnit = l.CostPerUnit,
+                        UnitOfMeasure = l.UnitOfMeasure,
+                        GrowerName = l.Grower.name
+                    })
+                    .AsNoTracking()
+                    .FirstOrDefault();
+        }
         private void RegisterViewData()
         {
             ViewData["States"] = new List<SelectListItem>

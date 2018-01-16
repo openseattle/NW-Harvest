@@ -1,12 +1,20 @@
-﻿@model NWHarvest.Web.ViewModels.ListingViewModel
-
-
+﻿@model NWHarvest.Web.ViewModels.ClaimListingViewModel
 @using (Html.BeginForm())
 {
+    <h4 class="card-title">@Model.Product from @Model.GrowerName</h4>
+    <div class="card-text">Available: @Model.Available</div>
+    <div class="card-text">Unit Cost: @Model.CostPerUnit / @Model.UnitOfMeasure</div>
+    <br />
     @Html.AntiForgeryToken()
-    <input type="hidden" id="ListingId" name="ListingId" value="@Model.Id" />
-    <div class="form-actions no-color">
-        <input type="submit" value="Submit Claim" class="btn btn-default btn-success" />
-        @Html.ActionLink("Cancel", "Profile", "FoodBanks", null, new { @class = "btn btn-default btn-sm" })
+    @Html.HiddenFor(model => model.ListingId)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Quantity)
+        @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+        @Html.ValidationMessage("RangeException", new {@class="text-danger" })
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-default btn-success" />
+        @Html.ActionLink("Cancel", "Profile", "FoodBanks", null, new { @class = "btn btn-default" })
     </div>
 }                   
