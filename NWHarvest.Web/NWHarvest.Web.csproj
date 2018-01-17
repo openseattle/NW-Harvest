@@ -227,6 +227,10 @@
     <Compile Include="Migrations\201801112347326_AddFoodBankClaimTable.Designer.cs">
       <DependentUpon>201801112347326_AddFoodBankClaimTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801171940143_AddListingIdToFoodBankClaim.cs" />
+    <Compile Include="Migrations\201801171940143_AddListingIdToFoodBankClaim.Designer.cs">
+      <DependentUpon>201801171940143_AddListingIdToFoodBankClaim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -485,6 +489,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801112347326_AddFoodBankClaimTable.resx">
       <DependentUpon>201801112347326_AddFoodBankClaimTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801171940143_AddListingIdToFoodBankClaim.resx">
+      <DependentUpon>201801171940143_AddListingIdToFoodBankClaim.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

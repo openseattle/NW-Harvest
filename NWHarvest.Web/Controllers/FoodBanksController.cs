@@ -284,6 +284,7 @@ namespace NWHarvest.Web.Controllers
 
             var foodbankClaim = new FoodBankClaim
             {
+                ListingId = listing.Id,
                 Product = vm.Product,
                 Quantity = (int)claim.Quantity,
                 CostPerUnit = vm.CostPerUnit,
