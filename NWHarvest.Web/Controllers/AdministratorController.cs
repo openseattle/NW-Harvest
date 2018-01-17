@@ -40,7 +40,7 @@ namespace NWHarvest.Web.Controllers
             // listings
             vm.NumberOfListings = db.Listings.Count();
             vm.NumberOfAvailableListings = db.Listings.Where(l => l.IsAvailable == true && l.ExpirationDate >= today).Count();
-            vm.NumberOfClaimedListings = db.Listings.Where(l => l.IsPickedUp == true).Count();
+            vm.NumberOfClaimedListings = db.Listings.Where(l => l.QuantityClaimed > 0).Count();
             vm.NumberOfUnavailableListings = db.Listings
                 .Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                     (l.IsAvailable == true && l.ExpirationDate < today))

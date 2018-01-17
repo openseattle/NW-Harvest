@@ -301,14 +301,8 @@ namespace NWHarvest.Web.Controllers
             };
 
             db.FoodBankClaims.Add(foodbankClaim);
-            if (decimal.Compare(listing.QuantityAvailable, claim.Quantity) == 0)
-            {
-                db.Listings.Remove(listing);
-            }
-            else
-            {
-                listing.QuantityAvailable = listing.QuantityAvailable - claim.Quantity;
-            }
+            listing.QuantityAvailable = listing.QuantityAvailable - claim.Quantity;
+            listing.QuantityClaimed = listing.QuantityClaimed + claim.Quantity;
 
             db.SaveChanges();
 
