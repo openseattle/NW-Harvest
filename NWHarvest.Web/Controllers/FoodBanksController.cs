@@ -113,6 +113,7 @@ namespace NWHarvest.Web.Controllers
                 .Where(c => c.FoodBankId == vm.Id)
                 .Select(c => new ClaimViewModel
                 {
+                    ListingId = c.ListingId,
                     ClaimedOn = c.CreatedOn,
                     Product = c.Product,
                     Quantity = c.Quantity,
@@ -124,7 +125,10 @@ namespace NWHarvest.Web.Controllers
                     },
                     Address = new AddressViewModel
                     {
+                        Address1 = c.Address.Address1,
+                        Address2 = c.Address.Address2,
                         City = c.Address.City,
+                        State = c.Address.State,
                         County = c.Address.County,
                         Zip = c.Address.Zip
                     }

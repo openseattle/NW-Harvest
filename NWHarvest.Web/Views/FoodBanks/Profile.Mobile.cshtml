@@ -25,9 +25,9 @@
             <div class="panel-heading clearfix">
                 <h5>Claimed Listings for Pickup</h5>
             </div>
-            @if (Model.ClaimedListings?.Count > 0)
+            @if (Model.Claims?.Count > 0)
             {
-                @Html.Partial("_ClaimedListing", Model.ClaimedListings.ToList())
+                @Html.Partial("_ClaimedListing", Model.Claims.ToList())
             }
         </div>
         <br />

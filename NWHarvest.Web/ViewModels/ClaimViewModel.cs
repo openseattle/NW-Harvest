@@ -14,6 +14,7 @@ namespace NWHarvest.Web.ViewModels
 
         public int GrowerId { get; set; }
         public int FoodBankId { get; set; }
+        public int ListingId { get; set; }
 
         public AddressViewModel Address { get; set; }
         public GrowerViewModel Grower { get; set; }
