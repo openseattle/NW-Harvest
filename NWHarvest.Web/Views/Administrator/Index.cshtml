@@ -61,10 +61,6 @@
                         <td class="text-center">@Model.NumberOfAvailableListings</td>
                     </tr>
                     <tr>
-                        <td>@Html.ActionLink("Pending Pickup", "ManageListings", new { ListingStatus = ListingStatus.Pickup })</td>
-                        <td class="text-center">@Model.NumberOfPendingPickupClaimListings</td>
-                    </tr>
-                    <tr>
                         <td>@Html.ActionLink("Claimed", "ManageListings", new { ListingStatus = ListingStatus.Claimed })</td>
                         <td class="text-center">@Model.NumberOfClaimedListings</td>
                     </tr>

@@ -455,7 +455,6 @@
     <Content Include="Views\Administrator\ManageGrower.cshtml" />
     <Content Include="Views\Administrator\ManageFoodBank.cshtml" />
     <Content Include="Views\Administrator\_AvailableListings.cshtml" />
-    <Content Include="Views\Administrator\_PendingPickupListings.cshtml" />
     <Content Include="Views\Administrator\_ClaimedListings.cshtml" />
     <Content Include="Views\Administrator\_UnavailableListings.cshtml" />
   </ItemGroup>

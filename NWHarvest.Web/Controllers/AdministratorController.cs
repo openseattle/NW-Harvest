@@ -40,7 +40,6 @@ namespace NWHarvest.Web.Controllers
             // listings
             vm.NumberOfListings = db.Listings.Count();
             vm.NumberOfAvailableListings = db.Listings.Where(l => l.IsAvailable == true && l.ExpirationDate >= today).Count();
-            vm.NumberOfPendingPickupClaimListings = db.Listings.Where(l => l.IsPickedUp == false && l.IsAvailable == false && l.ExpirationDate >= today).Count();
             vm.NumberOfClaimedListings = db.Listings.Where(l => l.IsPickedUp == true).Count();
             vm.NumberOfUnavailableListings = db.Listings
                 .Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
@@ -207,11 +206,6 @@ namespace NWHarvest.Web.Controllers
                     ViewBag.PanelHeader = "Available Listings";
                     ViewBag.ListingPartialView = "_AvailableListings";
                     query = query.Where(l => l.IsAvailable == true && l.ExpirationDate >= today);
-                    break;
-                case ListingStatus.Pickup:
-                    ViewBag.PanelHeader = "Pending Pickup Listings";
-                    ViewBag.ListingPartialView = "_PendingPickupListings";
-                    query = query.Where(l => l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate >= today);
                     break;
                 case ListingStatus.Claimed:
                     ViewBag.PanelHeader = "Claimed Listings";
