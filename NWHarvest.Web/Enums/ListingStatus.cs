@@ -4,7 +4,6 @@
     {
         Available,
         Claimed,
-        Pickup,
         Expired,
         Unavailable
     }
