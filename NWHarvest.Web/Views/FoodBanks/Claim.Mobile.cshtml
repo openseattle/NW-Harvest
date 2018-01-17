@@ -1,8 +1,9 @@
-﻿@model NWHarvest.Web.ViewModels.ListingViewModel
+﻿@model NWHarvest.Web.ViewModels.ClaimListingViewModel
 
 @{
     ViewBag.Title = "Claim Form";
     ViewBag.NavBarTitle = ViewBag.Title;
+    Model.Quantity = Model.Available;
 }
 
 <div class="container-fluid">
