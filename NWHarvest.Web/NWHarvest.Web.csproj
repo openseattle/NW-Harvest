@@ -411,8 +411,6 @@
     <Content Include="Views\FoodBanks\_EditForm.cshtml" />
     <Content Include="Views\FoodBanks\Claim.cshtml" />
     <Content Include="Views\FoodBanks\_ClaimForm.cshtml" />
-    <Content Include="Views\FoodBanks\Pickup.cshtml" />
-    <Content Include="Views\FoodBanks\_PickupForm.cshtml" />
     <Content Include="Views\FoodBanks\_Listing.cshtml" />
     <Content Include="Views\FoodBanks\_ClaimedListing.cshtml" />
     <Content Include="Views\FoodBanks\Profile.Mobile.cshtml" />

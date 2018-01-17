@@ -315,63 +315,7 @@ namespace NWHarvest.Web.Controllers
 
             return RedirectToAction(nameof(Profile));
         }
-
-        [HttpGet]
-        [Authorize(Roles = "FoodBank")]
-        public ActionResult Pickup(int listingId)
-        {
-            var vm = db.Listings
-                .Where(l => l.FoodBank.UserId == UserId && l.Id == listingId)
-                .Select(l => new PickupLocationViewModel
-                {
-                    Id = l.PickupLocation.id,
-                    Name = l.PickupLocation.name,
-                    Comments = l.PickupLocation.comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Name = l.Grower.name
-                    },
-                    Listing = new ListingViewModel
-                    {
-                        Id = l.Id,
-                        Product = l.Product,
-                        QuantityAvailable = l.QuantityAvailable,
-                        UnitOfMeasure = l.UnitOfMeasure
-                    },
-                    Address = new AddressViewModel
-                    {
-                        Address1 = l.PickupLocation.address1,
-                        Address2 = l.PickupLocation.address2,
-                        Address3 = l.PickupLocation.address3,
-                        Address4 = l.PickupLocation.address4,
-                        City = l.PickupLocation.city,
-                        County = l.PickupLocation.county,
-                        State = l.PickupLocation.state,
-                        Zip = l.PickupLocation.zip
-                    }
-                }).FirstOrDefault();
-
-            return View(vm);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "FoodBank")]
-        [ValidateAntiForgeryToken]
-        [ActionName("Pickup")]
-        public ActionResult PickupConfirm(int listingId)
-        {
-            Listing listingToUpdate = db.Listings.Find(listingId);
-            if (listingToUpdate == null)
-            {
-                return HttpNotFound();
-            }
-
-            listingToUpdate.IsPickedUp = true;
-            db.SaveChanges();
-
-            return RedirectToAction(nameof(Profile));
-        }
-
+        
         public ActionResult Settings()
         {
             return RedirectToAction("Index", "Manage");
