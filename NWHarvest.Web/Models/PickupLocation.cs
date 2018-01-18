@@ -60,5 +60,7 @@ namespace NWHarvest.Web.Models
 
         [DisplayName("Grower")]
         public virtual Grower Grower { get; set; }
+
+        public virtual FoodBank FoodBank { get; set; }
     }
 }
