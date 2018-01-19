@@ -48,28 +48,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
-            var vm = db.PickupLocations
-                .Where(p => p.id == id && p.Grower.UserId == UserId)
-                .Select(p => new PickupLocationViewModel
-                {
-                    Id = p.id,
-                    Name = p.name,
-                    Comments = p.comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Name = p.Grower.name
-                    },
-                    Address = new AddressViewModel
-                    {
-                        Address1 = p.address1,
-                        Address2 = p.address2,
-                        Address3 = p.address3,
-                        Address4 = p.address4,
-                        City = p.city,
-                        State = p.state,
-                        Zip = p.zip
-                    }
-                }).FirstOrDefault();
+            var vm = GetPickupLocation(id.Value);
 
             if (vm == null)
             {
@@ -340,6 +319,21 @@ namespace NWHarvest.Web.Controllers
                     System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
                 else
                     System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
+            }
+        }
+        private PickupLocationViewModel GetPickupLocation(int id)
+        {
+            PickupLocationViewModel vm;
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    vm = GetPickupLocations(_queryFoodBankPickupLocations, id).First();
+                    vm.UserName = _queryFoodBank.First().name;
+                    return vm;
+                default:
+                    vm = GetPickupLocations(_queryGrowerPickupLocations, id).First();
+                    vm.UserName = _queryGrower.First().name;
+                    return vm;
             }
         }
         private IEnumerable<PickupLocationViewModel> GetPickupLocations(IQueryable<PickupLocation> query, int id = 0)

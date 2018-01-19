@@ -1,11 +1,11 @@
 ﻿@model NWHarvest.Web.ViewModels.PickupLocationViewModel
 
 @{
-    ViewBag.Title = "Pickup Location Detail";
+    ViewBag.Title = $"{Model.UserName} Pickup Location Detail";
     ViewBag.NavBarTitle = ViewBag.Title;
 }
 
-<h3>@Model.Grower.Name</h3>
+<h3>@ViewBag.Title</h3>
 <hr />
 <div class="container-fluid">
     <div class="row">
