@@ -7,6 +7,7 @@ using NWHarvest.Web.Helper;
 using NWHarvest.Web.Models;
 using NWHarvest.Web.ViewModels;
 using Microsoft.AspNet.Identity;
+using NWHarvest.Web.Enums;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -14,33 +15,28 @@ namespace NWHarvest.Web.Controllers
     public class PickupLocationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly string _userRoleSessionKey = "UserRole";
+        private IQueryable<PickupLocation> _queryFoodBankPickupLocations => db.PickupLocations.Where(fb => fb.FoodBank.UserId == UserId);
+        private IQueryable<PickupLocation> _queryGrowerPickupLocations => db.PickupLocations.Where(g => g.Grower.UserId == UserId);
 
-        [Authorize(Roles = "Grower")]
+        public PickupLocationsController()
+        {
+            SetSessionUserRole();
+        }
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Manage()
         {
-            var vm = db.PickupLocations
-                .Where(pl => pl.Grower.UserId == UserId)
-                .Select(p => new PickupLocationViewModel
-                {
-                    Id = p.id,
-                    Name = p.name,
-                    Comments = p.comments,
-                    Address = new AddressViewModel
-                    {
-                        Address1 = p.address1,
-                        Address2 = p.address2,
-                        Address3 = p.address3,
-                        Address4 = p.address4,
-                        City = p.city,
-                        State = p.state,
-                        Zip = p.zip
-                    }
-                })
-                .ToList();
-
-            ViewBag.GrowerName = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.name;
-
-            return View(vm);
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    ViewBag.Name = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault()?.name;
+                    ViewBag.BackToProfile = UserRole.FoodBank.ToString() + "s";
+                    return View(GetPickupLocations(_queryFoodBankPickupLocations).ToList());
+                default:
+                    ViewBag.Name = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.name;
+                    ViewBag.BackToProfile = UserRole.Grower.ToString() + "s";
+                    return View(GetPickupLocations(_queryGrowerPickupLocations).ToList());
+            }
         }
 
         public ActionResult Details(int? id)
@@ -342,6 +338,41 @@ namespace NWHarvest.Web.Controllers
         }
 
         #region Helpers
+        private void SetSessionUserRole()
+        {
+            if (System.Web.HttpContext.Current.Session[_userRoleSessionKey] == null)
+            {
+                if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
+                    System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
+                else
+                    System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
+            }
+        }
+        private IEnumerable<PickupLocationViewModel> GetPickupLocations(IQueryable<PickupLocation> query, int id = 0)
+        {
+            if (id != 0)
+            {
+                query = query.Where(q => q.id == id);
+            }
+
+            return query.Select(p => new PickupLocationViewModel
+            {
+                Id = p.id,
+                Name = p.name,
+                Comments = p.comments,
+                Address = new AddressViewModel
+                {
+                    Address1 = p.address1,
+                    Address2 = p.address2,
+                    Address3 = p.address3,
+                    Address4 = p.address4,
+                    City = p.city,
+                    State = p.state,
+                    County = p.county,
+                    Zip = p.zip
+                }
+            });
+        }
         private void RegisterViewData()
         {
             ViewData["States"] = new List<SelectListItem>
