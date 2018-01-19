@@ -111,38 +111,34 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (id == null || id <= 0)
             {
                 return HttpNotFound();
             }
 
-            var vm = db.PickupLocations
-                .Where(p => p.id == id && p.Grower.UserId == UserId)
-                .Select(p => new PickupLocationEditViewModel
+            var location = GetPickupLocation(id.Value);
+
+            var vm = new PickupLocationEditViewModel
+            {
+                Id = location.Id,
+                Name = location.Name,
+                UserName = location.UserName,
+                Comments = location.Comments,
+                Address = new AddressEditViewModel
                 {
-                    Id = p.id,
-                    Name = p.name,
-                    Comments = p.comments,
-                    Address = new AddressEditViewModel
-                    {
-                        Address1 = p.address1,
-                        Address2 = p.address2,
-                        Address3 = p.address3,
-                        Address4 = p.address4,
-                        City = p.city,
-                        County = p.county,
-                        State = p.state,
-                        Zip = p.zip
-                    },
-                    Grower = new GrowerViewModel
-                    {
-                        Name = p.Grower.name
-                    }
-                })
-                .FirstOrDefault();
+                    Address1 = location.Address.Address1,
+                    Address2 = location.Address.Address2,
+                    Address3 = location.Address.Address3,
+                    Address4 = location.Address.Address4,
+                    City = location.Address.City,
+                    County = location.Address.County,
+                    State = location.Address.State,
+                    Zip = location.Address.Zip
+                }
+            };
 
             if (vm == null)
             {
@@ -155,15 +151,16 @@ namespace NWHarvest.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Edit(PickupLocationEditViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                var pickupLocationToUpdate = db.PickupLocations
-                    .Where(p => p.id == vm.Id && p.Grower.UserId == UserId)
-                    .FirstOrDefault();
-
+                PickupLocation pickupLocationToUpdate = db.PickupLocations.Find(vm.Id);
+                if (pickupLocationToUpdate == null)
+                {
+                    return HttpNotFound();
+                }
                 pickupLocationToUpdate.name = vm.Name;
                 pickupLocationToUpdate.address1 = vm.Address.Address1;
                 pickupLocationToUpdate.address2 = vm.Address.Address2;

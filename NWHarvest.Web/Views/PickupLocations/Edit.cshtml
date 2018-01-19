@@ -5,14 +5,13 @@
     ViewBag.Title = "Edit";
     ViewBag.NavBarTitle = "Edit Pickup Location";
 }
-<h3>@Model.Grower.Name</h3>
+<h3>@Model.UserName</h3>
 <hr />
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.Grower.Id)
     <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
@@ -22,7 +21,7 @@
                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
-        
+
         @Html.PartialFor(model => model.Address, "_AddressForm")
 
         <div class="form-group">
