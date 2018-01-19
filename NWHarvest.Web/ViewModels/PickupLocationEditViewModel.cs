@@ -11,10 +11,12 @@ namespace NWHarvest.Web.ViewModels
         [DisplayName("Title")]
         [StringLength(50)]
         public string Name { get; set; }
+        public string UserName { get; set; }
 
         public AddressEditViewModel Address { get; set; }
 
         public string Comments { get; set; }
         public GrowerViewModel Grower { get; set; }
+
     }
 }

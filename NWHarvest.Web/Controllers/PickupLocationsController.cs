@@ -18,6 +18,8 @@ namespace NWHarvest.Web.Controllers
         private readonly string _userRoleSessionKey = "UserRole";
         private IQueryable<PickupLocation> _queryFoodBankPickupLocations => db.PickupLocations.Where(fb => fb.FoodBank.UserId == UserId);
         private IQueryable<PickupLocation> _queryGrowerPickupLocations => db.PickupLocations.Where(g => g.Grower.UserId == UserId);
+        private IQueryable<FoodBank> _queryFoodBank => db.FoodBanks.Where(fb => fb.UserId == UserId);
+        private IQueryable<Grower> _queryGrower => db.Growers.Where(g => g.UserId == UserId);
 
         public PickupLocationsController()
         {
@@ -77,26 +79,10 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Create()
         {
-            var vm = db.Growers
-                .Where(g => g.UserId == UserId)
-                .Select(g => new PickupLocationEditViewModel
-                {
-                    Grower = new GrowerViewModel
-                    {
-                        Id = g.Id,
-                        Name = g.name
-                    },
-                    Address = new AddressEditViewModel
-                    {
-                        County = g.county,
-                        State = g.state
-                    }
-                })
-                .FirstOrDefault();
-
+            PickupLocationEditViewModel vm = InitializePickupLocationEditViewModel();
             if (vm == null)
             {
                 return HttpNotFound();
@@ -108,7 +94,7 @@ namespace NWHarvest.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Create(PickupLocationEditViewModel vm)
         {
             if (ModelState.IsValid)
@@ -124,9 +110,17 @@ namespace NWHarvest.Web.Controllers
                     county = vm.Address.County,
                     state = vm.Address.State,
                     zip = vm.Address.Zip,
-                    comments = vm.Comments,
-                    Grower = db.Growers.Find(vm.Grower.Id)
+                    comments = vm.Comments
                 };
+
+                if (User.IsInRole(UserRole.FoodBank.ToString()))
+                {
+                    pickupLocationToAdd.FoodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).First();
+                }
+                else
+                {
+                    pickupLocationToAdd.Grower = db.Growers.Where(g => g.UserId == UserId).First();
+                }
 
                 db.PickupLocations.Add(pickupLocationToAdd);
                 db.SaveChanges();
@@ -372,6 +366,32 @@ namespace NWHarvest.Web.Controllers
                     Zip = p.zip
                 }
             });
+        }
+        private PickupLocationEditViewModel InitializePickupLocationEditViewModel()
+        {
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    return _queryFoodBank.Select(fb => new PickupLocationEditViewModel
+                    {
+                        UserName = fb.name,
+                        Address = new AddressEditViewModel
+                        {
+                            County = fb.county,
+                            State = fb.state
+                        },
+                    }).FirstOrDefault();
+                default:
+                    return _queryGrower.Select(g => new PickupLocationEditViewModel
+                    {
+                        UserName = g.name,
+                        Address = new AddressEditViewModel
+                        {
+                            County = g.county,
+                            State = g.state
+                        },
+                    }).FirstOrDefault();
+            }
         }
         private void RegisterViewData()
         {
