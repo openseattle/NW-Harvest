@@ -463,6 +463,9 @@
     <Content Include="Views\Administrator\_AvailableListings.cshtml" />
     <Content Include="Views\Administrator\_ClaimedListings.cshtml" />
     <Content Include="Views\Administrator\_UnavailableListings.cshtml" />
+    <Content Include="Views\PickupLocations\Details.Mobile.cshtml" />
+    <Content Include="Views\PickupLocations\Edit.Mobile.cshtml" />
+    <Content Include="Views\PickupLocations\Delete.Mobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

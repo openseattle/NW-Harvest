@@ -214,7 +214,7 @@ namespace NWHarvest.Web.Controllers
                 ModelState.AddModelError(string.Empty, "Unable to delete location. One or more listings depends on this location.");
                 return View(GetPickupLocation(id));
             }
-            
+
             try
             {
                 db.PickupLocations.Remove(pickupLocationToRemove);
@@ -242,13 +242,10 @@ namespace NWHarvest.Web.Controllers
         #region Helpers
         private void SetSessionUserRole()
         {
-            if (System.Web.HttpContext.Current.Session[_userRoleSessionKey] == null)
-            {
-                if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
-                    System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
-                else
-                    System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
-            }
+            if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
+                System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
+            else
+                System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
         }
         private PickupLocationViewModel GetPickupLocation(int id)
         {
