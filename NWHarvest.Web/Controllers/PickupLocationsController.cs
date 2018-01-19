@@ -8,6 +8,7 @@ using NWHarvest.Web.Models;
 using NWHarvest.Web.ViewModels;
 using Microsoft.AspNet.Identity;
 using NWHarvest.Web.Enums;
+using System.Linq.Expressions;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -180,7 +181,7 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Delete(int? id)
         {
             if (id == null || UserId == null)
@@ -188,29 +189,7 @@ namespace NWHarvest.Web.Controllers
                 return HttpNotFound();
             }
 
-            var vm = db.PickupLocations
-                .Where(p => p.id == id && p.Grower.UserId == UserId)
-                .Select(p => new PickupLocationViewModel
-                {
-                    Id = p.id,
-                    Name = p.name,
-                    Comments = p.comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Name = p.Grower.name
-                    },
-                    Address = new AddressViewModel
-                    {
-                        Address1 = p.address1,
-                        Address2 = p.address2,
-                        Address3 = p.address3,
-                        Address4 = p.address4,
-                        City = p.city,
-                        State = p.state,
-                        Zip = p.zip
-                    }
-                })
-                .FirstOrDefault();
+            var vm = GetPickupLocation(id.Value);
 
             if (vm == null)
             {
@@ -221,78 +200,31 @@ namespace NWHarvest.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult DeleteConfirmed(int id)
         {
-            // check if location is associated with any listings
-            if (db.Listings.Where(l => l.PickupLocationId == id && UserId == l.Grower.UserId).ToList().Count > 0)
+            var pickupLocationToRemove = db.PickupLocations.Find(id);
+            if (pickupLocationToRemove == null)
             {
-                ModelState.AddModelError(string.Empty, "Unable to delete location. One or more listings depends on this location.");
-                var vm = db.PickupLocations
-                .Where(p => p.id == id && p.Grower.UserId == UserId)
-                .Select(p => new PickupLocationViewModel
-                {
-                    Id = p.id,
-                    Name = p.name,
-                    Comments = p.comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Name = p.Grower.name
-                    },
-                    Address = new AddressViewModel
-                    {
-                        Address1 = p.address1,
-                        Address2 = p.address2,
-                        Address3 = p.address3,
-                        Address4 = p.address4,
-                        City = p.city,
-                        State = p.state,
-                        Zip = p.zip
-                    }
-                })
-                .FirstOrDefault();
-                return View(vm);
+                return HttpNotFound();
             }
 
-            PickupLocation pickupLocation = db.PickupLocations
-                .Where(p => p.id == id && p.Grower.UserId == UserId)
-                .FirstOrDefault();
-
+            if (db.Listings.Where(l => l.PickupLocationId == id).Count() > 0)
+            {
+                ModelState.AddModelError(string.Empty, "Unable to delete location. One or more listings depends on this location.");
+                return View(GetPickupLocation(id));
+            }
+            
             try
             {
-                db.PickupLocations.Remove(pickupLocation);
+                db.PickupLocations.Remove(pickupLocationToRemove);
                 db.SaveChanges();
                 return RedirectToAction(nameof(Manage));
             }
-
             catch (Exception)
             {
-                var vm = db.PickupLocations
-                .Where(p => p.id == id && p.Grower.UserId == UserId)
-                .Select(p => new PickupLocationViewModel
-                {
-                    Id = p.id,
-                    Name = p.name,
-                    Comments = p.comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Name = p.Grower.name
-                    },
-                    Address = new AddressViewModel
-                    {
-                        Address1 = p.address1,
-                        Address2 = p.address2,
-                        Address3 = p.address3,
-                        Address4 = p.address4,
-                        City = p.city,
-                        State = p.state,
-                        Zip = p.zip
-                    }
-                })
-                .FirstOrDefault();
-
                 ModelState.AddModelError(String.Empty, "You cannot delete this location because it is used on an existing Listing.");
-                return View(vm);
+                return View(GetPickupLocation(id));
             }
         }
 
