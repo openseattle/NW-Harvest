@@ -7,7 +7,6 @@ using NWHarvest.Web.Helper;
 using NWHarvest.Web.Models;
 using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
-using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity;
 using System;
 //using System.Web.Http;
@@ -18,19 +17,7 @@ namespace NWHarvest.Web.Controllers
     public class FoodBanksController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        private ApplicationUserManager _userManager;
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
+        private NotificationManager notificationManager = new NotificationManager();
 
         [AllowAnonymous]
         public ActionResult Register(FoodBank foodbank)
@@ -323,76 +310,30 @@ namespace NWHarvest.Web.Controllers
 
         private string UserId => User.Identity.GetUserId();
 
-        // send sms and or email to grower
+        // send sms and/or email notification to grower
         private void SendNotification(ListingViewModel vm)
         {
-            var growerPhoneNumber = UserManager.GetPhoneNumber(vm.Grower.UserId);
-            var foodBankPhoneNumber = UserManager.GetPhoneNumber(UserId);
+            var growerPhoneNumber = notificationManager.GetUserPhoneNumber(vm.Grower.UserId);
+            var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
             var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
 
-            // todo: implement enum Notifications
-            // see Account/Registration for list of valid values
-            // both
-            // emailNote
-            // textNote
-            switch (vm.Grower.NotificationPreference.ToString().ToLower())
-            {
-                case "both":
-                    SendSmsNotification(vm.Product, foodBank, foodBankPhoneNumber, growerPhoneNumber);
-                    SendEmailNotification(vm.Grower.Email, vm.Product, foodBank, foodBankPhoneNumber);
-                    break;
-                case "emailnote":
-                    SendEmailNotification(vm.Grower.Email, vm.Product, foodBank, foodBankPhoneNumber);
-                    break;
-                case "textnote":
-                    SendSmsNotification(vm.Product, foodBank, foodBankPhoneNumber, growerPhoneNumber);
-                    break;
-                default:
-                    return;
-            }
-        }
-
-        private void SendSmsNotification(string product, FoodBank foodBank, string foodBankPhoneNumber, string growerPhoneNumber = null)
-        {
-            // bail grower does not have a phone number
-            if (growerPhoneNumber == null)
-            {
-                return;
-            }
-
-            var body = $"Your listing of {product} has been claimed by {foodBank.name}, {foodBank.email}";
+            var subject = $"NW Harvest listing of {vm.Product} has been claimed by {foodBank.name}";
+            var body = $"Your listing of {vm.Product} has been claimed by {foodBank.name}, {foodBank.email}";
 
             if (foodBankPhoneNumber != null)
             {
                 body += ", " + foodBankPhoneNumber;
             }
-            var message = new IdentityMessage
-            {
-                Destination = growerPhoneNumber,
-                Subject = "",
-                Body = body
-            };
 
-            UserManager.SmsService.SendAsync(message).Wait();
-        }
-
-        private void SendEmailNotification(string growerEmail, string product, FoodBank foodBank, string foodBankPhoneNumber = null)
-        {
-            var subject = $"NW Harvest listing of {product} has been claimed by {foodBank.name}";
-            var body = $"Your listing of {product} has been claimed by {foodBank.name}, {foodBank.email}";
-
-            if (foodBankPhoneNumber != null)
+            var message = new NotificationMessage
             {
-                body += ", " + foodBankPhoneNumber;
-            }
-            var message = new IdentityMessage
-            {
-                Destination = growerEmail,
+                DestinationPhoneNumber = growerPhoneNumber,
+                DestinationEmailAddress = vm.Grower.Email,
                 Subject = subject,
                 Body = body
             };
 
-            UserManager.EmailService.SendAsync(message);
+            notificationManager.SendNotification(message, vm.Grower.NotificationPreference);
         }
 
         protected override void Dispose(bool disposing)

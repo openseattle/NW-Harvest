@@ -200,6 +200,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\NotificationMessage.cs" />
+    <Compile Include="Helper\NotificationManager.cs" />
     <Compile Include="Helper\Seeder.cs" />
     <Compile Include="Helper\MvcHtmlHelper.cs" />
     <Compile Include="Helper\WashingtonState.cs" />
