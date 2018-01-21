@@ -9,6 +9,7 @@ using NWHarvest.Web.Models;
 using NWHarvest.Web.ViewModels;
 using System.Collections.Generic;
 using NWHarvest.Web.Enums;
+using NWHarvest.Web.Helper;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -25,6 +26,7 @@ namespace NWHarvest.Web.Controllers
     public class ListingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private NotificationManager notificationManager = new NotificationManager();
         private const int DAY_LIMIT_FOR_GROWERS = 31;
         private const int DAY_LIMIT_FOR_FOOD_BANKS = 31;
         private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
@@ -187,13 +189,15 @@ namespace NWHarvest.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Grower")]
-        public ActionResult Create(NWHarvest.Web.ViewModels.ListingViewModel vm)
+        public ActionResult Create(ListingViewModel vm)
         {
             if (ModelState.IsValid)
             {
                 var pickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
                 var userId = User.Identity.GetUserId();
                 var grower = db.Growers.Where(g => g.UserId == userId).FirstOrDefault();
+
+                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == pickupLocation.county).ToList();
 
                 var listingToAdd = new Listing
                 {
@@ -213,6 +217,11 @@ namespace NWHarvest.Web.Controllers
 
                 db.Listings.Add(listingToAdd);
                 db.SaveChanges();
+
+                if (foodBanksToNotify.Count > 0)
+                {
+                    SendNotification(listingToAdd, foodBanksToNotify);
+                }
 
                 return RedirectToAction(nameof(Manage));
             }
@@ -448,6 +457,33 @@ namespace NWHarvest.Web.Controllers
             }
 
             return RedirectToAction(nameof(Manage));
+        }
+
+        // send sms and/or email notification to Food Banks when a new listing is added in their county
+        private void SendNotification(Listing listing, List<FoodBank> foodBanks)
+        {
+            var growerPhoneNumber = notificationManager.GetUserPhoneNumber(listing.Grower.UserId);
+
+            var subject = $"NW Harvest listing of {listing.Product} has just been added by {listing.Grower.name}";
+            var body = $"Listing of {listing.Product} has been added by {listing.Grower.name}, {listing.Grower.email}";
+
+            if (growerPhoneNumber != null)
+            {
+                body += ", " + growerPhoneNumber;
+            }
+
+            foreach (var fb in foodBanks)
+            {
+                var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(fb.UserId);
+                var message = new NotificationMessage
+                {
+                    DestinationPhoneNumber = foodBankPhoneNumber,
+                    DestinationEmailAddress = fb.email,
+                    Subject = subject,
+                    Body = body
+                };
+                notificationManager.SendNotification(message, fb.NotificationPreference);
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -27,18 +27,18 @@ namespace NWHarvest.Web.Helper
         // textNote
         public void SendNotification(NotificationMessage message, string notificationPreference)
         {
-            switch (notificationPreference)
+            switch (notificationPreference.ToLower())
             {
                 case "both":
                     SendSmsNotification(message);
                     SendEmailNotification(message);
                     break;
 
-                case "emailNote":
+                case "email":
                     SendEmailNotification(message);
                     break;
 
-                case "textnote":
+                case "text":
                     SendSmsNotification(message);
                     break;
 
@@ -66,7 +66,7 @@ namespace NWHarvest.Web.Helper
 
         private void SendEmailNotification(NotificationMessage message)
         {
-            if (string.IsNullOrEmpty(message.DestinationPhoneNumber))
+            if (string.IsNullOrEmpty(message.DestinationEmailAddress))
             {
                 return;
             }
