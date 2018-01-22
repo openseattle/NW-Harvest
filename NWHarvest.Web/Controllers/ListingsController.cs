@@ -291,15 +291,21 @@ namespace NWHarvest.Web.Controllers
             if (ModelState.IsValid)
             {
                 var userId = User.Identity.GetUserId();
+                var newPickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
+                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == newPickupLocation.county).ToList();
 
                 var listing = db.Listings
                     .Where(l => l.Grower.UserId == userId && l.Id == vm.Id)
+                    .Include(l => l.Grower)
+                    .Include(l => l.PickupLocation)
                     .FirstOrDefault();
 
                 if (listing == null)
                 {
                     return HttpNotFound();
                 }
+
+                var prevPickupLocation = listing.PickupLocation;
 
                 listing.Product = vm.Product;
                 listing.QuantityAvailable = vm.QuantityAvailable;
@@ -312,6 +318,11 @@ namespace NWHarvest.Web.Controllers
                 listing.Comments = vm.Comments;
 
                 db.SaveChanges();
+
+                if (prevPickupLocation.county != newPickupLocation.county && foodBanksToNotify.Count > 0)
+                {
+                    SendNotification(listing, foodBanksToNotify);
+                }
 
                 return RedirectToAction(nameof(Manage));
             }
