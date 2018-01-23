@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using NWHarvest.Web.Enums;
+using System;
 using System.Web;
 
 namespace NWHarvest.Web.Helper
@@ -20,25 +22,20 @@ namespace NWHarvest.Web.Helper
             }
         }
 
-        // todo: implement enum Notifications
-        // see Account/Registration for list of valid values
-        // both
-        // emailNote
-        // textNote
         public void SendNotification(NotificationMessage message, string notificationPreference)
         {
-            switch (notificationPreference.ToLower())
+            switch ((UserNotification)Enum.Parse(typeof(UserNotification), notificationPreference, true))
             {
-                case "both":
+                case UserNotification.Both:
                     SendSmsNotification(message);
                     SendEmailNotification(message);
                     break;
 
-                case "email":
+                case UserNotification.Email:
                     SendEmailNotification(message);
                     break;
 
-                case "text":
+                case UserNotification.Text:
                     SendSmsNotification(message);
                     break;
 
