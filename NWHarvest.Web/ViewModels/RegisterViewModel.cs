@@ -41,10 +41,7 @@ namespace NWHarvest.Web.ViewModels
 
         [Required]
         public override string City { get; set; }
-
-        [Required]
-        public override string State { get; set; }
-
+        
         [Required]
         public override string County { get; set; }
 

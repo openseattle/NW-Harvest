@@ -74,13 +74,6 @@
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.State, new { @class = "col-xs-10 col-xs-offset-1" })
-        <div class="col-xs-10 col-xs-offset-1">
-            @Html.DropDownListFor(m => m.State, ViewBag.States as List<SelectListItem>, "Select State", new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
-        </div>
-    </div>
-    <div class="form-group">
         @Html.LabelFor(m => m.Zip, new { @class = "col-xs-10 col-xs-offset-1" })
         <div class="col-xs-10 col-xs-offset-1">
             @Html.TextBoxFor(m => m.Zip, new { @class = "form-control" })

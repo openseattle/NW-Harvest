@@ -227,11 +227,9 @@ namespace NWHarvest.Web.Controllers
                                 email = model.Email,
                                 address1 = model.Address1,
                                 address2 = model.Address2 == null ? "" : model.Address2,
-                                address3 = "",
-                                address4 = "",
                                 city = model.City,
                                 county = model.County,
-                                state = model.State,
+                                state = "WA",
                                 zip = model.Zip,
                                 NotificationPreference = model.Notification.ToString(),
                                 IsActive = true
@@ -251,11 +249,9 @@ namespace NWHarvest.Web.Controllers
                             email = model.Email,
                             address1 = model.Address1,
                             address2 = model.Address2 == null ? "" : model.Address2,
-                            address3 = "",
-                            address4 = "",
                             city = model.City,
                             county = model.County,
-                            state = model.State,
+                            state = "WA",
                             zip = model.Zip,
                             NotificationPreference = model.Notification.ToString(),
                             IsActive = true
@@ -534,16 +530,6 @@ namespace NWHarvest.Web.Controllers
                 {
                     Text = "Food Program",
                     Value = "IsFoodBank"
-                }
-            };
-
-            ViewBag.States = new List<SelectListItem>
-            {
-                new SelectListItem
-                {
-                    Text = "Washington",
-                    Value = "WA",
-                    Selected = true
                 }
             };
 
