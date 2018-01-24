@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NWHarvest.Web.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace NWHarvest.Web.ViewModels
 {
@@ -56,6 +57,6 @@ namespace NWHarvest.Web.ViewModels
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Notification Method")]
-        public string Notification { get; set; }
+        public UserNotification Notification { get; set; }
     }
 }

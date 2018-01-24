@@ -233,7 +233,7 @@ namespace NWHarvest.Web.Controllers
                                 county = model.County,
                                 state = model.State,
                                 zip = model.Zip,
-                                NotificationPreference = model.Notification,
+                                NotificationPreference = model.Notification.ToString(),
                                 IsActive = true
                             };
 
@@ -257,7 +257,7 @@ namespace NWHarvest.Web.Controllers
                             county = model.County,
                             state = model.State,
                             zip = model.Zip,
-                            NotificationPreference = model.Notification,
+                            NotificationPreference = model.Notification.ToString(),
                             IsActive = true
                         };
 
@@ -267,7 +267,6 @@ namespace NWHarvest.Web.Controllers
                 AddErrors(result);
             }
 
-            // If we got this far, something failed, redisplay form
             RegisterViewBag();
             return View(model);
         }
@@ -535,25 +534,6 @@ namespace NWHarvest.Web.Controllers
                 {
                     Text = "Food Program",
                     Value = "IsFoodBank"
-                }
-            };
-
-            ViewBag.Notifications = new List<SelectListItem>
-            {
-                new SelectListItem
-                {
-                    Text = "Both",
-                    Value = "both"
-                },
-                new SelectListItem
-                {
-                    Text = "Text",
-                    Value = "textNote"
-                },
-                new SelectListItem
-                {
-                    Text = "E-Mail",
-                    Value = "emailNote"
                 }
             };
 
