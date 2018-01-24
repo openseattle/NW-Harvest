@@ -212,13 +212,15 @@ namespace NWHarvest.Web.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    if (model.UserRole == UserRole.FoodBank)
+                    switch (model.UserRole)
                     {
-                        return await RegisterFoodBank(model, user);
-                    }
-                    else if (model.UserRole == UserRole.Grower)
-                    {
-                        return await RegisterGrower(model, user);
+                        case UserRole.FoodBank:
+                            return await RegisterFoodBank(model, user);
+                        case UserRole.Grower:
+                            return await RegisterGrower(model, user);
+                        default:
+                            UserManager.Delete(user);
+                            return View("Error");
                     }
                 }
                 AddErrors(result);
@@ -501,76 +503,92 @@ namespace NWHarvest.Web.Controllers
 
         private async Task<ActionResult> RegisterFoodBank(RegisterViewModel model, ApplicationUser user)
         {
-            var foodbank = new FoodBank()
+            try
             {
-                UserId = user.Id,
-                name = model.Name,
-                email = model.Email,
-                address1 = model.Address1,
-                address2 = model.Address2 == null ? "" : model.Address2,
-                city = model.City,
-                county = model.County,
-                state = "WA",
-                zip = model.Zip,
-                NotificationPreference = model.Notification.ToString(),
-                IsActive = true,
-                PickupLocations = new List<PickupLocation>
+                var foodbank = new FoodBank()
                 {
-                    new PickupLocation
+                    UserId = user.Id,
+                    name = model.Name,
+                    email = model.Email,
+                    address1 = model.Address1,
+                    address2 = model.Address2 == null ? "" : model.Address2,
+                    city = model.City,
+                    county = model.County,
+                    state = "WA",
+                    zip = model.Zip,
+                    NotificationPreference = model.Notification.ToString(),
+                    IsActive = true,
+                    PickupLocations = new List<PickupLocation>
                     {
-                        name = "Default",
-                        address1 = model.Address1,
-                        address2 = model.Address2 == null ? "" : model.Address2,
-                        city = model.City,
-                        county = model.County,
-                        state = "WA",
-                        zip = model.Zip
+                        new PickupLocation
+                        {
+                            name = "Default",
+                            address1 = model.Address1,
+                            address2 = model.Address2 == null ? "" : model.Address2,
+                            city = model.City,
+                            county = model.County,
+                            state = "WA",
+                            zip = model.Zip
+                        }
                     }
-                }
-            };
+                };
 
-            db.FoodBanks.Add(foodbank);
-            db.SaveChanges();
-            await SendEmailConfirmationToken(user.Id);
-            UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
-            return RedirectToAction(nameof(ConfirmEmail), new { Registration = true });
+                db.FoodBanks.Add(foodbank);
+                db.SaveChanges();
+                await SendEmailConfirmationToken(user.Id);
+                UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
+                return RedirectToAction(nameof(ConfirmEmail), new { Registration = true });
+            }
+            catch (Exception)
+            {
+                UserManager.Delete(user);
+                return View("Error");
+            }
         }
 
         private async Task<ActionResult> RegisterGrower(RegisterViewModel model, ApplicationUser user)
         {
-            var grower = new Grower()
+            try
             {
-                UserId = user.Id,
-                name = model.Name,
-                email = model.Email,
-                address1 = model.Address1,
-                address2 = model.Address2 == null ? "" : model.Address2,
-                city = model.City,
-                county = model.County,
-                state = "WA",
-                zip = model.Zip,
-                NotificationPreference = model.Notification.ToString(),
-                IsActive = true,
-                PickupLocations = new List<PickupLocation>
+                var grower = new Grower()
                 {
-                    new PickupLocation
+                    UserId = user.Id,
+                    name = model.Name,
+                    email = model.Email,
+                    address1 = model.Address1,
+                    address2 = model.Address2 == null ? "" : model.Address2,
+                    city = model.City,
+                    county = model.County,
+                    state = "WA",
+                    zip = model.Zip,
+                    NotificationPreference = model.Notification.ToString(),
+                    IsActive = true,
+                    PickupLocations = new List<PickupLocation>
                     {
-                        name = "Default",
-                        address1 = model.Address1,
-                        address2 = model.Address2 == null ? "" : model.Address2,
-                        city = model.City,
-                        county = model.County,
-                        state = "WA",
-                        zip = model.Zip
+                        new PickupLocation
+                        {
+                            name = "Default",
+                            address1 = model.Address1,
+                            address2 = model.Address2 == null ? "" : model.Address2,
+                            city = model.City,
+                            county = model.County,
+                            state = "WA",
+                            zip = model.Zip
+                        }
                     }
-                }
-            };
+                };
 
-            db.Growers.Add(grower);
-            db.SaveChanges();
-            UserManager.AddToRole(user.Id, UserRole.Grower.ToString());
-            await SendEmailConfirmationToken(user.Id);
-            return RedirectToAction(nameof(ConfirmEmail), new { Registration = true });
+                db.Growers.Add(grower);
+                db.SaveChanges();
+                UserManager.AddToRole(user.Id, UserRole.Grower.ToString());
+                await SendEmailConfirmationToken(user.Id);
+                return RedirectToAction(nameof(ConfirmEmail), new { Registration = true });
+            }
+            catch (Exception)
+            {
+                UserManager.Delete(user);
+                return View("Error");
+            }
         }
 
         // Used for XSRF protection when adding external logins
