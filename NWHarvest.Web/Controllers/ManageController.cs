@@ -201,7 +201,7 @@ namespace NWHarvest.Web.Controllers
             var model = new NotificationViewModel
             {
                 UserName = user.Name,
-                Method = NotificationStringToUserNotification(user.NotificationPreference),
+                Method = (UserNotification)Enum.Parse(typeof(UserNotification), user.NotificationPreference),
                 Message = ManageMessageId.ChangeNotification
             };
 
@@ -229,7 +229,7 @@ namespace NWHarvest.Web.Controllers
                         return View("Error");
                     }
 
-                    foodbank.NotificationPreference = UserNotificationToString(model.Method);
+                    foodbank.NotificationPreference = model.Method.ToString();
                     _db.SaveChanges();
                     return RedirectToAction(nameof(Index), new { Message = model.Message });
                 }
@@ -241,7 +241,7 @@ namespace NWHarvest.Web.Controllers
                     {
                         return View("Error");
                     }
-                    grower.NotificationPreference = UserNotificationToString(model.Method);
+                    grower.NotificationPreference = model.Method.ToString();
                     _db.SaveChanges();
 
                     return RedirectToAction(nameof(Index), new { Message = model.Message });
@@ -512,35 +512,6 @@ namespace NWHarvest.Web.Controllers
 
         // helper method
         // todo: update register page form to use UserNotification enum
-        private UserNotification NotificationStringToUserNotification(string notification)
-        {
-            switch (notification)
-            {
-                case "both":
-                    return UserNotification.Both;
-                case "emailNote":
-                    return UserNotification.Email;
-                case "textNote":
-                    return UserNotification.Text;
-                default:
-                    return UserNotification.Text;
-            }
-        }
-
-        private string UserNotificationToString(UserNotification notification)
-        {
-            switch (notification)
-            {
-                case UserNotification.Both:
-                    return "both";
-                case UserNotification.Email:
-                    return "emailNote";
-                case UserNotification.Text:
-                    return "textNote";
-                default:
-                    return "emailNote";
-            }
-        }
 
         private string UserId => User.Identity.GetUserId();
         private void UpdateNotification(UserViewModel vm)
