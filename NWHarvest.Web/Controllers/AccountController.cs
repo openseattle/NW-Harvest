@@ -212,52 +212,13 @@ namespace NWHarvest.Web.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SendEmailConfirmationToken(user.Id);
-
                     if (model.UserRole == UserRole.FoodBank)
                     {
-                        // add user to a FoodBank role
-                        UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
-
-                        var foodbank =
-                            new FoodBank()
-                            {
-                                UserId = user.Id,
-                                name = model.Name,
-                                email = model.Email,
-                                address1 = model.Address1,
-                                address2 = model.Address2 == null ? "" : model.Address2,
-                                city = model.City,
-                                county = model.County,
-                                state = "WA",
-                                zip = model.Zip,
-                                NotificationPreference = model.Notification.ToString(),
-                                IsActive = true
-                            };
-
-                        return RedirectToAction("Register", "FoodBanks", foodbank);
+                        return await RegisterFoodBank(model, user);
                     }
                     else if (model.UserRole == UserRole.Grower)
                     {
-                        // add to user to grower role
-                        UserManager.AddToRole(user.Id, UserRole.Grower.ToString());
-
-                        var grower = new Grower
-                        {
-                            UserId = user.Id,
-                            name = model.Name,
-                            email = model.Email,
-                            address1 = model.Address1,
-                            address2 = model.Address2 == null ? "" : model.Address2,
-                            city = model.City,
-                            county = model.County,
-                            state = "WA",
-                            zip = model.Zip,
-                            NotificationPreference = model.Notification.ToString(),
-                            IsActive = true
-                        };
-
-                        return RedirectToAction("Register", "Growers", grower);
+                        return await RegisterGrower(model, user);
                     }
                 }
                 AddErrors(result);
@@ -536,6 +497,80 @@ namespace NWHarvest.Web.Controllers
                     Value = county,
                     Selected = false
                 }).ToList();
+        }
+
+        private async Task<ActionResult> RegisterFoodBank(RegisterViewModel model, ApplicationUser user)
+        {
+            var foodbank = new FoodBank()
+            {
+                UserId = user.Id,
+                name = model.Name,
+                email = model.Email,
+                address1 = model.Address1,
+                address2 = model.Address2 == null ? "" : model.Address2,
+                city = model.City,
+                county = model.County,
+                state = "WA",
+                zip = model.Zip,
+                NotificationPreference = model.Notification.ToString(),
+                IsActive = true,
+                PickupLocations = new List<PickupLocation>
+                {
+                    new PickupLocation
+                    {
+                        name = "Default",
+                        address1 = model.Address1,
+                        address2 = model.Address2 == null ? "" : model.Address2,
+                        city = model.City,
+                        county = model.County,
+                        state = "WA",
+                        zip = model.Zip
+                    }
+                }
+            };
+
+            db.FoodBanks.Add(foodbank);
+            db.SaveChanges();
+            await SendEmailConfirmationToken(user.Id);
+            UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
+            return RedirectToAction(nameof(ConfirmEmail), new { Registration = true });
+        }
+
+        private async Task<ActionResult> RegisterGrower(RegisterViewModel model, ApplicationUser user)
+        {
+            var grower = new Grower()
+            {
+                UserId = user.Id,
+                name = model.Name,
+                email = model.Email,
+                address1 = model.Address1,
+                address2 = model.Address2 == null ? "" : model.Address2,
+                city = model.City,
+                county = model.County,
+                state = "WA",
+                zip = model.Zip,
+                NotificationPreference = model.Notification.ToString(),
+                IsActive = true,
+                PickupLocations = new List<PickupLocation>
+                {
+                    new PickupLocation
+                    {
+                        name = "Default",
+                        address1 = model.Address1,
+                        address2 = model.Address2 == null ? "" : model.Address2,
+                        city = model.City,
+                        county = model.County,
+                        state = "WA",
+                        zip = model.Zip
+                    }
+                }
+            };
+
+            db.Growers.Add(grower);
+            db.SaveChanges();
+            UserManager.AddToRole(user.Id, UserRole.Grower.ToString());
+            await SendEmailConfirmationToken(user.Id);
+            return RedirectToAction(nameof(ConfirmEmail), new { Registration = true });
         }
 
         // Used for XSRF protection when adding external logins

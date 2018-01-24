@@ -15,7 +15,6 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        // todo: use UserRole enum
         [Authorize(Roles = "Grower")]
         [ActionName("Profile")]
         public ActionResult Index()
@@ -173,30 +172,7 @@ namespace NWHarvest.Web.Controllers
             RegisterViewData();
             return View(vm);
         }
-
-        [AllowAnonymous]
-        public ActionResult Register(Grower grower)
-        {
-            // create default pickup location for new user
-            var pickupLocation = new PickupLocation
-            {
-                name = "Default",
-                address1 = grower.address1,
-                address2 = grower.address2,
-                address3 = grower.address3,
-                address4 = grower.address4,
-                city = grower.city,
-                county = grower.county,
-                state = grower.state,
-                zip = grower.zip
-            };
-
-            grower.PickupLocations.Add(pickupLocation);
-            db.Growers.Add(grower);
-            db.SaveChanges();
-            return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
-        }
-
+        
         public ActionResult Settings()
         {
             return RedirectToAction("Index", "Manage");
