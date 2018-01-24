@@ -83,7 +83,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.Notification, new { @class = "col-xs-10 col-xs-offset-1" })
         <div class="col-xs-10 col-xs-offset-1">
-            @Html.DropDownListFor(m => m.Notification, ViewBag.Notifications as List<SelectListItem>, "Select Notification Method", new { @class = "form-control", @data_style = "btn-default" })
+            @Html.EnumDropDownListFor(m => m.Notification, "Select Notification Method", new { @class = "form-control", @data_style = "btn-default" })
             @Html.ValidationMessageFor(m => m.Notification, "", new { @class = "text-danger" })
         </div>
     </div>
