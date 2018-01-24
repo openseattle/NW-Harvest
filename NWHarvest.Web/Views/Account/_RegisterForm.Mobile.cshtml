@@ -5,10 +5,10 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(m => m.UserType, new { @class = "col-md-10 col-xs-10 col-xs-offset-1" })
+        @Html.LabelFor(m => m.UserRole, new { @class = "col-md-10 col-xs-10 col-xs-offset-1" })
         <div class="col-xs-10 col-xs-offset-1">
-            @Html.DropDownListFor(m => m.UserType, ViewBag.UserTypes as List<SelectListItem>, "Select User Type", new { @class = "selectpicker form-control", @data_style = "btn-default" })
-            @Html.ValidationMessageFor(m => m.UserType, "", new { @class = "text-danger" })
+            @Html.DropDownListFor(m => m.UserRole, ViewBag.UserRoles as IEnumerable<SelectListItem>, "Select User Type", new { @class = "selectpicker form-control", @data_style = "btn-default" })
+            @Html.ValidationMessageFor(m => m.UserRole, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">

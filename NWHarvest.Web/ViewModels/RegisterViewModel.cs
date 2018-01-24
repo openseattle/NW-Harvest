@@ -6,9 +6,8 @@ namespace NWHarvest.Web.ViewModels
     public class RegisterViewModel : AddressViewModel
     {
         [Required]
-        [DataType(DataType.Text)]
         [Display(Name = "User Type")]
-        public string UserType { get; set; }
+        public UserRole UserRole { get; set; }
 
         [Required]
         [Display(Name = "Program Name")]

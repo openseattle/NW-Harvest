@@ -214,7 +214,7 @@ namespace NWHarvest.Web.Controllers
                 {
                     await SendEmailConfirmationToken(user.Id);
 
-                    if (model.UserType == "IsFoodBank")
+                    if (model.UserRole == UserRole.FoodBank)
                     {
                         // add user to a FoodBank role
                         UserManager.AddToRole(user.Id, UserRole.FoodBank.ToString());
@@ -237,7 +237,7 @@ namespace NWHarvest.Web.Controllers
 
                         return RedirectToAction("Register", "FoodBanks", foodbank);
                     }
-                    else if (model.UserType == "IsGrower")
+                    else if (model.UserRole == UserRole.Grower)
                     {
                         // add to user to grower role
                         UserManager.AddToRole(user.Id, UserRole.Grower.ToString());
@@ -519,19 +519,15 @@ namespace NWHarvest.Web.Controllers
         #region Helpers
         private void RegisterViewBag()
         {
-            ViewBag.UserTypes = new List<SelectListItem>
-            {
-                new SelectListItem
-                {
-                    Text = "Grower",
-                    Value = "IsGrower"
-                },
-                new SelectListItem
-                {
-                    Text = "Food Program",
-                    Value = "IsFoodBank"
-                }
-            };
+            // exclude administrator role
+            ViewBag.UserRoles = Enum.GetValues(typeof(UserRole))
+                             .Cast<UserRole>()
+                             .Where(e => e != UserRole.Administrator)
+                             .Select(e => new SelectListItem
+                             {
+                                 Value = ((int)e).ToString(),
+                                 Text = e.ToString()
+                             });
 
             ViewBag.Counties = WashingtonState.GetCounties()
                 .Select(county => new SelectListItem
@@ -541,7 +537,7 @@ namespace NWHarvest.Web.Controllers
                     Selected = false
                 }).ToList();
         }
-        
+
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
