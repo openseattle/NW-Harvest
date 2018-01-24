@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -66,5 +67,7 @@ namespace NWHarvest.Web.Models
         [Required]
         [Display(Name = "Active")]
         public bool IsActive { get; set; }
+
+        public ICollection<PickupLocation> PickupLocations { get; set; }
     }
 }

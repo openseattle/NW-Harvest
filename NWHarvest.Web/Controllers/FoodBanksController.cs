@@ -24,6 +24,23 @@ namespace NWHarvest.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                // create default pickup location for new user
+                foodbank.PickupLocations = new List<PickupLocation>
+                {
+                    new PickupLocation
+                    {
+                        name = "Default",
+                        address1 = foodbank.address1,
+                        address2 = foodbank.address2,
+                        address3 = "",
+                        address4 = "",
+                        city = foodbank.city,
+                        county = foodbank.county,
+                        state = foodbank.state,
+                        zip = foodbank.zip
+
+                    }
+                };
                 db.FoodBanks.Add(foodbank);
                 db.SaveChanges();
                 return RedirectToAction("ConfirmEmail", "Account", new { Registration = true });
@@ -95,7 +112,7 @@ namespace NWHarvest.Web.Controllers
                         }
                     },
                 }).ToList();
-            
+
             vm.Claims = db.FoodBankClaims
                 .Where(c => c.FoodBankId == vm.Id)
                 .Select(c => new ClaimViewModel
@@ -302,7 +319,7 @@ namespace NWHarvest.Web.Controllers
 
             return RedirectToAction(nameof(Profile));
         }
-        
+
         public ActionResult Settings()
         {
             return RedirectToAction("Index", "Manage");
