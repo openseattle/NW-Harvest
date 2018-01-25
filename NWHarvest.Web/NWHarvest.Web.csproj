@@ -379,7 +379,6 @@
     <Content Include="Views\Listings\Delete.cshtml" />
     <Content Include="Views\Listings\Details.cshtml" />
     <Content Include="Views\Listings\Edit.cshtml" />
-    <Content Include="Views\Listings\Claim.cshtml" />
     <Content Include="Views\Listings\Grower.cshtml" />
     <Content Include="Views\PickupLocations\Create.cshtml" />
     <Content Include="Views\PickupLocations\Delete.cshtml" />
@@ -388,7 +387,6 @@
     <Content Include="Views\PickupLocations\Manage.cshtml" />
     <Content Include="Views\Account\FoodBankRegister.cshtml" />
     <Content Include="Views\Account\RegisterRouteView.cshtml" />
-    <Content Include="Views\Listings\PickUp.cshtml" />
     <Content Include="Views\Home\RegistrationComplete.cshtml" />
     <Content Include="Views\Account\ForgotPasswordWithUnconfirmedEmail.cshtml" />
     <Content Include="Views\Account\ForgotPasswordUserDoesNotExist.cshtml" />

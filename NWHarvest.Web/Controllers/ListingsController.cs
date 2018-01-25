@@ -88,7 +88,8 @@ namespace NWHarvest.Web.Controllers
                     IsAvailable = l.IsAvailable,
                     Comments = l.Comments
                 }).ToList();
-            
+            ViewBag.UserName = GetUserName();
+            ViewBag.ProfileUrl = GetProfileUrl();
             return View(vm);
         }
 
@@ -419,6 +420,23 @@ namespace NWHarvest.Web.Controllers
                     return string.Empty;
             }
         }
+
+        private string GetProfileUrl()
+        {
+            string profile = "Profile";
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    return Url.Action(profile, "FoodBanks");
+                case UserRole.Grower:
+                    return Url.Action(profile, "Growers");
+                case UserRole.Administrator:
+                    return Url.Action("Index", "Administrator");
+                default:
+                    return Url.Action("Index");
+            }
+        }
+
         private IEnumerable<SelectListItem> SelectListPickupLocations()
         {
             return _queryPickupLocations

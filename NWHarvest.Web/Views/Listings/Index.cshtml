@@ -1,14 +1,13 @@
 ﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
 
 @{
-    ViewBag.Title = "Manage Listings";
+    ViewBag.Title = $"{ViewBag.UserName}'s Listings";
 }
 
 <h2>@ViewBag.Title</h2>
-<h3>@ViewBag.GrowerName</h3>
 <p>
     @Html.ActionLink("Add Listing", "Create", null, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Grower Profile", nameof(Profile), "Growers", null, new { @class = "btn btn-primary" })
+    <a href="@ViewBag.ProfileUrl" class="btn btn-primary">Back to Profile</a>
 </p>
 
 <ul class="list-group">
