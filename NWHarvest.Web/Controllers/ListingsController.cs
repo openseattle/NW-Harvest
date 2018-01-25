@@ -14,15 +14,6 @@ using System;
 
 namespace NWHarvest.Web.Controllers
 {
-    public class ListingsViewModel
-    {
-        public RegisteredUser registeredUser { get; set; }
-        public IEnumerable<Listing> FirstList { get; set; }
-        public IEnumerable<Listing> SecondList { get; set; }
-        public IEnumerable<Listing> ThirdList { get; set; }
-        public IEnumerable<PickupLocation> PickupLocations { get; set; }
-    }
-
     [Authorize]
     public class ListingsController : Controller
     {
@@ -304,47 +295,6 @@ namespace NWHarvest.Web.Controllers
             {
                 _userManager = value;
             }
-        }
-
-        public ActionResult PickUp(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Listing listing = db.Listings.Find(id);
-            if (listing == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(listing);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult PickUp([Bind(Include = "id")] Listing listing)
-        {
-            Listing saveListing = db.Listings.Find(listing.Id);
-            saveListing.IsPickedUp = true;
-
-            db.Entry(saveListing).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult Claim(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Listing listing = db.Listings.Find(id);
-            if (listing == null)
-            {
-                return HttpNotFound();
-            }
-            return View(listing);
         }
 
         [Authorize(Roles = "Grower,Administrator,FoodBank")]
