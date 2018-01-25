@@ -35,11 +35,7 @@ namespace NWHarvest.Web.Controllers
         private readonly IQueryable<PickupLocation> _queryPickupLocations;
         private readonly IQueryable<Listing> _queryListings;
         private string UserId => User.Identity.GetUserId();
-
-        private const int DAY_LIMIT_FOR_GROWERS = 31;
-        private const int DAY_LIMIT_FOR_FOOD_BANKS = 31;
-        private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
-
+        
         public ListingsController()
         {
             if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
@@ -55,41 +51,7 @@ namespace NWHarvest.Web.Controllers
                 System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
             }
         }
-
-        [Obsolete]
-        public ActionResult Index()
-        {
-            var registeredUserService = new RegisteredUserService();
-            var user = registeredUserService.GetRegisteredUser(this.User);
-
-            var repo = new ListingsRepository();
-            var listingsViewModel = new ListingsViewModel();
-            listingsViewModel.registeredUser = user;
-
-            if (user.Role == UserRoles.AdministratorRole)
-            {
-                listingsViewModel.FirstList = repo.GetAllAvailable();
-                listingsViewModel.SecondList = repo.GetAllClaimedNotPickedUp(DAY_LIMIT_FOR_ADMINISTRATORS);
-                listingsViewModel.ThirdList = repo.GetAllUnavailableExpired(DAY_LIMIT_FOR_ADMINISTRATORS);
-            }
-
-            else if (user.Role == UserRoles.GrowerRole)
-            {
-                listingsViewModel.FirstList = repo.GetAvailableByGrower(user.GrowerId);
-                listingsViewModel.SecondList = repo.GetClaimedNotPickedNotExpiredUpByGrower(user.GrowerId, DAY_LIMIT_FOR_GROWERS);
-                listingsViewModel.ThirdList = repo.GetExpiredOrPickedUpByGrower(user.GrowerId, DAY_LIMIT_FOR_GROWERS);
-            }
-
-            else if (user.Role == UserRoles.FoodBankRole)
-            {
-                listingsViewModel.FirstList = repo.GetAllAvailable();
-                listingsViewModel.SecondList = repo.GetClaimedNotPickedUpNotExpiredByFoodBank(user.FoodBankId, DAY_LIMIT_FOR_FOOD_BANKS);
-                listingsViewModel.ThirdList = repo.GetClaimedPickedUpByFoodBankNotPickedUp(user.FoodBankId, DAY_LIMIT_FOR_FOOD_BANKS);
-            }
-
-            return View(listingsViewModel);
-        }
-
+        
         [Authorize(Roles = "FoodBank")]
         public ActionResult Search(string searchString, ListingStatus status = ListingStatus.Available)
         {
