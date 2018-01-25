@@ -54,6 +54,7 @@ namespace NWHarvest.Web.ViewModels
 
         [DisplayName("Grower")]
         public string GrowerName { get; set; }
+        public string UserName { get; set; }
 
         public PickupLocationViewModel PickupLocation { get; set; }
     }

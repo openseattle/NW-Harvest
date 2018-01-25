@@ -56,7 +56,6 @@ namespace NWHarvest.Web.Controllers
                 return View("DisabledUser");
             }
 
-            // available grower listings
             vm.AvailableListings = db.Listings
                 .Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow)
                 .Select(l => new ListingViewModel

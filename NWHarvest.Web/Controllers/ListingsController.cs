@@ -10,6 +10,7 @@ using NWHarvest.Web.ViewModels;
 using System.Collections.Generic;
 using NWHarvest.Web.Enums;
 using NWHarvest.Web.Helper;
+using System.Linq.Expressions;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -27,9 +28,31 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private NotificationManager notificationManager = new NotificationManager();
+        private readonly string _userRoleSessionKey = "UserRole";
+        private IQueryable<FoodBank> _queryFoodBank => db.FoodBanks.Where(fb => fb.UserId == UserId);
+        private IQueryable<Grower> _queryGrower => db.Growers.Where(g => g.UserId == UserId);
+
+        private readonly IQueryable<PickupLocation> _queryPickupLocations;
+        private readonly IQueryable<Listing> _queryListings;
         private const int DAY_LIMIT_FOR_GROWERS = 31;
         private const int DAY_LIMIT_FOR_FOOD_BANKS = 31;
         private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
+
+        public ListingsController()
+        {
+            if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
+            {
+                _queryPickupLocations = db.PickupLocations.Where(fb => fb.FoodBank.UserId == UserId);
+                _queryListings = db.Listings.Where(fb => fb.FoodBank.UserId == UserId);
+                System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
+            }
+            else
+            {
+                _queryPickupLocations = db.PickupLocations.Where(fb => fb.Grower.UserId == UserId);
+                _queryListings = db.Listings.Where(fb => fb.Grower.UserId == UserId);
+                System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
+            }
+        }
 
         public ActionResult Index()
         {
@@ -91,11 +114,10 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        // todo: refactor manage grower listing
+        
         public ActionResult Manage()
         {
-            var vm = db.Listings
-                .Where(l => l.Grower.UserId == UserId)
+            var vm = _queryListings
                 .Include("PickupLocation")
                 .Select(l => new ListingViewModel
                 {
@@ -108,17 +130,19 @@ namespace NWHarvest.Web.Controllers
                     ExpirationDate = l.ExpirationDate,
                     CostPerUnit = l.CostPerUnit,
                     IsAvailable = l.IsAvailable,
-                    Comments = l.Comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        Name = l.Grower.name
-                    }
-                })
-                .ToList();
+                    Comments = l.Comments
+                }).ToList();
 
-            ViewBag.GrowerName = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.name;
-
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    ViewBag.Name = _queryFoodBank.FirstOrDefault()?.name;
+                    break;
+                default:
+                    ViewBag.Name = _queryGrower.FirstOrDefault()?.name;
+                    break;
+            }
+            
             return View(vm);
         }
 
@@ -173,7 +197,7 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Create()
         {
             var vm = new ListingViewModel
@@ -181,24 +205,28 @@ namespace NWHarvest.Web.Controllers
                 PickupLocations = SelectListPickupLocations()
             };
 
-            ViewBag.GrowerName = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.name;
-
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    ViewBag.Name = _queryFoodBank.FirstOrDefault()?.name;
+                    break;
+                default:
+                    ViewBag.Name = _queryGrower.FirstOrDefault()?.name;
+                    break;
+            }
             return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Create(ListingViewModel vm)
         {
             if (ModelState.IsValid)
             {
                 var pickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
                 var userId = User.Identity.GetUserId();
-                var grower = db.Growers.Where(g => g.UserId == userId).FirstOrDefault();
-
-                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == pickupLocation.county).ToList();
-
+                
                 var listingToAdd = new Listing
                 {
                     Id = vm.Id,
@@ -211,17 +239,29 @@ namespace NWHarvest.Web.Controllers
                     CostPerUnit = vm.CostPerUnit,
                     IsAvailable = true,
                     Comments = vm.Comments,
-                    PickupLocation = pickupLocation,
-                    Grower = grower
+                    PickupLocation = pickupLocation
                 };
+
+                switch (Session[_userRoleSessionKey])
+                {
+                    case UserRole.FoodBank:
+                        listingToAdd.FoodBank = _queryFoodBank.FirstOrDefault();
+                        break;
+                    case UserRole.Grower:
+                        listingToAdd.Grower = _queryGrower.FirstOrDefault();
+                        break;
+                    default:
+                        return View("Error");
+                }
 
                 db.Listings.Add(listingToAdd);
                 db.SaveChanges();
 
-                if (foodBanksToNotify.Count > 0)
-                {
-                    SendNotification(listingToAdd, foodBanksToNotify);
-                }
+                //var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == pickupLocation.county).ToList();
+                //if (foodBanksToNotify.Count > 0)
+                //{
+                //    SendNotification(listingToAdd, foodBanksToNotify);
+                //}
 
                 return RedirectToAction(nameof(Manage));
             }
@@ -232,12 +272,9 @@ namespace NWHarvest.Web.Controllers
 
         private IEnumerable<SelectListItem> SelectListPickupLocations()
         {
-            var userId = User.Identity.GetUserId();
-            var pickupLocations = db.PickupLocations
-                .Where(p => p.Grower.UserId == userId)
-                .Select(p => new SelectListItem { Value = p.id.ToString(), Text = p.name });
-
-            return pickupLocations.ToList();
+            return _queryPickupLocations
+                .Select(p => new SelectListItem { Value = p.id.ToString(), Text = p.name })
+                .ToList();
         }
 
         [Authorize(Roles = "Grower")]
@@ -496,7 +533,6 @@ namespace NWHarvest.Web.Controllers
                 notificationManager.SendNotification(message, fb.NotificationPreference);
             }
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
