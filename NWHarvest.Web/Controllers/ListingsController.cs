@@ -10,7 +10,7 @@ using NWHarvest.Web.ViewModels;
 using System.Collections.Generic;
 using NWHarvest.Web.Enums;
 using NWHarvest.Web.Helper;
-using System.Linq.Expressions;
+using System;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -27,13 +27,15 @@ namespace NWHarvest.Web.Controllers
     public class ListingsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
         private NotificationManager notificationManager = new NotificationManager();
         private readonly string _userRoleSessionKey = "UserRole";
         private IQueryable<FoodBank> _queryFoodBank => db.FoodBanks.Where(fb => fb.UserId == UserId);
         private IQueryable<Grower> _queryGrower => db.Growers.Where(g => g.UserId == UserId);
-
         private readonly IQueryable<PickupLocation> _queryPickupLocations;
         private readonly IQueryable<Listing> _queryListings;
+        private string UserId => User.Identity.GetUserId();
+
         private const int DAY_LIMIT_FOR_GROWERS = 31;
         private const int DAY_LIMIT_FOR_FOOD_BANKS = 31;
         private const int DAY_LIMIT_FOR_ADMINISTRATORS = 180;
@@ -54,6 +56,7 @@ namespace NWHarvest.Web.Controllers
             }
         }
 
+        [Obsolete]
         public ActionResult Index()
         {
             var registeredUserService = new RegisteredUserService();
@@ -327,9 +330,7 @@ namespace NWHarvest.Web.Controllers
             vm.PickupLocations = SelectListPickupLocations();
             return View(vm);
         }
-
-        private ApplicationUserManager _userManager;
-
+        
         public ApplicationUserManager UserManager
         {
             get
@@ -383,7 +384,7 @@ namespace NWHarvest.Web.Controllers
             return View(listing);
         }
 
-        [Authorize(Roles = "Grower,Administrator")]
+        [Authorize(Roles = "Grower,Administrator,FoodBank")]
         public ActionResult Delete(int id, string returnUrl = null)
         {
             if (UserId == null)
@@ -391,19 +392,23 @@ namespace NWHarvest.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var query = db.Listings
-                .Include("PickupLocation")
-                .Include("Grower")
-                .AsQueryable();
-
-            if (User.IsInRole(UserRole.Administrator.ToString()))
+            IQueryable<Listing> query;
+            switch (Session[_userRoleSessionKey])
             {
-                ViewBag.CancelActionLink = returnUrl;
-                query = query.Where(l => l.Id == id);
-            } else
-            {
-                ViewBag.CancelActionLink = Url.Action("Profile", "Growers", null);
-                query = query.Where(l => l.Grower.UserId == UserId && l.Id == id);
+                case UserRole.FoodBank:
+                    ViewBag.CancelActionLink = Url.Action("Profile", "FoodBanks", null);
+                    query = _queryListings.Where(l => l.FoodBank.UserId == UserId && l.Id == id);
+                    break;
+                case UserRole.Grower:
+                    ViewBag.CancelActionLink = Url.Action("Profile", "Growers", null);
+                    query = _queryListings.Where(l => l.Grower.UserId == UserId && l.Id == id);
+                    break;
+                case UserRole.Administrator:
+                    ViewBag.CancelActionLink = returnUrl;
+                    query = _queryListings.Where(l => l.Id == id);
+                    break;
+                default:
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             var vm = query
@@ -433,11 +438,6 @@ namespace NWHarvest.Web.Controllers
                             State = l.PickupLocation.state,
                             Zip = l.PickupLocation.zip
                         }
-                    },
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        Name = l.Grower.name
                     }
                 }).FirstOrDefault();
 
@@ -445,14 +445,13 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-
+            vm.UserName = GetUserName();
             return View(vm);
         }
-
-        private string UserId => User.Identity.GetUserId();
-
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Grower,Administrator,FoodBank")]
         public ActionResult DeleteConfirmed(int id, string returnUrl = null)
         {
             Listing listing = db.Listings.Find(id);
@@ -501,6 +500,8 @@ namespace NWHarvest.Web.Controllers
                     return _queryFoodBank.First().name;
                 case UserRole.Grower:
                     return _queryGrower.First().name;
+                case UserRole.Administrator:
+                    return UserRole.Administrator.ToString();
                 default:
                     return string.Empty;
             }
