@@ -45,14 +45,12 @@ namespace NWHarvest.Web.Controllers
                 _queryPickupLocations = db.PickupLocations.Where(fb => fb.FoodBank.UserId == UserId);
                 _queryListings = db.Listings.Where(fb => fb.FoodBank.UserId == UserId);
                 System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
-                ViewBag.Name = _queryFoodBank.FirstOrDefault()?.name;
             }
             else
             {
                 _queryPickupLocations = db.PickupLocations.Where(fb => fb.Grower.UserId == UserId);
                 _queryListings = db.Listings.Where(fb => fb.Grower.UserId == UserId);
                 System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
-                ViewBag.Name = _queryGrower.FirstOrDefault()?.name;
             }
         }
 
@@ -138,7 +136,7 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Details(int id)
         {
             if (UserId == null)
@@ -146,9 +144,7 @@ namespace NWHarvest.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var vm = db.Listings
-                .Where(l => l.Grower.UserId == UserId && l.Id == id)
-                .Include("Grower")
+            var vm = _queryListings
                 .Include("PickupLocation")
                 .Select(l => new ListingViewModel
                 {
@@ -162,7 +158,6 @@ namespace NWHarvest.Web.Controllers
                     CostPerUnit = l.CostPerUnit,
                     IsAvailable = l.IsAvailable,
                     Comments = l.Comments,
-                    GrowerName = l.Grower.name,
                     PickupLocation = new PickupLocationViewModel
                     {
                         Id = l.PickupLocation.id,
@@ -196,7 +191,7 @@ namespace NWHarvest.Web.Controllers
             {
                 PickupLocations = SelectListPickupLocations()
             };
-
+            vm.UserName = GetUserName();
             return View(vm);
         }
 
@@ -250,6 +245,7 @@ namespace NWHarvest.Web.Controllers
             }
 
             vm.PickupLocations = SelectListPickupLocations();
+            vm.UserName = GetUserName();
             return View(vm);
         }
 
@@ -514,6 +510,18 @@ namespace NWHarvest.Web.Controllers
                     Body = body
                 };
                 notificationManager.SendNotification(message, fb.NotificationPreference);
+            }
+        }
+        private string GetUserName()
+        {
+            switch (Session[_userRoleSessionKey])
+            {
+                case UserRole.FoodBank:
+                    return _queryFoodBank.First().name;
+                case UserRole.Grower:
+                    return _queryGrower.First().name;
+                default:
+                    return string.Empty;
             }
         }
         protected override void Dispose(bool disposing)
