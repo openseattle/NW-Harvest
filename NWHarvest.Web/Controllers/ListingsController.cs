@@ -78,8 +78,9 @@ namespace NWHarvest.Web.Controllers
 
             return View(vm);
         }
-        
-        public ActionResult Manage()
+
+        [Authorize(Roles = "Grower,FoodBank")]
+        public ActionResult Index()
         {
             var vm = _queryListings
                 .Include("PickupLocation")
@@ -205,7 +206,7 @@ namespace NWHarvest.Web.Controllers
                 //    SendNotification(listingToAdd, foodBanksToNotify);
                 //}
 
-                return RedirectToAction(nameof(Manage));
+                return RedirectToAction(nameof(Index));
             }
 
             vm.PickupLocations = SelectListPickupLocations();
@@ -286,7 +287,7 @@ namespace NWHarvest.Web.Controllers
                 //    SendNotification(listing, foodBanksToNotify);
                 //}
 
-                return RedirectToAction(nameof(Manage));
+                return RedirectToAction(nameof(Index));
             }
 
             vm.PickupLocations = SelectListPickupLocations();
@@ -425,7 +426,7 @@ namespace NWHarvest.Web.Controllers
                 return Redirect(returnUrl);
             }
 
-            return RedirectToAction(nameof(Manage));
+            return RedirectToAction(nameof(Index));
         }
 
         // send sms and/or email notification to Food Banks when a new listing is added in their county
