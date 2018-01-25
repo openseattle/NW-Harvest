@@ -113,7 +113,6 @@ namespace NWHarvest.Web.Controllers
 
             return View(vm);
         }
-
         
         public ActionResult Manage()
         {
@@ -249,14 +248,7 @@ namespace NWHarvest.Web.Controllers
             return View(vm);
         }
 
-        private IEnumerable<SelectListItem> SelectListPickupLocations()
-        {
-            return _queryPickupLocations
-                .Select(p => new SelectListItem { Value = p.id.ToString(), Text = p.name })
-                .ToList();
-        }
-
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Edit(int? id)
         {
 
@@ -264,11 +256,10 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-
-            var vm = db.Listings
+            
+            var vm = _queryListings
                 .Include("PickupLocation")
                 .Include("Grower")
-                .Where(l => l.Grower.UserId == UserId && l.Id == id)
                 .Select(l => new ListingEditViewModel
                 {
                     Id = l.Id,
@@ -280,14 +271,8 @@ namespace NWHarvest.Web.Controllers
                     CostPerUnit = l.CostPerUnit,
                     IsAvailable = l.IsAvailable,
                     PickupLocationId = l.PickupLocationId,
-                    Comments = l.Comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        Name = l.Grower.name
-                    }
-                })
-                .FirstOrDefault();
+                    Comments = l.Comments
+                }).FirstOrDefault();
 
             if (vm == null)
             {
@@ -295,25 +280,19 @@ namespace NWHarvest.Web.Controllers
             }
 
             vm.PickupLocations = SelectListPickupLocations();
-
+            vm.UserName = GetUserName();
             return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Grower")]
+        [Authorize(Roles = "Grower,FoodBank")]
         public ActionResult Edit(ListingViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                var userId = User.Identity.GetUserId();
-                var newPickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
-                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == newPickupLocation.county).ToList();
-
-                var listing = db.Listings
-                    .Where(l => l.Grower.UserId == userId && l.Id == vm.Id)
-                    .Include(l => l.Grower)
-                    .Include(l => l.PickupLocation)
+                var listing = _queryListings
+                    .Where(l => l.Id == vm.Id)
                     .FirstOrDefault();
 
                 if (listing == null)
@@ -322,6 +301,7 @@ namespace NWHarvest.Web.Controllers
                 }
 
                 var prevPickupLocation = listing.PickupLocation;
+                var newPickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
 
                 listing.Product = vm.Product;
                 listing.QuantityAvailable = vm.QuantityAvailable;
@@ -335,10 +315,11 @@ namespace NWHarvest.Web.Controllers
 
                 db.SaveChanges();
 
-                if (prevPickupLocation.county != newPickupLocation.county && foodBanksToNotify.Count > 0)
-                {
-                    SendNotification(listing, foodBanksToNotify);
-                }
+                //var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == newPickupLocation.county).ToList();
+                //if (prevPickupLocation.county != newPickupLocation.county && foodBanksToNotify.Count > 0)
+                //{
+                //    SendNotification(listing, foodBanksToNotify);
+                //}
 
                 return RedirectToAction(nameof(Manage));
             }
@@ -524,6 +505,13 @@ namespace NWHarvest.Web.Controllers
                     return string.Empty;
             }
         }
+        private IEnumerable<SelectListItem> SelectListPickupLocations()
+        {
+            return _queryPickupLocations
+                .Select(p => new SelectListItem { Value = p.id.ToString(), Text = p.name })
+                .ToList();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
