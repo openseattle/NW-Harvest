@@ -9,7 +9,6 @@ using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
 using System.Data.Entity;
 using System;
-//using System.Web.Http;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -43,8 +42,7 @@ namespace NWHarvest.Web.Controllers
                         State = fb.state,
                         Zip = fb.zip
                     }
-                })
-                .FirstOrDefault();
+                }).FirstOrDefault();
 
             if (vm == null)
             {
@@ -56,54 +54,17 @@ namespace NWHarvest.Web.Controllers
                 return View("DisabledUser");
             }
 
-            vm.AvailableListings = db.Listings
+            var queryMyListings = db.Listings.Where(l => l.FoodBank.Id == vm.Id);
+            vm.MyListings = GetListings(queryMyListings);
+
+            var queryAvailableListings = db.Listings
                 .Where(l => l.FoodBank.Id != vm.Id)
-                .Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow)
-                .Select(l => new ListingViewModel
-                {
-                    Id = l.Id,
-                    Product = l.Product,
-                    QuantityAvailable = l.QuantityAvailable,
-                    CostPerUnit = l.CostPerUnit,
-                    UnitOfMeasure = l.UnitOfMeasure,
-                    ExpirationDate = l.ExpirationDate,
-                    PickupLocation = new PickupLocationViewModel
-                    {
-                        Address = new AddressViewModel
-                        {
-                            City = l.PickupLocation.city,
-                            County = l.PickupLocation.county,
-                            Zip = l.PickupLocation.zip
-                        }
-                    },
-                }).ToList();
+                .Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow).AsQueryable();
+            vm.AvailableListings = GetListings(queryAvailableListings);
 
-            vm.Claims = db.FoodBankClaims
-                .Where(c => c.FoodBankId == vm.Id)
-                .Select(c => new ClaimViewModel
-                {
-                    ListingId = c.ListingId,
-                    ClaimedOn = c.CreatedOn,
-                    Product = c.Product,
-                    Quantity = c.Quantity,
-                    CostPerUnit = c.CostPerUnit,
-                    Grower = new GrowerViewModel
-                    {
-                        Id = c.GrowerId,
-                        Name = c.Grower.name
-                    },
-                    Address = new AddressViewModel
-                    {
-                        Address1 = c.Address.Address1,
-                        Address2 = c.Address.Address2,
-                        City = c.Address.City,
-                        State = c.Address.State,
-                        County = c.Address.County,
-                        Zip = c.Address.Zip
-                    }
-                })
-                .ToList();
-
+            var queryClaimedListings = db.FoodBankClaims.Where(c => c.FoodBankId == vm.Id);
+            vm.Claims = GetClaimedListings(queryClaimedListings);
+            
             if (vm == null)
             {
                 return HttpNotFound();
@@ -317,7 +278,53 @@ namespace NWHarvest.Web.Controllers
 
             notificationManager.SendNotification(message, vm.Grower.NotificationPreference);
         }
-
+        private ICollection<ClaimViewModel> GetClaimedListings(IQueryable<FoodBankClaim> query)
+        {
+            return query.Select(c => new ClaimViewModel
+            {
+                ListingId = c.ListingId,
+                ClaimedOn = c.CreatedOn,
+                Product = c.Product,
+                Quantity = c.Quantity,
+                CostPerUnit = c.CostPerUnit,
+                Grower = new GrowerViewModel
+                {
+                    Id = c.GrowerId,
+                    Name = c.Grower.name
+                },
+                Address = new AddressViewModel
+                {
+                    Address1 = c.Address.Address1,
+                    Address2 = c.Address.Address2,
+                    City = c.Address.City,
+                    State = c.Address.State,
+                    County = c.Address.County,
+                    Zip = c.Address.Zip
+                }
+            }).ToList();
+        }
+        private ICollection<ListingViewModel> GetListings(IQueryable<Listing> query)
+        {
+            return query
+                .Select(l => new ListingViewModel
+                {
+                    Id = l.Id,
+                    Product = l.Product,
+                    QuantityAvailable = l.QuantityAvailable,
+                    CostPerUnit = l.CostPerUnit,
+                    UnitOfMeasure = l.UnitOfMeasure,
+                    ExpirationDate = l.ExpirationDate,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Address = new AddressViewModel
+                        {
+                            City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
+                            Zip = l.PickupLocation.zip
+                        }
+                    },
+                }).ToList();
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

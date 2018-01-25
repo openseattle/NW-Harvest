@@ -32,6 +32,7 @@ namespace NWHarvest.Web.ViewModels
         public DateTime CreatedOn { get; set; }
 
         public ICollection<ListingViewModel> AvailableListings { get; set; }
+        public ICollection<ListingViewModel> MyListings { get; set; }
         public ICollection<ClaimViewModel> Claims { get; set; }
     }
 }

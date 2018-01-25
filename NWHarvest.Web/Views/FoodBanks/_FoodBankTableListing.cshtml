@@ -1,12 +1,7 @@
-﻿@using Microsoft.AspNet.Identity
-@model NWHarvest.Web.ViewModels.FoodBankViewModel
-@{
-    var availableListings = Model.AvailableListings;
-    var claimedListings = Model.Claims;
-}
-
+﻿@model NWHarvest.Web.ViewModels.FoodBankViewModel
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#availableListings" aria-controls="firstList" role="tab" data-toggle="tab">Available</a></li>
+    <li role="presentation"><a href="#ownedListings" aria-controls="secondList" role="tab" data-toggle="tab">Owned</a></li>
     <li role="presentation"><a href="#claimedListings" aria-controls="thirdList" role="tab" data-toggle="tab">Claimed</a></li>
 </ul>
 
@@ -16,12 +11,17 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="availableListings">
                 <div>
-                    @Html.Partial("__FoodBankAvailableTableListing", availableListings)
+                    @Html.Partial("__FoodBankAvailableTableListing", Model.AvailableListings)
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="ownedListings">
+                <div>
+                    @Html.Partial("__FoodBankOwnedTableListing", Model.MyListings)
                 </div>
             </div>
             <div role="tabpanel" class="tab-pane" id="claimedListings">
                 <div>
-                    @Html.Partial("__FoodBankClaimedTableListing", claimedListings)
+                    @Html.Partial("__FoodBankClaimedTableListing", Model.Claims)
                 </div>
             </div>
         </div>
