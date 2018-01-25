@@ -57,6 +57,7 @@ namespace NWHarvest.Web.Controllers
             }
 
             vm.AvailableListings = db.Listings
+                .Where(l => l.FoodBank.Id != vm.Id)
                 .Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow)
                 .Select(l => new ListingViewModel
                 {
@@ -66,11 +67,6 @@ namespace NWHarvest.Web.Controllers
                     CostPerUnit = l.CostPerUnit,
                     UnitOfMeasure = l.UnitOfMeasure,
                     ExpirationDate = l.ExpirationDate,
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        Name = l.Grower.name
-                    },
                     PickupLocation = new PickupLocationViewModel
                     {
                         Address = new AddressViewModel
