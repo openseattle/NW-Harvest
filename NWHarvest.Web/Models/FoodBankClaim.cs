@@ -18,9 +18,6 @@ namespace NWHarvest.Web.Models
         public int ListingId { get; set; }
         public Listing Listing { get; set; }
 
-        public int GrowerId { get; set; }
-        public Grower Grower { get; set; }
-
         public int FoodBankId { get; set; }
         public FoodBank FoodBank { get; set; }
     }

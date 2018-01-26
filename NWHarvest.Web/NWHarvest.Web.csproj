@@ -246,6 +246,10 @@
     <Compile Include="Migrations\201801262120235_FixApplicationUserListing.Designer.cs">
       <DependentUpon>201801262120235_FixApplicationUserListing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801262132053_RemoveGrowerFromFoodBankClaim.cs" />
+    <Compile Include="Migrations\201801262132053_RemoveGrowerFromFoodBankClaim.Designer.cs">
+      <DependentUpon>201801262132053_RemoveGrowerFromFoodBankClaim.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -516,6 +520,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801262120235_FixApplicationUserListing.resx">
       <DependentUpon>201801262120235_FixApplicationUserListing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801262132053_RemoveGrowerFromFoodBankClaim.resx">
+      <DependentUpon>201801262132053_RemoveGrowerFromFoodBankClaim.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -194,8 +194,7 @@ namespace NWHarvest.Web.Controllers
                     County = listing.PickupLocation.county,
                     Zip = listing.PickupLocation.zip
                 },
-                FoodBank = foodBank,
-                Grower = grower
+                FoodBank = foodBank
             };
 
             db.FoodBankClaims.Add(foodbankClaim);
@@ -250,11 +249,6 @@ namespace NWHarvest.Web.Controllers
                 Product = c.Product,
                 Quantity = c.Quantity,
                 CostPerUnit = c.CostPerUnit,
-                Grower = new GrowerViewModel
-                {
-                    Id = c.GrowerId,
-                    Name = c.Grower.name
-                },
                 Address = new AddressViewModel
                 {
                     Address1 = c.Address.Address1,
