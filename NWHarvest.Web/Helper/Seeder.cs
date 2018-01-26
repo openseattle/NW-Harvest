@@ -35,21 +35,23 @@ namespace NWHarvest.Web.Helper
 
         private void CreateListings()
         {
-            CreateGrowerListings();
+            int totalListings = 0;
+            totalListings += CreateGrowerListings(totalListings);
+            totalListings += CreateFoodBankListings(totalListings);
         }
         
-        private void CreateGrowerListings()
+        private int CreateGrowerListings(int startId)
         {
             // abort if no growers
             if (!_context.Growers.Any())
             {
-                return;
+                return 0;
             }
-
+            
             var numberOfGrowers = _context.Growers.Count();
-            // create listing for random growers
+            var numberOfListings = 0;
             Random random = new Random();
-            for (int i = 1; i < 400; i++)
+            for (int i = startId + 1; i < startId + 400; i++)
             {
                 var harvestDate = RandomDateTime();
                 var growerId = random.Next(1, numberOfGrowers);
@@ -57,29 +59,60 @@ namespace NWHarvest.Web.Helper
                 var pickupLocationId = _context.PickupLocations.Where(p => p.Grower.Id == growerId).First().id;
                 if (grower != null)
                 {
-                    var listing = new Listing
-                    {
-                        Id = i,
-                        Product = RandomProduct(),
-                        QuantityAvailable = 10,
-                        QuantityClaimed = 0,
-                        UnitOfMeasure = "lbs",
-                        HarvestedDate = harvestDate,
-                        ExpirationDate = harvestDate.AddDays(30),
-                        CostPerUnit = 0,
-                        IsAvailable = true,
-                        IsPickedUp = false,
-                        Grower = grower,
-                        PickupLocationId = pickupLocationId,
-                        ListerRole = UserRole.Grower.ToString(),
-                        ListerUserId = grower.UserId
-                    };
-
-                    _context.Listings.Add(listing);
+                    AddListing(i, pickupLocationId, grower.UserId, UserRole.FoodBank.ToString());
+                    numberOfListings += 1;
                 }
             }
-
             SaveChanges();
+            return numberOfListings;
+        }
+
+        private int CreateFoodBankListings(int startId)
+        {
+            // abort if no foodbanks
+            if (!_context.FoodBanks.Any())
+            {
+                return startId;
+            }
+
+            var numberOfFoodbanks = _context.FoodBanks.Count();
+            Random random = new Random();
+            var numberOfListings = 0;
+            for (int i = 1; i < 4*numberOfFoodbanks; i++)
+            {
+                var foodbankId = random.Next(1, numberOfFoodbanks);
+                var foodbank = _context.FoodBanks.Find(foodbankId);
+                var pickupLocationId = _context.PickupLocations.Where(p => p.FoodBank.Id == foodbankId).First().id;
+                if (foodbank != null)
+                {
+                    AddListing(i, pickupLocationId, foodbank.UserId, UserRole.FoodBank.ToString());
+                    numberOfListings += 1;
+                }
+            }
+            SaveChanges();
+            return numberOfListings;
+        }
+
+        private void AddListing(int id, int pickupLocationId, string listerUserId, string role)
+        {
+            var harvestDate = RandomDateTime();
+            var listing = new Listing
+            {
+                Id = id,
+                Product = RandomProduct(),
+                QuantityAvailable = 10,
+                QuantityClaimed = 0,
+                UnitOfMeasure = "lbs",
+                HarvestedDate = harvestDate,
+                ExpirationDate = harvestDate.AddDays(30),
+                CostPerUnit = 0,
+                IsAvailable = true,
+                IsPickedUp = false,
+                PickupLocationId = pickupLocationId,
+                ListerRole = role,
+                ListerUserId = listerUserId
+            };
+            _context.Listings.Add(listing);
         }
 
         private void CreateUsers()
@@ -126,7 +159,19 @@ namespace NWHarvest.Web.Helper
                     NotificationPreference = UserNotification.Email.ToString(),
                     IsActive = true,
                     CreatedOn = createdOn,
-                    ModifiedOn = createdOn
+                    ModifiedOn = createdOn,
+                    PickupLocations = new List<PickupLocation>
+                    {
+                        new PickupLocation
+                        {
+                            name = "Default",
+                            address1 = $"{i} Foodbank St",
+                            city = city,
+                            state = "WA",
+                            county = "Unknown",
+                            zip = zip.ToString()
+                        }
+                    }
                 };
 
                 _context.FoodBanks.AddOrUpdate<FoodBank>(foodBankToAdd);
