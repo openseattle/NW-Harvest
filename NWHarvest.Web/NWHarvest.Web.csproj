@@ -196,6 +196,7 @@
     <Compile Include="Controllers\PickupLocationsController.cs" />
     <Compile Include="Enums\UserNotification.cs" />
     <Compile Include="Enums\ListingStatus.cs" />
+    <Compile Include="Enums\ListerRole.cs" />
     <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -237,6 +238,10 @@
     <Compile Include="Migrations\201801180014032_AddFoodBankIdToPickupLocation.Designer.cs">
       <DependentUpon>201801180014032_AddFoodBankIdToPickupLocation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801262019005_AddListerColumnsToListing.cs" />
+    <Compile Include="Migrations\201801262019005_AddListerColumnsToListing.Designer.cs">
+      <DependentUpon>201801262019005_AddListerColumnsToListing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -261,6 +266,7 @@
     <Compile Include="ViewModels\AdministratorViewModel.cs" />
     <Compile Include="ViewModels\ClaimViewModel.cs" />
     <Compile Include="ViewModels\FoodBankViewModel.cs" />
+    <Compile Include="ViewModels\ListerViewModel.cs" />
     <Compile Include="ViewModels\GrowerViewModel.cs" />
     <Compile Include="ViewModels\ListingEditViewModel.cs" />
     <Compile Include="ViewModels\ClaimListingViewModel.cs" />
@@ -500,6 +506,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801180014032_AddFoodBankIdToPickupLocation.resx">
       <DependentUpon>201801180014032_AddFoodBankIdToPickupLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801262019005_AddListerColumnsToListing.resx">
+      <DependentUpon>201801262019005_AddListerColumnsToListing.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -51,6 +51,7 @@ namespace NWHarvest.Web.ViewModels
 
         public GrowerViewModel Grower { get; set; }
         public FoodBankViewModel FoodBank { get; set; }
+        public ListerViewModel Lister { get; set; }
 
         [DisplayName("Grower")]
         public string GrowerName { get; set; }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using NWHarvest.Web.Helper;
 using NWHarvest.Web.Models;
@@ -9,6 +8,7 @@ using Microsoft.AspNet.Identity;
 using NWHarvest.Web.ViewModels;
 using System.Data.Entity;
 using System;
+using NWHarvest.Web.Enums;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -17,7 +17,8 @@ namespace NWHarvest.Web.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private NotificationManager notificationManager = new NotificationManager();
-        
+        private string UserId => User.Identity.GetUserId();
+
         [Authorize(Roles = "FoodBank")]
         [ActionName("Profile")]
         public ActionResult Index()
@@ -64,7 +65,7 @@ namespace NWHarvest.Web.Controllers
 
             var queryClaimedListings = db.FoodBankClaims.Where(c => c.FoodBankId == vm.Id);
             vm.Claims = GetClaimedListings(queryClaimedListings);
-            
+
             if (vm == null)
             {
                 return HttpNotFound();
@@ -145,12 +146,10 @@ namespace NWHarvest.Web.Controllers
         public ActionResult Claim(int ListingId)
         {
             var vm = GetClaimListingViewModel(ListingId);
-
             if (vm == null)
             {
                 return HttpNotFound();
             }
-
             return View(vm);
         }
 
@@ -164,75 +163,39 @@ namespace NWHarvest.Web.Controllers
                 return View(GetClaimListingViewModel(claim.ListingId));
             }
 
-            var vm = db.Listings
-                .Where(l => l.Id == claim.ListingId)
-                .Select(l => new ListingViewModel
-                {
-                    Id = l.Id,
-                    Product = l.Product,
-                    QuantityAvailable = l.QuantityAvailable,
-                    CostPerUnit = l.CostPerUnit,
-                    UnitOfMeasure = l.UnitOfMeasure,
-                    ExpirationDate = l.ExpirationDate,
-                    Comments = l.Comments,
-                    Grower = new GrowerViewModel
-                    {
-                        Id = l.Grower.Id,
-                        UserId = l.Grower.UserId,
-                        Email = l.Grower.email,
-                        NotificationPreference = l.Grower.NotificationPreference
-                    },
-                    PickupLocation = new PickupLocationViewModel
-                    {
-                        Address = new AddressViewModel
-                        {
-                            Address1 = l.PickupLocation.address1,
-                            Address2 = l.PickupLocation.address2,
-                            City = l.PickupLocation.city,
-                            State = l.PickupLocation.state,
-                            County = l.PickupLocation.county,
-                            Zip = l.PickupLocation.zip
-                        }
-                    }
-                })
-                .AsNoTracking()
-                .FirstOrDefault();
+            var queryListing = db.Listings.Where(l => l.Id == claim.ListingId);
+            var quantityAvailable = queryListing.Select(l => l.QuantityAvailable).FirstOrDefault();
 
-            if (claim.Quantity <= 0 || claim.Quantity > vm.QuantityAvailable)
+            if (claim.Quantity <= 0 || claim.Quantity > quantityAvailable)
             {
                 ModelState.AddModelError("RangeException", "Invalid quantity.");
                 return View(GetClaimListingViewModel(claim.ListingId));
             }
 
-            if (vm == null)
-            {
-                return HttpNotFound();
-            }
-
-            var listing = db.Listings.Find(vm.Id);
+            var listing = queryListing.Include("PickupLocation").FirstOrDefault();
             var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
             if (listing == null || foodBank == null)
             {
                 return HttpNotFound();
             }
-
+            var grower = db.Growers.Find(listing.GrowerId);
             var foodbankClaim = new FoodBankClaim
             {
                 ListingId = listing.Id,
-                Product = vm.Product,
+                Product = listing.Product,
                 Quantity = (int)claim.Quantity,
-                CostPerUnit = vm.CostPerUnit,
+                CostPerUnit = listing.CostPerUnit,
                 Address = new Address
                 {
-                    Address1 = vm.PickupLocation.Address.Address1,
-                    Address2 = vm.PickupLocation.Address.Address2,
-                    City = vm.PickupLocation.Address.City,
-                    State = vm.PickupLocation.Address.State,
-                    County = vm.PickupLocation.Address.County,
-                    Zip = vm.PickupLocation.Address.Zip
+                    Address1 = listing.PickupLocation.address1,
+                    Address2 = listing.PickupLocation.address2,
+                    City = listing.PickupLocation.city,
+                    State = listing.PickupLocation.state,
+                    County = listing.PickupLocation.county,
+                    Zip = listing.PickupLocation.zip
                 },
                 FoodBank = foodBank,
-                GrowerId = vm.Grower.Id
+                Grower = grower
             };
 
             db.FoodBankClaims.Add(foodbankClaim);
@@ -241,7 +204,8 @@ namespace NWHarvest.Web.Controllers
 
             db.SaveChanges();
 
-            SendNotification(vm);
+            //todo: re-enable notifications
+            //SendNotification(foodbankClaim.Id);
 
             return RedirectToAction(nameof(Profile));
         }
@@ -251,32 +215,31 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("Index", "Manage");
         }
 
-        private string UserId => User.Identity.GetUserId();
-
         // send sms and/or email notification to grower
-        private void SendNotification(ListingViewModel vm)
+        private void SendNotification(int claimId)
         {
-            var growerPhoneNumber = notificationManager.GetUserPhoneNumber(vm.Grower.UserId);
-            var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
-            var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
+            //var claim = db.FoodBankClaims.Where(c => c.Id == claimId).FirstOrDefault();
+            //var growerPhoneNumber = notificationManager.GetUserPhoneNumber(claim.Grower.UserId);
+            //var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
+            //var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
 
-            var subject = $"NW Harvest listing of {vm.Product} has been claimed by {foodBank.name}";
-            var body = $"Your listing of {vm.Product} has been claimed by {foodBank.name}, {foodBank.email}";
+            //var subject = $"NW Harvest listing of {claim.Product} has been claimed by {foodBank.name}";
+            //var body = $"Your listing of {claim.Product} has been claimed by {foodBank.name}, {foodBank.email}";
 
-            if (foodBankPhoneNumber != null)
-            {
-                body += ", " + foodBankPhoneNumber;
-            }
+            //if (foodBankPhoneNumber != null)
+            //{
+            //    body += ", " + foodBankPhoneNumber;
+            //}
 
-            var message = new NotificationMessage
-            {
-                DestinationPhoneNumber = growerPhoneNumber,
-                DestinationEmailAddress = vm.Grower.Email,
-                Subject = subject,
-                Body = body
-            };
+            //var message = new NotificationMessage
+            //{
+            //    DestinationPhoneNumber = growerPhoneNumber,
+            //    DestinationEmailAddress = claim.Grower.email,
+            //    Subject = subject,
+            //    Body = body
+            //};
 
-            notificationManager.SendNotification(message, vm.Grower.NotificationPreference);
+            //notificationManager.SendNotification(message, claim.Grower.NotificationPreference);
         }
         private ICollection<ClaimViewModel> GetClaimedListings(IQueryable<FoodBankClaim> query)
         {
@@ -337,7 +300,7 @@ namespace NWHarvest.Web.Controllers
         #region Helpers
         private ClaimListingViewModel GetClaimListingViewModel(int listingId)
         {
-            return db.Listings
+            var vm = db.Listings
                     .Where(l => l.Id == listingId)
                     .Select(l => new ClaimListingViewModel
                     {
@@ -346,11 +309,45 @@ namespace NWHarvest.Web.Controllers
                         Available = l.QuantityAvailable,
                         CostPerUnit = l.CostPerUnit,
                         UnitOfMeasure = l.UnitOfMeasure,
-                        GrowerName = l.Grower.name
+                        ListerUserId = l.ListerUserId,
+                        ListerRole = l.ListerRole
                     })
                     .AsNoTracking()
                     .FirstOrDefault();
+            vm.Lister = GetLister(vm.ListerRole, vm.ListerUserId);
+            return vm;
         }
+
+        private ListerViewModel GetLister(string role, string userId)
+        {
+            switch ((ListerRole)Enum.Parse(typeof(ListerRole), role))
+            {
+                case ListerRole.Grower:
+                    return db.Growers.Where(g => g.UserId == userId)
+                        .Select(g => new ListerViewModel
+                        {
+                            Id = g.Id,
+                            UserId = g.UserId,
+                            Name = g.name,
+                            Email = g.email,
+                            NotificationPreference = g.NotificationPreference
+                        }).FirstOrDefault();
+                case ListerRole.FoodBank:
+                    return db.FoodBanks.Where(fb => fb.UserId == userId)
+                        .Select(fb => new ListerViewModel
+                        {
+                            Id = fb.Id,
+                            UserId = fb.UserId,
+                            Name = fb.name,
+                            Email = fb.email,
+                            NotificationPreference = fb.NotificationPreference
+                        }).FirstOrDefault();
+                default:
+                    throw new NotImplementedException();
+            }
+
+        }
+
         private void RegisterViewData()
         {
             ViewData["States"] = new List<SelectListItem>

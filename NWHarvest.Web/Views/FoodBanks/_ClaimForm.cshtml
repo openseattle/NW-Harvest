@@ -1,7 +1,7 @@
 ﻿@model NWHarvest.Web.ViewModels.ClaimListingViewModel
 @using (Html.BeginForm())
 {
-    <h4 class="card-title">@Model.Product from @Model.GrowerName</h4>
+    <h4 class="card-title">@Model.Product from @Model.Lister.Name</h4>
     <div class="card-text">Available: @Model.Available</div>
     <div class="card-text">Unit Cost: @Model.CostPerUnit / @Model.UnitOfMeasure</div>
     <br />

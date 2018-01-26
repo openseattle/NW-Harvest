@@ -1,4 +1,6 @@
+using NWHarvest.Web.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +9,7 @@ namespace NWHarvest.Web.Models
     [Table("Listing")]
     public class Listing
     {
+        [Key, Column(Order = 0)]
         public int Id { get; set; }
 
         [Required]
@@ -38,9 +41,22 @@ namespace NWHarvest.Web.Models
         [Required]
         public bool IsPickedUp { get; set; }
 
-        // Navigation properties
-        public Grower Grower { get; set; }
-        public FoodBank FoodBank { get; set; }
+        public string ListerRole { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        [Key, Column(Order = 1)]
+        [ForeignKey("Users")]
+        public string ListerUserId { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
         public PickupLocation PickupLocation { get; set; }
+
+        // Navigation properties
+        [Obsolete]
+        public int? GrowerId { get; set; }
+        public Grower Grower { get; set; }
+        [Obsolete]
+        public int? FoodBankId { get; set; }
+        public FoodBank FoodBank { get; set; }
     }
 }

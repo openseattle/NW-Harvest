@@ -12,6 +12,8 @@ namespace NWHarvest.Web.ViewModels
         public decimal Available { get; set; }
         public decimal CostPerUnit { get; set; }
         public string UnitOfMeasure { get; set; }
-        public string GrowerName { get; set; } 
+        public string ListerRole { get; set; }
+        public string ListerUserId { get; set; }
+        public ListerViewModel Lister { get; set; }
     }
 }
