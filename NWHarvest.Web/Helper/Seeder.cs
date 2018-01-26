@@ -35,6 +35,11 @@ namespace NWHarvest.Web.Helper
 
         private void CreateListings()
         {
+            CreateGrowerListings();
+        }
+        
+        private void CreateGrowerListings()
+        {
             // abort if no growers
             if (!_context.Growers.Any())
             {
@@ -65,7 +70,9 @@ namespace NWHarvest.Web.Helper
                         IsAvailable = true,
                         IsPickedUp = false,
                         Grower = grower,
-                        PickupLocationId = pickupLocationId
+                        PickupLocationId = pickupLocationId,
+                        ListerRole = UserRole.Grower.ToString(),
+                        ListerUserId = grower.UserId
                     };
 
                     _context.Listings.Add(listing);
