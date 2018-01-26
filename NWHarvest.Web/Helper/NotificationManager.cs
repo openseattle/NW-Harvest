@@ -75,7 +75,7 @@ namespace NWHarvest.Web.Helper
                 Body = message.Body
             };
 
-            UserManager.SmsService.SendAsync(identityMessage).Wait();
+            UserManager.EmailService.SendAsync(identityMessage).Wait();
         }
 
         public string GetUserPhoneNumber(string userId)
