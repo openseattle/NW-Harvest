@@ -46,17 +46,19 @@ namespace NWHarvest.Web.Models
         [Required]
         [StringLength(50)]
         [Key, Column(Order = 1)]
-        [ForeignKey("Users")]
+        [ForeignKey("User")]
         public string ListerUserId { get; set; }
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ApplicationUser User { get; set; }
         public PickupLocation PickupLocation { get; set; }
 
         // Navigation properties
         [Obsolete]
         public int? GrowerId { get; set; }
+        [Obsolete]
         public Grower Grower { get; set; }
         [Obsolete]
         public int? FoodBankId { get; set; }
+        [Obsolete]
         public FoodBank FoodBank { get; set; }
     }
 }
