@@ -9,7 +9,7 @@ namespace NWHarvest.Web.Models
     [Table("Listing")]
     public class Listing
     {
-        [Key, Column(Order = 0)]
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -44,8 +44,6 @@ namespace NWHarvest.Web.Models
         public string ListerRole { get; set; }
 
         [Required]
-        [StringLength(50)]
-        [Key, Column(Order = 1)]
         [ForeignKey("User")]
         public string ListerUserId { get; set; }
         public ApplicationUser User { get; set; }
