@@ -271,6 +271,7 @@ namespace NWHarvest.Web.Controllers
                     CostPerUnit = l.CostPerUnit,
                     UnitOfMeasure = l.UnitOfMeasure,
                     ExpirationDate = l.ExpirationDate,
+                    HarvestDate = l.HarvestedDate,
                     PickupLocation = new PickupLocationViewModel
                     {
                         Address = new AddressViewModel
