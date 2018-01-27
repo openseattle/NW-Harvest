@@ -35,23 +35,22 @@ namespace NWHarvest.Web.Helper
 
         private void CreateListings()
         {
-            int totalListings = 0;
-            totalListings += CreateGrowerListings(totalListings);
-            totalListings += CreateFoodBankListings(totalListings);
+            CreateGrowerListings();
+            CreateFoodBankListings();
         }
         
-        private int CreateGrowerListings(int startId)
+        private void CreateGrowerListings()
         {
             // abort if no growers
             if (!_context.Growers.Any())
             {
-                return 0;
+                return;
             }
             
             var numberOfGrowers = _context.Growers.Count();
-            var numberOfListings = 0;
+            var numberOfListings = _context.Listings.Count();
             Random random = new Random();
-            for (int i = startId + 1; i < startId + 400; i++)
+            for (int i = numberOfListings + 1; i < numberOfListings + 4*numberOfGrowers; i++)
             {
                 var harvestDate = RandomDateTime();
                 var growerId = random.Next(1, numberOfGrowers);
@@ -59,38 +58,35 @@ namespace NWHarvest.Web.Helper
                 var pickupLocationId = _context.PickupLocations.Where(p => p.Grower.Id == growerId).First().id;
                 if (grower != null)
                 {
-                    AddListing(i, pickupLocationId, grower.UserId, UserRole.FoodBank.ToString());
-                    numberOfListings += 1;
+                    AddListing(i, pickupLocationId, grower.UserId, UserRole.Grower.ToString());
                 }
             }
             SaveChanges();
-            return numberOfListings;
         }
 
-        private int CreateFoodBankListings(int startId)
+        private void CreateFoodBankListings()
         {
             // abort if no foodbanks
             if (!_context.FoodBanks.Any())
             {
-                return startId;
+                return;
             }
 
             var numberOfFoodbanks = _context.FoodBanks.Count();
+            var numberOfListings = _context.Listings.Count();
             Random random = new Random();
-            var numberOfListings = 0;
-            for (int i = 1; i < 4*numberOfFoodbanks; i++)
+            for (int i = numberOfListings + 1; i < numberOfListings + 4*numberOfFoodbanks; i++)
             {
                 var foodbankId = random.Next(1, numberOfFoodbanks);
-                var foodbank = _context.FoodBanks.Find(foodbankId);
-                var pickupLocationId = _context.PickupLocations.Where(p => p.FoodBank.Id == foodbankId).First().id;
-                if (foodbank != null)
+                var foodbankUser = _context.FoodBanks.Include("PickupLocations").Where(f => f.Id == foodbankId).Select(f => new
                 {
-                    AddListing(i, pickupLocationId, foodbank.UserId, UserRole.FoodBank.ToString());
-                    numberOfListings += 1;
-                }
+                    UserId = f.UserId,
+                    PickuplocationId = f.PickupLocations.FirstOrDefault().id
+                }).FirstOrDefault();
+                
+                AddListing(i, foodbankUser.PickuplocationId, foodbankUser.UserId, UserRole.FoodBank.ToString());
             }
             SaveChanges();
-            return numberOfListings;
         }
 
         private void AddListing(int id, int pickupLocationId, string listerUserId, string role)
@@ -292,16 +288,30 @@ namespace NWHarvest.Web.Helper
             {
                 if (isOdd)
                 {
-                    var foodBank = _context.FoodBanks.Find(random.Next(1, numberOfFoodBanks));
-                    listing.IsAvailable = false;
-                    listing.IsPickedUp = true;
-                    listing.FoodBank = foodBank;
-                    _context.SaveChanges();
+                    var foodbankClaim = new FoodBankClaim
+                    {
+                        Listing = listing,
+                        FoodBankId = random.Next(1, numberOfFoodBanks),
+                        Product = listing.Product,
+                        Quantity = (int)listing.QuantityAvailable,
+                        CostPerUnit = listing.CostPerUnit,
+                        Address = new Address
+                        {
+                            Address1 = listing.PickupLocation.address1,
+                            Address2 = listing.PickupLocation.address2,
+                            City = listing.PickupLocation.city,
+                            State = listing.PickupLocation.state,
+                            County = listing.PickupLocation.county,
+                            Zip = listing.PickupLocation.zip
+                        }
+                    };
+                    _context.FoodBankClaims.Add(foodbankClaim);
                 }
                 isOdd = !isOdd;
             }
+            _context.SaveChanges();
         }
-
+    
         // randomly create dates within six months (past/future) of the current date
         private DateTime RandomDateTime()
         {
