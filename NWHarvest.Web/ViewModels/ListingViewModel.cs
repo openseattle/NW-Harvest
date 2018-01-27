@@ -29,11 +29,11 @@ namespace NWHarvest.Web.ViewModels
         public virtual string UnitOfMeasure { get; set; }
 
         [DisplayName("Harvest")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public DateTime HarvestDate { get; set; }
 
         [DisplayName("Expires")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yy}", ApplyFormatInEditMode = true)]
         public virtual DateTime ExpirationDate { get; set; }
 
         [DisplayName("Cost per Unit")]
