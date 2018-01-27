@@ -91,14 +91,15 @@ namespace NWHarvest.Web.Helper
 
         private void AddListing(int id, int pickupLocationId, string listerUserId, string role)
         {
+            Random random = new Random();
             var harvestDate = RandomDateTime();
             var listing = new Listing
             {
                 Id = id,
                 Product = RandomProduct(),
-                QuantityAvailable = 10,
+                QuantityAvailable = random.Next(1, 100),
                 QuantityClaimed = 0,
-                UnitOfMeasure = "lbs",
+                UnitOfMeasure = "lb",
                 HarvestedDate = harvestDate,
                 ExpirationDate = harvestDate.AddDays(30),
                 CostPerUnit = 0,
@@ -288,12 +289,13 @@ namespace NWHarvest.Web.Helper
             {
                 if (isOdd)
                 {
+                    var quantityClaimed = random.Next(1, (int)listing.QuantityAvailable);
                     var foodbankClaim = new FoodBankClaim
                     {
                         Listing = listing,
                         FoodBankId = random.Next(1, numberOfFoodBanks),
                         Product = listing.Product,
-                        Quantity = (int)listing.QuantityAvailable,
+                        Quantity = quantityClaimed,
                         CostPerUnit = listing.CostPerUnit,
                         Address = new Address
                         {
@@ -305,6 +307,8 @@ namespace NWHarvest.Web.Helper
                             Zip = listing.PickupLocation.zip
                         }
                     };
+                    listing.QuantityAvailable -= quantityClaimed;
+                    listing.QuantityClaimed += quantityClaimed;
                     _context.FoodBankClaims.Add(foodbankClaim);
                 }
                 isOdd = !isOdd;
