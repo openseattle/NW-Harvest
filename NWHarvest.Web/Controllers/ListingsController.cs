@@ -305,26 +305,23 @@ namespace NWHarvest.Web.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            IQueryable<Listing> query;
             switch (Session[_userRoleSessionKey])
             {
                 case UserRole.FoodBank:
                     ViewBag.CancelActionLink = Url.Action("Profile", "FoodBanks", null);
-                    query = _queryListings.Where(l => l.FoodBank.UserId == UserId && l.Id == id);
                     break;
                 case UserRole.Grower:
                     ViewBag.CancelActionLink = Url.Action("Profile", "Growers", null);
-                    query = _queryListings.Where(l => l.Grower.UserId == UserId && l.Id == id);
                     break;
                 case UserRole.Administrator:
                     ViewBag.CancelActionLink = returnUrl;
-                    query = _queryListings.Where(l => l.Id == id);
                     break;
                 default:
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var vm = query
+            var vm = _queryListings
+                .Where(l => l.Id == id)
                 .Select(l => new ListingViewModel
                 {
                     Id = l.Id,
