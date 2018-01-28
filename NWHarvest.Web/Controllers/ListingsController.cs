@@ -215,8 +215,7 @@ namespace NWHarvest.Web.Controllers
             }
             
             var vm = _queryListings
-                .Include("PickupLocation")
-                .Include("Grower")
+                .Where(l => l.Id == id.Value)
                 .Select(l => new ListingEditViewModel
                 {
                     Id = l.Id,
