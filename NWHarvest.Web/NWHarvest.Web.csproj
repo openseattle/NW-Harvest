@@ -465,7 +465,6 @@
     <Content Include="Views\Listings\Search.Mobile.cshtml" />
     <Content Include="Views\Listings\_ListingsSearchResult.Mobile.cshtml" />
     <Content Include="Views\Growers\__GrowerAvailableTableListing.cshtml" />
-    <Content Include="Views\Growers\__GrowerPendingPickupTableListing.cshtml" />
     <Content Include="Views\Growers\__GrowerClaimedOrExpiredTableListing.cshtml" />
     <Content Include="Views\FoodBanks\_FoodBankDetail.cshtml" />
     <Content Include="Views\FoodBanks\_FoodBankTableListing.cshtml" />
