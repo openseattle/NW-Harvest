@@ -101,6 +101,7 @@ namespace NWHarvest.Web.Controllers
             }
 
             var vm = _queryListings
+                .Where(l => l.Id == id)
                 .Include("PickupLocation")
                 .Select(l => new ListingViewModel
                 {
