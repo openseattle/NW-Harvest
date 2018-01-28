@@ -24,7 +24,7 @@ namespace NWHarvest.Web.Controllers
         private IQueryable<FoodBank> _queryFoodBank => db.FoodBanks.Where(fb => fb.UserId == UserId);
         private IQueryable<Grower> _queryGrower => db.Growers.Where(g => g.UserId == UserId);
         private readonly IQueryable<PickupLocation> _queryPickupLocations;
-        private readonly IQueryable<Listing> _queryListings;
+        private IQueryable<Listing> _queryListings => db.Listings.Where(l => l.ListerUserId == UserId);
         private string UserId => User.Identity.GetUserId();
         
         public ListingsController()
@@ -32,13 +32,11 @@ namespace NWHarvest.Web.Controllers
             if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
             {
                 _queryPickupLocations = db.PickupLocations.Where(fb => fb.FoodBank.UserId == UserId);
-                _queryListings = db.Listings.Where(fb => fb.FoodBank.UserId == UserId);
                 System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.FoodBank;
             }
             else
             {
                 _queryPickupLocations = db.PickupLocations.Where(fb => fb.Grower.UserId == UserId);
-                _queryListings = db.Listings.Where(fb => fb.Grower.UserId == UserId);
                 System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
             }
         }
@@ -74,7 +72,7 @@ namespace NWHarvest.Web.Controllers
         public ActionResult Index()
         {
             var vm = _queryListings
-                .Include("PickupLocation")
+                .Where(l => l.ListerUserId == UserId)
                 .Select(l => new ListingViewModel
                 {
                     Id = l.Id,
@@ -88,6 +86,7 @@ namespace NWHarvest.Web.Controllers
                     IsAvailable = l.IsAvailable,
                     Comments = l.Comments
                 }).ToList();
+
             ViewBag.UserName = GetUserName();
             ViewBag.ProfileUrl = GetProfileUrl();
             return View(vm);
