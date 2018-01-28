@@ -55,11 +55,11 @@ namespace NWHarvest.Web.Controllers
                 return View("DisabledUser");
             }
 
-            var queryMyListings = db.Listings.Where(l => l.FoodBank.Id == vm.Id);
+            var queryMyListings = db.Listings.Where(l => l.ListerUserId == UserId);
             vm.MyListings = GetListings(queryMyListings);
 
             var queryAvailableListings = db.Listings
-                .Where(l => l.FoodBank.Id != vm.Id)
+                .Where(l => l.ListerUserId != UserId)
                 .Where(l => l.IsAvailable == true && l.ExpirationDate > DateTime.UtcNow).AsQueryable();
             vm.AvailableListings = GetListings(queryAvailableListings);
 
