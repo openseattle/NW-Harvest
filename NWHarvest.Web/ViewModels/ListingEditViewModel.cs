@@ -22,6 +22,7 @@ namespace NWHarvest.Web.ViewModels
         public override string UnitOfMeasure { get; set; }
 
         [Required]
+        [DisplayFormat(DataFormatString = "{0:mm/dd/yy}", ApplyFormatInEditMode = true)]
         public override DateTime ExpirationDate { get; set; }
 
         [Required]
