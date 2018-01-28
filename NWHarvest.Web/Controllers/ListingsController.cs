@@ -159,12 +159,11 @@ namespace NWHarvest.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
-                var userId = User.Identity.GetUserId();
-                
+                var pickupLocation = db.PickupLocations.Find(vm.PickupLocationId);                
                 var listingToAdd = new Listing
                 {
                     Id = vm.Id,
+                    ListerUserId = UserId,
                     Product = vm.Product,
                     QuantityAvailable = vm.QuantityAvailable,
                     QuantityClaimed = vm.QuantityClaimed,
@@ -180,10 +179,10 @@ namespace NWHarvest.Web.Controllers
                 switch (Session[_userRoleSessionKey])
                 {
                     case UserRole.FoodBank:
-                        listingToAdd.FoodBank = _queryFoodBank.FirstOrDefault();
+                        listingToAdd.ListerRole = UserRole.FoodBank.ToString();
                         break;
                     case UserRole.Grower:
-                        listingToAdd.Grower = _queryGrower.FirstOrDefault();
+                        listingToAdd.ListerRole = UserRole.Grower.ToString();
                         break;
                     default:
                         return View("Error");
