@@ -77,7 +77,7 @@ namespace NWHarvest.Web.Controllers
                 .ToList();
 
             vm.Listings = db.Listings
-                .Where(l => l.Grower.UserId == UserId)
+                .Where(l => l.ListerUserId == UserId)
                 .Select(l => new ViewModels.ListingViewModel
                 {
                     Id = l.Id,
