@@ -146,6 +146,8 @@ namespace NWHarvest.Web.Controllers
         {
             var vm = new ListingViewModel
             {
+                HarvestDate = DateTime.UtcNow,
+                ExpirationDate = DateTime.UtcNow.AddDays(7),
                 PickupLocations = SelectListPickupLocations()
             };
             vm.UserName = GetUserName();
