@@ -26,7 +26,7 @@ namespace NWHarvest.Web.Controllers
         private readonly IQueryable<PickupLocation> _queryPickupLocations;
         private IQueryable<Listing> _queryListings => db.Listings.Where(l => l.ListerUserId == UserId);
         private string UserId => User.Identity.GetUserId();
-        
+
         public ListingsController()
         {
             if (System.Web.HttpContext.Current.User.IsInRole(UserRole.FoodBank.ToString()))
@@ -40,7 +40,7 @@ namespace NWHarvest.Web.Controllers
                 System.Web.HttpContext.Current.Session[_userRoleSessionKey] = UserRole.Grower;
             }
         }
-        
+
         [Authorize(Roles = "FoodBank")]
         public ActionResult Search(string searchString, ListingStatus status = ListingStatus.Available)
         {
@@ -161,7 +161,7 @@ namespace NWHarvest.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pickupLocation = db.PickupLocations.Find(vm.PickupLocationId);                
+                var pickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
                 var listingToAdd = new Listing
                 {
                     Id = vm.Id,
@@ -193,11 +193,11 @@ namespace NWHarvest.Web.Controllers
                 db.Listings.Add(listingToAdd);
                 db.SaveChanges();
 
-                //var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == pickupLocation.county).ToList();
-                //if (foodBanksToNotify.Count > 0)
-                //{
-                //    SendNotification(listingToAdd, foodBanksToNotify);
-                //}
+                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == pickupLocation.county).ToList();
+                if (foodBanksToNotify.Count > 0)
+                {
+                    SendNotification(listingToAdd, foodBanksToNotify);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -215,7 +215,7 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-            
+
             var vm = _queryListings
                 .Where(l => l.Id == id.Value)
                 .Select(l => new ListingEditViewModel
@@ -250,6 +250,7 @@ namespace NWHarvest.Web.Controllers
             if (ModelState.IsValid)
             {
                 var listing = _queryListings
+                    .Include("PickupLocation")
                     .Where(l => l.Id == vm.Id)
                     .FirstOrDefault();
 
@@ -258,7 +259,7 @@ namespace NWHarvest.Web.Controllers
                     return HttpNotFound();
                 }
 
-                var prevPickupLocation = listing.PickupLocation;
+                var prevPickupLocation = db.PickupLocations.Where(p => p.id == listing.PickupLocation.id).First();
                 var newPickupLocation = db.PickupLocations.Find(vm.PickupLocationId);
 
                 listing.Product = vm.Product;
@@ -273,11 +274,11 @@ namespace NWHarvest.Web.Controllers
 
                 db.SaveChanges();
 
-                //var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == newPickupLocation.county).ToList();
-                //if (prevPickupLocation.county != newPickupLocation.county && foodBanksToNotify.Count > 0)
-                //{
-                //    SendNotification(listing, foodBanksToNotify);
-                //}
+                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == newPickupLocation.county).ToList();
+                if (prevPickupLocation.county != newPickupLocation.county && foodBanksToNotify.Count > 0)
+                {
+                    SendNotification(listing, foodBanksToNotify);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -285,7 +286,7 @@ namespace NWHarvest.Web.Controllers
             vm.PickupLocations = SelectListPickupLocations();
             return View(vm);
         }
-        
+
         public ApplicationUserManager UserManager
         {
             get
@@ -359,7 +360,7 @@ namespace NWHarvest.Web.Controllers
             vm.UserName = GetUserName();
             return View(vm);
         }
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Grower,Administrator,FoodBank")]
@@ -380,14 +381,33 @@ namespace NWHarvest.Web.Controllers
         // send sms and/or email notification to Food Banks when a new listing is added in their county
         private void SendNotification(Listing listing, List<FoodBank> foodBanks)
         {
-            var growerPhoneNumber = notificationManager.GetUserPhoneNumber(listing.Grower.UserId);
-
-            var subject = $"NW Harvest listing of {listing.Product} has just been added by {listing.Grower.name}";
-            var body = $"Listing of {listing.Product} has been added by {listing.Grower.name}, {listing.Grower.email}";
-
-            if (growerPhoneNumber != null)
+            var lister = db.Listings
+                        .Include("User")
+                        .Where(l => l.Id == listing.Id)
+                        .Select(l => new ListerViewModel
+                        {
+                            Email = l.User.Email,
+                            PhoneNumber = l.User.PhoneNumber,
+                            Role = l.ListerRole
+                        }).First();
+            
+            switch ((ListerRole)Enum.Parse(typeof(ListerRole), lister.Role))
             {
-                body += ", " + growerPhoneNumber;
+                case ListerRole.Grower:
+                    lister.Name = db.Growers.Where(g => g.UserId == UserId).First().name;
+                    break;
+                case ListerRole.FoodBank:
+                    lister.Name = db.FoodBanks.Where(g => g.UserId == UserId).First().name;
+                    break;
+                default:
+                    return;
+            }
+            var subject = $"NW Harvest listing";
+            var body = $"Listing of {listing.Product} has been added by {lister.Name}, {lister.Email}";
+
+            if (lister.PhoneNumber != null)
+            {
+                body += ", " + lister.PhoneNumber;
             }
 
             foreach (var fb in foodBanks)
