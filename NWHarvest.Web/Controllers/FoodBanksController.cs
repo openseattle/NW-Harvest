@@ -227,8 +227,8 @@ namespace NWHarvest.Web.Controllers
 
             var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
             var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
-            var subject = $"NW Harvest listing of {claim.Product} has been claimed by {foodBank.name}";
-            var body = $"Your listing of {claim.Product} has been claimed by {foodBank.name}, {foodBank.email}";
+            var subject = $"NW Harvest listing";
+            var body = $"Your listing of {claim.Product} has been claimed by {foodBank.name} ({foodBank.email})";
             if (foodBankPhoneNumber != null)
             {
                 body += ", " + foodBankPhoneNumber;
