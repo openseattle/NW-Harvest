@@ -178,7 +178,7 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-            var grower = db.Growers.Find(listing.GrowerId);
+
             var foodbankClaim = new FoodBankClaim
             {
                 ListingId = listing.Id,
@@ -203,8 +203,7 @@ namespace NWHarvest.Web.Controllers
 
             db.SaveChanges();
 
-            //todo: re-enable notifications
-            //SendNotification(foodbankClaim.Id);
+            SendNotification(foodbankClaim);
 
             return RedirectToAction(nameof(Profile));
         }
@@ -214,31 +213,49 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction("Index", "Manage");
         }
 
-        // send sms and/or email notification to grower
-        private void SendNotification(int claimId)
+        private void SendNotification(FoodBankClaim claim)
         {
-            //var claim = db.FoodBankClaims.Where(c => c.Id == claimId).FirstOrDefault();
-            //var growerPhoneNumber = notificationManager.GetUserPhoneNumber(claim.Grower.UserId);
-            //var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
-            //var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
+            var lister = db.Listings
+                .Include("User")
+                .Where(l => l.Id == claim.ListingId)
+                .Select(l => new {
+                    UserId = l.User.Id,
+                    Email = l.User.Email,
+                    Phone = l.User.PhoneNumber,
+                    Role = l.ListerRole
+                }).First();
 
-            //var subject = $"NW Harvest listing of {claim.Product} has been claimed by {foodBank.name}";
-            //var body = $"Your listing of {claim.Product} has been claimed by {foodBank.name}, {foodBank.email}";
+            var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
+            var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
+            var subject = $"NW Harvest listing of {claim.Product} has been claimed by {foodBank.name}";
+            var body = $"Your listing of {claim.Product} has been claimed by {foodBank.name}, {foodBank.email}";
+            if (foodBankPhoneNumber != null)
+            {
+                body += ", " + foodBankPhoneNumber;
+            }
 
-            //if (foodBankPhoneNumber != null)
-            //{
-            //    body += ", " + foodBankPhoneNumber;
-            //}
+            var message = new NotificationMessage
+            {
+                DestinationPhoneNumber = lister.Phone,
+                DestinationEmailAddress = lister.Email,
+                Subject = subject,
+                Body = body
+            };
 
-            //var message = new NotificationMessage
-            //{
-            //    DestinationPhoneNumber = growerPhoneNumber,
-            //    DestinationEmailAddress = claim.Grower.email,
-            //    Subject = subject,
-            //    Body = body
-            //};
+            string listerNotificationPreference = string.Empty;
+            switch ((ListerRole)Enum.Parse(typeof(ListerRole), lister.Role))
+            {
+                case ListerRole.Grower:
+                    listerNotificationPreference = db.Growers.Where(g => g.UserId == lister.UserId).First().NotificationPreference;
+                    break;
+                case ListerRole.FoodBank:
+                    listerNotificationPreference = db.FoodBanks.Where(g => g.UserId == lister.UserId).First().NotificationPreference;
+                    break;
+                default:
+                    break;
+            }
 
-            //notificationManager.SendNotification(message, claim.Grower.NotificationPreference);
+            notificationManager.SendNotification(message, listerNotificationPreference);
         }
         private ICollection<ClaimViewModel> GetClaimedListings(IQueryable<FoodBankClaim> query)
         {
