@@ -126,6 +126,7 @@ namespace NWHarvest.Web.Helper
             var emailDomain = "example.com";
             var foodBankPassword = "Pass@word!";
             var cities = WashingtonCities();
+            var counties = WashingtonCounties();
             for (int i = 1; i < 25; i++)
             {
                 var user = new ApplicationUser
@@ -141,6 +142,7 @@ namespace NWHarvest.Web.Helper
                 var createdOn = DateTime.Today.AddDays(random.Next(-180, 0));
                 var zip = random.Next(98001, 99403);
                 var city = cities[random.Next(0, cities.Count() - 1)];
+                var county = counties[random.Next(0, counties.Count() - 1)];
 
                 var foodBankToAdd = new FoodBank
                 {
@@ -151,7 +153,7 @@ namespace NWHarvest.Web.Helper
                     address1 = $"{i} Broad St",
                     city = city,
                     state = "WA",
-                    county = "Unknown",
+                    county = county,
                     zip = zip.ToString(),
                     NotificationPreference = UserNotification.Email.ToString(),
                     IsActive = true,
@@ -165,7 +167,7 @@ namespace NWHarvest.Web.Helper
                             address1 = $"{i} Foodbank St",
                             city = city,
                             state = "WA",
-                            county = "Unknown",
+                            county = county,
                             zip = zip.ToString()
                         }
                     }
@@ -181,6 +183,7 @@ namespace NWHarvest.Web.Helper
         {
             var random = new Random();
             var cities = WashingtonCities();
+            var counties = WashingtonCounties();
             var growerName = "Grower";
             var emailDomain = "example.com";
             var growerPassword = "Pass@word!";
@@ -199,6 +202,7 @@ namespace NWHarvest.Web.Helper
                 var createdOn = DateTime.Today.AddDays(random.Next(-180, 0));
                 var zip = random.Next(98001, 99403);
                 var city = cities[random.Next(0, cities.Count() - 1)];
+                var county = counties[random.Next(0, counties.Count() - 1)];
                 var growerToAdd = new Grower
                 {
                     Id = i,
@@ -208,7 +212,7 @@ namespace NWHarvest.Web.Helper
                     address1 = $"{i} Main St",
                     city = city,
                     state = "WA",
-                    county = "Unknown",
+                    county = county,
                     zip = zip.ToString(),
                     NotificationPreference = UserNotification.Email.ToString(),
                     IsActive = true,
@@ -222,7 +226,7 @@ namespace NWHarvest.Web.Helper
                             address1 = $"{i} Main St",
                             city = city,
                             state = "WA",
-                            county = "Unknown",
+                            county = county,
                             zip = zip.ToString()
                         }
                     }
@@ -574,7 +578,10 @@ namespace NWHarvest.Web.Helper
                 "Zillah"
             };
         }
-
+        private string[] WashingtonCounties()
+        {
+            return WashingtonState.GetCounties().ToArray();
+        }
         /// <summary>
         /// Wrapper for SaveChanges adding the Validation Messages to the generated exception
         /// </summary>
