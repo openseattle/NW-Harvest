@@ -102,7 +102,7 @@ namespace NWHarvest.Web.Helper
                 UnitOfMeasure = "lb",
                 HarvestedDate = harvestDate,
                 ExpirationDate = harvestDate.AddDays(30),
-                CostPerUnit = 0,
+                CostPerUnit = Math.Round((decimal)random.Next(1,100)/100),
                 IsAvailable = true,
                 IsPickedUp = false,
                 PickupLocationId = pickupLocationId,
