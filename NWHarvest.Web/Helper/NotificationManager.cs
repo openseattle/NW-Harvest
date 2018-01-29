@@ -63,7 +63,7 @@ namespace NWHarvest.Web.Helper
 
         private void SendEmailNotification(NotificationMessage message)
         {
-            if (string.IsNullOrEmpty(message.DestinationEmailAddress))
+            if (string.IsNullOrEmpty(message.DestinationEmailAddress) || message.DestinationEmailAddress.Contains("@example.com"))
             {
                 return;
             }
