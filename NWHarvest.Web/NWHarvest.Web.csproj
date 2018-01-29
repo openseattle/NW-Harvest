@@ -483,6 +483,7 @@
     <Content Include="Views\PickupLocations\Edit.Mobile.cshtml" />
     <Content Include="Views\PickupLocations\Delete.Mobile.cshtml" />
     <Content Include="Views\FoodBanks\__FoodBankOwnedTableListing.cshtml" />
+    <Content Include="Views\Listings\_CreateListingForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
