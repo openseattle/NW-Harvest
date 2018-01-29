@@ -61,8 +61,12 @@ textarea {
 
     input,
     select,
-    textarea {
+    textarea,
+    .input-group {
         max-width: 100% !important;
+    }
+    .datepicker {
+        max-width: 90% !important;
     }
 }
 
