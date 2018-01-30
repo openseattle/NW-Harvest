@@ -137,7 +137,7 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
-
+            vm.UserName = GetUserName();
             return View(vm);
         }
 

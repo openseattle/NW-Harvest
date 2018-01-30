@@ -1,11 +1,8 @@
-﻿@* todo: redesign *@
-@model NWHarvest.Web.ViewModels.ListingViewModel
+﻿@model NWHarvest.Web.ViewModels.ListingViewModel
 @{
     ViewBag.Title = "Listing Details";
 }
-
-<h2>@ViewBag.Title</h2>
-<h3>@Model.UserName</h3>
+<h3>@Model.UserName's @ViewBag.Title</h3>
 <hr />
 
 @Html.Partial("_ListingDetails", Model)
