@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
 
 @{
-    ViewBag.Title = $"{ViewBag.UserName}'s Listings";
+    ViewBag.Title = $"{ViewBag.UserName}";
 }
 
-<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Title</h3>
 <p>
     @Html.ActionLink("Add Listing", "Create", null, new { @class = "btn btn-primary" })
     <a href="@ViewBag.ProfileUrl" class="btn btn-primary">Back to Profile</a>
@@ -18,8 +18,9 @@
                 <div class="col-xs-8 card">
                     <div class="card-body">
                         <h4 class="card-title">@listing.Product</h4>
-                        <div class="card-text"><span class="strong">Quantity</span>: @listing.QuantityAvailable @listing.UnitOfMeasure</div>
+                        <div class="card-text"><span class="strong">Quantity</span>: @listing.QuantityAvailable</div>
                         <div class="card-text"><span class="strong">Claimed</span>: @listing.QuantityClaimed</div>
+                        <div class="card-text"><span class="strong">Unit Cost</span>: @listing.CostPerUnit/@listing.UnitOfMeasure</div>
                         <div class="card-text"><span class="strong">Expiration</span>: @(listing.ExpirationDate.ToShortDateString())</div>
                         <div class="card-text"><span class="strong">Available</span>: @(listing.IsAvailable ? "Yes" : "No")</div>
                         <div class="card-text"><span class="strong">Comments</span>: @listing.Comments</div>
