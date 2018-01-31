@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -17,6 +16,9 @@ namespace NWHarvest.Web.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        public FoodBank FoodBank { get; set; }
+        public Grower Grower { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
