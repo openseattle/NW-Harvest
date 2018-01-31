@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NWHarvest.Web.ViewModels
@@ -28,11 +29,15 @@ namespace NWHarvest.Web.ViewModels
         [Display(Name = "Available Listings")]
         public int NumberOfAvailableListings { get; set; }
 
+        [Obsolete]
         [Display(Name = "Pending Pickups")]
         public int NumberOfPendingPickupClaimListings { get; set; }
 
         [Display(Name = "Claimed Listings")]
         public int NumberOfClaimedListings { get; set; }
+
+        [Display(Name = "Partially Claimed Listings")]
+        public int NumberOfPartiallyClaimedListings { get; set; }
 
         [Display(Name = "Unavailable Listings")]
         public int NumberOfUnavailableListings { get; set; }

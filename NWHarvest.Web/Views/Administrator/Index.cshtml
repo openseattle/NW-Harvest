@@ -42,7 +42,6 @@
             </div>
         </div>
     </div>
-    
     <div class="row">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -59,6 +58,10 @@
                     <tr>
                         <td>@Html.ActionLink("Available", "ManageListings", new { ListingStatus = ListingStatus.Available })</td>
                         <td class="text-center">@Model.NumberOfAvailableListings</td>
+                    </tr>
+                    <tr>
+                        <td>@Html.ActionLink("Partially Claimed", "ManageListings", new { ListingStatus = ListingStatus.PartiallyClaimed })</td>
+                        <td class="text-center">@Model.NumberOfPartiallyClaimedListings</td>
                     </tr>
                     <tr>
                         <td>@Html.ActionLink("Claimed", "ManageListings", new { ListingStatus = ListingStatus.Claimed })</td>

@@ -40,7 +40,8 @@ namespace NWHarvest.Web.Controllers
             // listings
             vm.NumberOfListings = db.Listings.Count();
             vm.NumberOfAvailableListings = db.Listings.Where(l => l.IsAvailable == true && l.ExpirationDate >= today).Count();
-            vm.NumberOfClaimedListings = db.Listings.Where(l => l.QuantityClaimed > 0).Count();
+            vm.NumberOfClaimedListings = db.Listings.Where(l => l.QuantityAvailable == 0).Count();
+            vm.NumberOfPartiallyClaimedListings = db.Listings.Where(l => l.QuantityClaimed > 0 && l.QuantityAvailable > 0).Count();
             vm.NumberOfUnavailableListings = db.Listings
                 .Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                     (l.IsAvailable == true && l.ExpirationDate < today))
@@ -207,10 +208,15 @@ namespace NWHarvest.Web.Controllers
                     ViewBag.ListingPartialView = "_AvailableListings";
                     query = query.Where(l => l.IsAvailable == true && l.ExpirationDate >= today);
                     break;
+                case ListingStatus.PartiallyClaimed:
+                    ViewBag.PanelHeader = "Partially Claimed Listings";
+                    ViewBag.ListingPartialView = "_PartiallyClaimedListings";
+                    query = query.Where(l => l.QuantityAvailable > 0 && l.QuantityClaimed > 0);
+                    break;
                 case ListingStatus.Claimed:
                     ViewBag.PanelHeader = "Claimed Listings";
                     ViewBag.ListingPartialView = "_ClaimedListings";
-                    query = query.Where(l => l.IsPickedUp == true);
+                    query = query.Where(l => l.QuantityAvailable == 0);
                     break;
                 case ListingStatus.Expired:
                     ViewBag.PanelHeader = "Expired Available Listings";
@@ -222,7 +228,6 @@ namespace NWHarvest.Web.Controllers
                     ViewBag.ListingPartialView = "_UnavailableListings";
                     query = query.Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
                                                 (l.IsAvailable == true && l.ExpirationDate < today));
-
                     break;
                 default:
                     return HttpNotFound();

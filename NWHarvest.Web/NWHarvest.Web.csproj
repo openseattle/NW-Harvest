@@ -485,6 +485,7 @@
     <Content Include="Views\FoodBanks\__FoodBankOwnedTableListing.cshtml" />
     <Content Include="Views\Listings\_CreateListingForm.cshtml" />
     <Content Include="Views\Shared\_BannerNavBarOverlay.cshtml" />
+    <Content Include="Views\Administrator\_PartiallyClaimedListings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
