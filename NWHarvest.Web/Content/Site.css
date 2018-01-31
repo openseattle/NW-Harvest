@@ -72,6 +72,9 @@ textarea {
 
 /* tablets 880 x 527*/
 @media (min-width:576px) and (max-width: 880px) {
+    bannerWrapper {
+        width: 880px;
+    }
     .header {
         text-align: center;
         background-repeat: no-repeat;
