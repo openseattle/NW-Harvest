@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace NWHarvest.Web.Controllers
 {
@@ -226,7 +227,7 @@ namespace NWHarvest.Web.Controllers
                 case ListingStatus.Unavailable:
                     ViewBag.PanelHeader = "Unavailable Listings";
                     ViewBag.ListingPartialView = "_UnavailableListings";
-                    query = query.Where(l => (l.IsAvailable == false && l.IsPickedUp == false && l.ExpirationDate < today) ||
+                    query = query.Where(l => (l.IsAvailable == false && l.ExpirationDate < today) ||
                                                 (l.IsAvailable == true && l.ExpirationDate < today));
                     break;
                 default:
@@ -234,21 +235,43 @@ namespace NWHarvest.Web.Controllers
             }
 
             ViewBag.ReturnUrl = Url.Action(nameof(ManageListings), "Administrator", new { ListingStatus = listingStatus });
-            var listings = query.Select(l => new ListingViewModel
+            var listings = query.Include("User").Select(l => new AdministratorListingViewModel
             {
                 Id = l.Id,
-                GrowerName = l.Grower.name,
-                FoodBank = new FoodBankViewModel
+                Grower = l.User.Grower,
+                FoodBank = l.User.FoodBank,
+                Lister = new ListerViewModel
                 {
-                    Name = l.FoodBank.name
+                    UserId = l.ListerUserId,
+                    Role = l.ListerRole,
                 },
                 Product = l.Product,
-                QuantityAvailable = l.QuantityAvailable,
-                UnitOfMeasure = l.UnitOfMeasure,
+                AvailableQuantity = l.QuantityAvailable,
+                ClaimedQuantity = l.QuantityClaimed,
                 ExpirationDate = l.ExpirationDate
-            }).ToList();
+            }).AsNoTracking().ToList();
+
+            SetListerDetails(listings);
 
             return View(listings);
+        }
+
+        private void SetListerDetails(IEnumerable<AdministratorListingViewModel> listings)
+        {
+            foreach (var listing in listings)
+            {
+                switch ((ListerRole)Enum.Parse(typeof(ListerRole), listing.Lister.Role))
+                {
+                    case ListerRole.FoodBank:
+                        listing.Lister.Name = listing.FoodBank.name;
+                        break;
+                    case ListerRole.Grower:
+                        listing.Lister.Name = listing.Grower.name;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

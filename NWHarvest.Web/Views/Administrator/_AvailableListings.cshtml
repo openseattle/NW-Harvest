@@ -1,13 +1,14 @@
-﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.AdministratorListingViewModel>
 @{ 
-    TempData["NotOrderableColumns"] = new int[] { 2, 4 };
+    TempData["NotOrderableColumns"] = new int[] { };
 }
 <table class="table table-hover table-responsive" id="listingTable">
     <thead>
         <tr>
             <th>Grower</th>
             <th>Product</th>
-            <th>Quantity</th>
+            <th>Available</th>
+            <th>Claimed</th>
             <th>Expires</th>
             <th></th>
         </tr>
@@ -15,13 +16,14 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.GrowerName.Trim()</td>
-                <td>@item.Product</td>
-                <td>@item.QuantityAvailable @item.UnitOfMeasure</td>
-                <td>@item.ExpirationDate.ToShortDateString()</td>
-                <td>@Html.ActionLink("Delete", "Delete", "Listings", new { Id = item.Id, ReturnUrl = ViewBag.ReturnUrl }, null)</td>
-            </tr>
+        <tr>
+            <td>@item.Lister.Name.Trim()</td>
+            <td>@item.Product</td>
+            <td>@item.AvailableQuantity</td>
+            <td>@item.ClaimedQuantity</td>
+            <td>@item.ExpirationDate.ToShortDateString()</td>
+            <td>@Html.ActionLink("Delete", "Delete", "Listings", new { Id = item.Id, ReturnUrl = ViewBag.ReturnUrl }, null)</td>
+        </tr>
         }
     </tbody>
 </table>

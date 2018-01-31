@@ -49,15 +49,15 @@ namespace NWHarvest.Web.ViewModels
         public string Comments { get; set; }
 
         public IEnumerable<SelectListItem> PickupLocations { get; set; }
+        public PickupLocationViewModel PickupLocation { get; set; }
 
         public GrowerViewModel Grower { get; set; }
         public FoodBankViewModel FoodBank { get; set; }
         public ListerViewModel Lister { get; set; }
-
+        public string UserName { get; set; }
+        
+        [Obsolete]
         [DisplayName("Grower")]
         public string GrowerName { get; set; }
-        public string UserName { get; set; }
-
-        public PickupLocationViewModel PickupLocation { get; set; }
     }
 }
