@@ -8,7 +8,7 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <nav class="navbar navbar-inverse" style="background-color:#154399">
+    <nav class="navbar navbar-inverse " style="background-color:#154399">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
@@ -21,7 +21,6 @@
                     <a class="glyphicon glyphicon-home pull-left" href="@(ViewBag.Home ?? "/")"></a>
                 </div>
             </div>
-
             <div class="navbar-collapse collapse" id="navbar-collapse-1">
                 @Html.Partial("_LoginPartial")
             </div>
@@ -31,6 +30,7 @@
         <div class="container">
             <div class="bannerWrapper">
                 <img src="~/Content/Banner.jpg" class="img-responsive" />
+                @Html.Partial("_BannerNavBarOverlay")
             </div>
         </div>
     </header>

@@ -484,6 +484,7 @@
     <Content Include="Views\PickupLocations\Delete.Mobile.cshtml" />
     <Content Include="Views\FoodBanks\__FoodBankOwnedTableListing.cshtml" />
     <Content Include="Views\Listings\_CreateListingForm.cshtml" />
+    <Content Include="Views\Shared\_BannerNavBarOverlay.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
