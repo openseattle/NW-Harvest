@@ -7,14 +7,12 @@
             <div class="row">
                 <div class="col-xs-6 card">
                     <div class="card-body">
-                        <h4 class="card-title">@claim.Grower.Name</h4>
                         <div class="card-text">@claim.Quantity @claim.Product</div>
-                        <div class="card-text">Cost Per Unit: @claim.CostPerUnit </div>
+                        <div class="card-text">$@(claim.CostPerUnit * claim.Quantity)</div>
                     </div>
                 </div>
                 <div class="col-xs-6 pull-right">
                     <div class="card-body">
-                        <h5 class="card-title">&nbsp;</h5>
                         <div class="card-text">@Html.Partial("_Address", claim.Address)</div>
                     </div>
                 </div>
