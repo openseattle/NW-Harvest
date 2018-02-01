@@ -7,7 +7,8 @@
 
 <div>
     <div class="text-center">
-        <img src="~/Content/logo.mobile.jpg" />
+        <img src="~/Content/logo.mobile.jpg" class="img-responsive img-rounded" />
+        <br />
         @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
             {
             @Html.AntiForgeryToken()
@@ -24,7 +25,6 @@
                             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                         </div>
                     </div>
-
                     <div>
                         <div>
                             <input type="submit" value="Log in" class="btn btn-success btn-block" />
