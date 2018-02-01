@@ -98,13 +98,6 @@ namespace NWHarvest.Web.Controllers
                     ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
-
-            //if (!registeredUserService.IsUserActive(model.Email, loginType))
-            //{
-            //    ModelState.AddModelError("", model.Email + " is deactivated. Please contact the administrator.");
-            //    return View(model);
-            //}
-
         }
 
         private ActionResult RedirectToRole(ApplicationUser user)
@@ -132,10 +125,13 @@ namespace NWHarvest.Web.Controllers
             switch (Enum.Parse(typeof(UserRole), userRoles.First()))
             {
                 case UserRole.Administrator:
+                    Session["HomeProfileUrl"] = Url.Action("Profile", "Administrator");
                     return RedirectToAction("Index", "Administrator");
                 case UserRole.Grower:
-                    return RedirectToAction("Profile", "Growers");
+                    Session["HomeProfileUrl"] = Url.Action("Profile", "Growers");
+            return RedirectToAction("Profile", "Growers");
                 case UserRole.FoodBank:
+                    Session["HomeProfileUrl"] = Url.Action("Profile", "FoodBanks");
                     return RedirectToAction("Profile", "FoodBanks");
                 default:
                     return RedirectToAction("Index", "Home");
