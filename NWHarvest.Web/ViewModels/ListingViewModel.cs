@@ -48,6 +48,17 @@ namespace NWHarvest.Web.ViewModels
         [DisplayName("Comments")]
         public string Comments { get; set; }
 
+        [DisplayName("Unit Cost")]
+        public string UnitCost {
+            get {
+                if (CostPerUnit > 0)
+                {
+                    return $"{CostPerUnit}/{UnitOfMeasure}";
+                }
+                return "free";
+            }
+        }
+
         public IEnumerable<SelectListItem> PickupLocations { get; set; }
         public PickupLocationViewModel PickupLocation { get; set; }
 
