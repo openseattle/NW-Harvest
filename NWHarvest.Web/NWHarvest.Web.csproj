@@ -300,7 +300,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Banner.jpg" />
-    <Content Include="Content\bootstrap-select.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -317,7 +316,6 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
-    <Content Include="Scripts\bootstrap-select.min.js" />
     <Content Include="Content\datepicker.css" />
     <Content Include="Content\logo.mobile.jpg" />
     <Content Include="favicon.ico" />

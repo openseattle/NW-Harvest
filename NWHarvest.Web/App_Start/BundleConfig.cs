@@ -22,7 +22,6 @@ namespace NWHarvest.Web
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
-                      "~/Scripts/bootstrap-select.min.js",
                       "~/Scripts/bootstrap-datepicker.js",
                       "~/Scripts/respond.js"));
 
@@ -32,7 +31,7 @@ namespace NWHarvest.Web
                     "~/Scripts/DataTables/dataTables.rowReorder.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css")
-                      .Include("~/Content/bootstrap.css", "~/Content/bootstrap-select.min.css","~/Content/datepicker.css")
+                      .Include("~/Content/bootstrap.css", "~/Content/datepicker.css")
                       .Include("~/Content/DataTables/css/*.css", new CssRewriteUrlTransform())
                       .Include("~/Content/site.css"));
 
