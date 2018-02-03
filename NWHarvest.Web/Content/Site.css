@@ -69,6 +69,10 @@ textarea {
     .datepicker {
         max-width: 90% !important;
     }
+
+    .mobile-logo {
+        margin-bottom: 10px;
+    }
 }
 
 /* tablets 880 x 527*/
@@ -82,7 +86,7 @@ textarea {
         background-repeat: no-repeat;
         background-color: #154399;
         border-color: #154399;
-        padding: 1px;
+        margin-bottom: 10px;
     }
 
     .navbar {
@@ -92,6 +96,10 @@ textarea {
     .navbar-collapse {
         display: none !important;
     }
+
+    .mobile-logo {
+        display: none;
+    }
 }
 
 /* laptop & desktop*/
@@ -99,10 +107,15 @@ textarea {
     .header {
         text-align: center;
         background-repeat: no-repeat;
+        margin-bottom: 10px;
     }
 
     .navbar {
         display: none !important;
+    }
+
+    .mobile-logo {
+        display: none;
     }
 }
 
@@ -110,10 +123,10 @@ textarea {
     background-color: #154399;
 }
 
-    .header img {
-        padding: 1px;
-        border-color: #154399;
-    }
+.header img {
+    padding: 1px;
+    border-color: #154399;
+}
 
 .navbar-brand {
     position: absolute;
