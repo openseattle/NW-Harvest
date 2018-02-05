@@ -163,33 +163,6 @@ div.body-content div.text-center a.btn {
     background-color: #548ac8;
 }
 
-/* datatables */
-table {
-    table-layout: fixed;
-}
-
-    table.dataTable thead th {
-        padding: 10px;
-    }
-
-.tableDetails dd {
-    margin-bottom: 10px;
-}
-
-.dataTable td {
-    white-space: nowrap;
-    max-width: 160px;
-    min-width: 10px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    margin: 0 auto;
-    width: 100%;
-    clear: both;
-    border-collapse: collapse;
-    table-layout: fixed;
-    word-wrap: break-word;
-}
-
 .strong {
     font-weight: bold;
 }
@@ -210,7 +183,6 @@ table {
     position: relative;
     display: inline-block;
     text-align: center;
-    /*border: 1px solid red;*/
 }
 
 .bannerWrapper img.img-responsive {
@@ -221,8 +193,6 @@ table {
     position: absolute;
     top: 10px;
     right: 10px;
-    /*width: 100px;*/
-    /*height: 30px;*/
 }
 
 .bannerWrapper #nav-overlay a {
