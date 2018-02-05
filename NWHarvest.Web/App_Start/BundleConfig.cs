@@ -26,13 +26,11 @@ namespace NWHarvest.Web
                       "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/javascript").Include(
-                    "~/Scripts/DataTables/jquery.dataTables.min.js",
-                    "~/Scripts/DataTables/dataTables.responsive.js",
-                    "~/Scripts/DataTables/dataTables.rowReorder.min.js"));
+                    "~/Scripts/datatables.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css")
                       .Include("~/Content/bootstrap.css", "~/Content/datepicker.css")
-                      .Include("~/Content/DataTables/css/*.css", new CssRewriteUrlTransform())
+                      .Include("~/Content/datatables.min.css", new CssRewriteUrlTransform())
                       .Include("~/Content/site.css"));
 
         }

@@ -35,18 +35,19 @@
 
             var table = $('.table')
                 .dataTable({
-                    "responsive": true,
-                    "bAutowidth": false,
-
-                    "columnDefs": [{
-                        targets: [1, 2, 3],
-                        render: function (data, type, row) {
-                            return type === 'display' && data.length > 10 ?
-                                data.substr(0, 10) + '…' :
-                                data;
+                    responsive: {
+                        details: {
+                            display: $.fn.dataTable.Responsive.display.modal({
+                                header: function (row) {
+                                    var data = row.data();
+                                    return 'Listing Details';
+                                }
+                            }),
+                            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                                tableClass: 'table'
+                            })
                         }
-                    }]
-
+                    }
                 });
 
         });
