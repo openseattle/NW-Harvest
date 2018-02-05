@@ -11,7 +11,6 @@
                 <h3 class="card-title">@Html.DisplayFor(model => model.Name)</h3>
                 <div class="card-text">@Html.DisplayFor(model => model.Email)</div>
                 @Html.Partial("_Address", Model.Address)
-                <div class="card-text">@(Model.IsActive ? "Active" : "Not Active")</div>
                 <p>
                     <div>
                         <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
@@ -20,26 +19,43 @@
                 </p>
             </div>
         </div>
-        <br />
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                <h5>Claimed Listings</h5>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Listings @Html.ActionLink("Create New", "Create", "Listings", null, new { @class = "btn btn-xs btn-success" }) </h4>
+                @Html.Partial("_FoodBankTableListing", Model)
             </div>
-            @if (Model.Claims?.Count > 0)
-            {
-                @Html.Partial("_ClaimedListing", Model.Claims.ToList())
-            }
-        </div>
-        <br />
-        <div class="panel panel-default">
-            <div class="panel-heading clearfix">
-                @Html.ActionLink("Search", "Search", "Listings", null, new { @class="btn btn-primary pull-right"})
-                <h5>Available Grower Listings</h5>
-            </div>
-            @if (Model.AvailableListings?.Count > 0)
-            {
-                @Html.Partial("_Listing", Model.AvailableListings.ToList())
-            }
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                console.log('show tab');
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                .dataTable({
+                    responsive: {
+                        details: {
+                            display: $.fn.dataTable.Responsive.display.modal({
+                                header: function (row) {
+                                    return 'Listing Details';
+                                }
+                            }),
+                            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                                tableClass: 'table'
+                            })
+                        }
+                    }
+                });
+        });
+    </script>
+}
