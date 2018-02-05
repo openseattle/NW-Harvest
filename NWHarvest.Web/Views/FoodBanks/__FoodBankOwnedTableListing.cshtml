@@ -3,15 +3,15 @@
 <table class="display table" width="100%">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.ExpirationDate)</th>
-            <th>@Html.DisplayNameFor(model => model.HarvestDate)</th>
-            <th>@Html.DisplayNameFor(model => model.Product)</th>
-            <th>@Html.DisplayNameFor(model => model.QuantityAvailable)</th>
-            <th>Unit Cost</th>
-            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
-            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.County)</th>
-            <th>@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
-            <th>Actions</th>
+            <th data-priority="5">@Html.DisplayNameFor(model => model.ExpirationDate)</th>
+            <th data-priority="4">@Html.DisplayNameFor(model => model.HarvestDate)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => model.Product)</th>
+            <th data-priority="2">@Html.DisplayNameFor(model => model.QuantityAvailable)</th>
+            <th data-priority="3">@Html.DisplayNameFor(model => model.UnitCost)</th>
+            <th data-priority="8">@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
+            <th data-priority="6">@Html.DisplayNameFor(model => model.PickupLocation.Address.County)</th>
+            <th data-priority="7">@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
+            <th data-priority="9">Actions</th>
         </tr>
     </thead>
     @foreach (var item in Model)
@@ -21,7 +21,7 @@
         <td>@Html.DisplayFor(modelItem => item.HarvestDate)</td>
         <td>@Html.DisplayFor(modelItem => item.Product)</td>
         <td>@Html.DisplayFor(modelItem => item.QuantityAvailable)</td>
-        <td>@Html.DisplayFor(modelItem => item.CostPerUnit)/@Html.DisplayFor(modelItem => item.UnitOfMeasure)</td>
+        <td>@Html.DisplayFor(modelItem => item.UnitCost)</td>
         <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
         <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.County)</td>
         <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.Zip)</td>
