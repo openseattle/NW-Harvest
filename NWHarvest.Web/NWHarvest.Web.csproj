@@ -413,8 +413,6 @@
     <Content Include="Views\Shared\_Address.cshtml" />
     <Content Include="Views\Growers\Profile.Mobile.cshtml" />
     <Content Include="Views\Growers\Edit.Mobile.cshtml" />
-    <Content Include="Views\Growers\_GrowerListing.Mobile.cshtml" />
-    <Content Include="Views\Growers\_GrowerDetail.Mobile.cshtml" />
     <Content Include="Views\PickupLocations\_PickupLocation.cshtml" />
     <Content Include="Views\PickupLocations\_PickupLocationCreateForm.cshtml" />
     <Content Include="Views\Shared\_AddressForm.cshtml" />
