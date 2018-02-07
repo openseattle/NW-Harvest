@@ -53,6 +53,6 @@ namespace NWHarvest.Web.ViewModels
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Notification Method")]
-        public UserNotification Notification { get; set; }
+        public NotificationPreference Notification { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace NWHarvest.Web.Enums
 {
-    public enum UserNotification
+    public enum NotificationPreference
     {
         Email,
         Text,

@@ -24,18 +24,18 @@ namespace NWHarvest.Web.Helper
 
         public void SendNotification(NotificationMessage message, string notificationPreference)
         {
-            switch ((UserNotification)Enum.Parse(typeof(UserNotification), notificationPreference, true))
+            switch ((NotificationPreference)Enum.Parse(typeof(NotificationPreference), notificationPreference, true))
             {
-                case UserNotification.Both:
+                case NotificationPreference.Both:
                     SendSmsNotification(message);
                     SendEmailNotification(message);
                     break;
 
-                case UserNotification.Email:
+                case NotificationPreference.Email:
                     SendEmailNotification(message);
                     break;
 
-                case UserNotification.Text:
+                case NotificationPreference.Text:
                     SendSmsNotification(message);
                     break;
 

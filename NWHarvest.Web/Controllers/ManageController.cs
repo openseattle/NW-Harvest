@@ -201,7 +201,7 @@ namespace NWHarvest.Web.Controllers
             var model = new NotificationViewModel
             {
                 UserName = user.Name,
-                Method = (UserNotification)Enum.Parse(typeof(UserNotification), user.NotificationPreference),
+                Method = (NotificationPreference)Enum.Parse(typeof(NotificationPreference), user.NotificationPreference),
                 Message = ManageMessageId.ChangeNotification
             };
 
@@ -519,13 +519,13 @@ namespace NWHarvest.Web.Controllers
             switch (vm.NotificationPreference)
             {
                 case "emailNote":
-                    vm.NotificationPreference = UserNotification.Email.ToString();
+                    vm.NotificationPreference = NotificationPreference.Email.ToString();
                     break;
                 case "textNote":
-                    vm.NotificationPreference = UserNotification.Text.ToString();
+                    vm.NotificationPreference = NotificationPreference.Text.ToString();
                     break;
                 case "both":
-                    vm.NotificationPreference = UserNotification.Both.ToString();
+                    vm.NotificationPreference = NotificationPreference.Both.ToString();
                     break;
                 default:
                     break;

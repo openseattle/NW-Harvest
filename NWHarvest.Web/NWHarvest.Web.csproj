@@ -194,7 +194,7 @@
     <Compile Include="Controllers\ListingsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\PickupLocationsController.cs" />
-    <Compile Include="Enums\UserNotification.cs" />
+    <Compile Include="Enums\NotificationPreference.cs" />
     <Compile Include="Enums\ListingStatus.cs" />
     <Compile Include="Enums\ListerRole.cs" />
     <Compile Include="Enums\UserRole.cs" />

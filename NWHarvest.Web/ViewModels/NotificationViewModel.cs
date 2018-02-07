@@ -9,7 +9,7 @@ namespace NWHarvest.Web.ViewModels
         public string UserName { get; set; }
 
         [Display(Name = "Notification Preference")]
-        public UserNotification Method { get; set; }
+        public NotificationPreference Method { get; set; }
         public ManageMessageId Message { get; set; }
     }
 }
