@@ -421,7 +421,6 @@
     <Content Include="Views\Listings\Index.cshtml" />
     <Content Include="Views\Listings\_ListingDetails.cshtml" />
     <Content Include="Views\Listings\_PickupLocation.cshtml" />
-    <Content Include="Views\Listings\Index.Mobile.cshtml" />
     <Content Include="Views\Listings\Details.Mobile.cshtml" />
     <Content Include="Views\Listings\Delete.Mobile.cshtml" />
     <Content Include="Views\Listings\Create.Mobile.cshtml" />
@@ -480,6 +479,9 @@
     <Content Include="Views\Listings\_CreateListingForm.cshtml" />
     <Content Include="Views\Shared\_BannerNavBarOverlay.cshtml" />
     <Content Include="Views\Administrator\_PartiallyClaimedListings.cshtml" />
+    <Content Include="Views\Listings\__AvailableListingDataTable.cshtml" />
+    <Content Include="Views\Listings\__ClaimedListingDataTable.cshtml" />
+    <Content Include="Views\Listings\__ExpiredListingDataTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

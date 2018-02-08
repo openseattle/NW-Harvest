@@ -2,6 +2,10 @@
 
 @{
     ViewBag.Title = $"{ViewBag.UserName}";
+    ViewBag.NavBarTitle = "Listings";
+    var availableListings = Model.Where(l => l.IsAvailable == true && l.ExpirationDate.Date > DateTime.UtcNow.Date);
+    var claimedListings = Model.Where(l => l.QuantityClaimed > 0);
+    var expiredListings = Model.Where(l => l.QuantityClaimed == 0 && l.ExpirationDate.Date < DateTime.UtcNow.Date);
 }
 
 <h3>@ViewBag.Title</h3>
@@ -10,34 +14,79 @@
     <a href="@ViewBag.ProfileUrl" class="btn btn-primary">Back to Profile</a>
 </p>
 
-<ul class="list-group">
-    @foreach (var listing in Model)
-    {
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-xs-8 card">
-                    <div class="card-body">
-                        <h4 class="card-title">@listing.Product</h4>
-                        <div class="card-text"><span class="strong">Quantity</span>: @listing.QuantityAvailable</div>
-                        <div class="card-text"><span class="strong">Claimed</span>: @listing.QuantityClaimed</div>
-                        <div class="card-text"><span class="strong">Unit Cost</span>: @listing.CostPerUnit/@listing.UnitOfMeasure</div>
-                        <div class="card-text"><span class="strong">Expiration</span>: @(listing.ExpirationDate.ToShortDateString())</div>
-                        <div class="card-text"><span class="strong">Available</span>: @(listing.IsAvailable ? "Yes" : "No")</div>
-                        <div class="card-text"><span class="strong">Comments</span>: @listing.Comments</div>
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#availableListings" aria-controls="firstList" role="tab" data-toggle="tab">Available</a></li>
+        <li role="presentation"><a href="#claimedListings" aria-controls="secondList" role="tab" data-toggle="tab">Claimed</a></li>
+        <li role="presentation"><a href="#expiredListings" aria-controls="thirdList" role="tab" data-toggle="tab">Expired</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="availableListings">
+                    <div>
+                        @Html.Partial("__AvailableListingDataTable", availableListings)
                     </div>
                 </div>
-                <div class="col-xs-4 pull-right">
-                    <div class="card-body">
-                        <h5 class="card-title pull-right">
-                            @*@Html.ActionLink("Edit", "Edit", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })*@
-                            @Html.ActionLink("Details", "Details", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })
-                            @*@Html.ActionLink("Delete", "Delete", "Listings", new { Id = listing.Id }, new { @class = "btn btn-default btn-sm" })*@
-                        </h5>
-
+                <div role="tabpanel" class="tab-pane" id="claimedListings">
+                    <div>
+                        @Html.Partial("__ClaimedListingDataTable", claimedListings)
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="expiredListings">
+                    <div>
+                        @Html.Partial("__ExpiredListingDataTable", expiredListings)
                     </div>
                 </div>
             </div>
-        </li>
-    }
-</ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/javascript")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("a[data-toggle=\"tab\"]").on("shown.bs.tab", function (e) {
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            });
+
+            var table = $('.table')
+                .dataTable({
+                    responsive: {
+                        details: {
+                            type: 'column',
+                            target: -1,
+                            display: $.fn.dataTable.Responsive.display.modal({
+                                header: function (row) {
+                                    return 'Listing';
+                                }
+                            }),
+                            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                                tableClass: 'table'
+                            })
+                        }
+                    },
+                    columnDefs: [{
+                        className: 'control',
+                        orderable: false,
+                        targets: [-1]
+                    },
+                    {
+                        visible: false,
+                        targets: [-3]
+                    },
+                    {
+                        orderable: false,
+                        targets: [-2]
+                    }]
+                });
+        });
+    </script>
+}
 

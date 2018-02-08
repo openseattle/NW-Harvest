@@ -84,7 +84,16 @@ namespace NWHarvest.Web.Controllers
                     ExpirationDate = l.ExpirationDate,
                     CostPerUnit = l.CostPerUnit,
                     IsAvailable = l.IsAvailable,
-                    Comments = l.Comments
+                    Comments = l.Comments,
+                    PickupLocation = new PickupLocationViewModel
+                    {
+                        Address = new AddressViewModel
+                        {
+                            City = l.PickupLocation.city,
+                            County = l.PickupLocation.county,
+                            Zip = l.PickupLocation.zip
+                        }
+                    }
                 }).ToList();
 
             ViewBag.UserName = GetUserName();

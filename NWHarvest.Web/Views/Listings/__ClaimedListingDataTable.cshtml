@@ -1,0 +1,39 @@
+﻿@model IEnumerable<NWHarvest.Web.ViewModels.ListingViewModel>
+
+<table class="display table nowrap" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="2">@Html.DisplayNameFor(model => model.ExpirationDate)</th>
+            <th data-priority="7">@Html.DisplayNameFor(model => model.HarvestDate)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => model.Product)</th>
+            <th data-priority="0">@Html.DisplayNameFor(model => model.QuantityAvailable)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => model.UnitCost)</th>
+            <th data-priority="3">@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
+            <th data-priority="3">@Html.DisplayNameFor(model => model.PickupLocation.Address.County)</th>
+            <th data-priority="3">@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
+            <th data-priority="3">@Html.DisplayNameFor(model => model.Comments)</th>
+            <th data-priority="9"></th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.ExpirationDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.HarvestDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.Product)</td>
+            <td>@Html.DisplayFor(modelItem => item.QuantityAvailable)</td>
+            <td>@Html.DisplayFor(modelItem => item.UnitCost)</td>
+            <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
+            <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.County)</td>
+            <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.Zip)</td>
+            <td>@Html.DisplayFor(modelItem => item.Comments)</td>
+            <td>
+                @Html.ActionLink("Details", "Details", "Listings", new { id = item.Id }, new { @class = "btn btn-xs btn-primary" })
+            </td>
+            <td></td>
+        </tr>
+        }
+    </tbody>
+</table>
