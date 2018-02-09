@@ -11,7 +11,9 @@
             <th data-priority="8">@Html.DisplayNameFor(model => model.PickupLocation.Address.City)</th>
             <th data-priority="6">@Html.DisplayNameFor(model => model.PickupLocation.Address.County)</th>
             <th data-priority="7">@Html.DisplayNameFor(model => model.PickupLocation.Address.Zip)</th>
-            <th data-priority="9">Actions</th>
+            <th data-priority="9">@Html.DisplayNameFor(model => model.Comments)</th>
+            <th data-priority="1"></th>
+            <th data-priority="9"></th>
         </tr>
     </thead>
     @foreach (var item in Model)
@@ -25,9 +27,11 @@
         <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.City)</td>
         <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.County)</td>
         <td>@Html.DisplayFor(modelItem => item.PickupLocation.Address.Zip)</td>
+        <td>@Html.DisplayFor(modelItem => item.Comments)</td>
         <td>
             @Html.ActionLink("Details", "Details", "Listings", new { Id = item.Id }, null)
         </td>
+        <td></td>
     </tr>
     }
 </table>

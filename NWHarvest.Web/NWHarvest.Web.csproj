@@ -428,7 +428,6 @@
     <Content Include="Views\FoodBanks\Claim.cshtml" />
     <Content Include="Views\FoodBanks\_ClaimForm.cshtml" />
     <Content Include="Views\FoodBanks\_Listing.cshtml" />
-    <Content Include="Views\FoodBanks\Profile.Mobile.cshtml" />
     <Content Include="Views\FoodBanks\Edit.Mobile.cshtml" />
     <Content Include="Views\FoodBanks\Claim.Mobile.cshtml" />
     <Content Include="Views\Manage\Index.Mobile.cshtml" />

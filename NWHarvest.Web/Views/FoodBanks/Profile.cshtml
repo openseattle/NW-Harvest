@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Food Bank Details";
     ViewBag.NavBarTitle = "Food Bank Profile";
-    var editActionLink = Html.ActionLink("Edit", "Edit", new {id = Model.Id}, new { @class = "btn btn-primary" });
+    var editActionLink = Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" });
 }
 <div class="container-fluid">
     <div class="row">
@@ -36,17 +36,31 @@
                 .dataTable({
                     responsive: {
                         details: {
+                            type: 'column',
+                            target: -1,
                             display: $.fn.dataTable.Responsive.display.modal({
                                 header: function (row) {
                                     var data = row.data();
-                                    return 'Listing Details';
+                                    return 'Listing';
                                 }
                             }),
                             renderer: $.fn.dataTable.Responsive.renderer.tableAll({
                                 tableClass: 'table'
                             })
                         }
-                    }
+                    },
+                    columnDefs: [{
+                        className: 'control',
+                        orderable: false,
+                        targets: [-1]
+                    },
+                    {
+                        visible: false,
+                        targets: [-3]
+                    }, {
+                        orderable: false,
+                        targets: [-2]
+                    }]
                 });
 
         });
