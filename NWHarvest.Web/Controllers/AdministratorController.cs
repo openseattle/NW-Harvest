@@ -73,16 +73,16 @@ namespace NWHarvest.Web.Controllers
         public ActionResult ManageFoodBanks()
         {
             var vm = db.FoodBanks
-                .OrderBy(g => g.name)
+                .OrderBy(g => g.Name)
                 .Select(g => new FoodBankViewModel
                 {
                     Id = g.Id,
-                    Name = g.name,
+                    Name = g.Name,
                     IsActive = g.IsActive,
                     CreatedOn = g.CreatedOn,
                     Address = new AddressViewModel {
-                        City = g.city,
-                        Zip = g.zip
+                        City = g.City,
+                        Zip = g.Zip
                     }
                 }).ToList();
 
@@ -97,16 +97,16 @@ namespace NWHarvest.Web.Controllers
                 .Select(fb => new FoodBankViewModel
                 {
                     Id = fb.Id,
-                    Name = fb.name,
-                    Email = fb.email,
+                    Name = fb.Name,
+                    Email = fb.Email,
                     IsActive = fb.IsActive,
                     Address = new AddressViewModel
                     {
-                        Address1 = fb.address1,
-                        Address2 = fb.address2,
-                        City = fb.city,
-                        State = fb.state,
-                        Zip = fb.zip
+                        Address1 = fb.Address1,
+                        Address2 = fb.Address2,
+                        City = fb.City,
+                        State = fb.State,
+                        Zip = fb.Zip
                     }
                 }).FirstOrDefault();
 
@@ -263,7 +263,7 @@ namespace NWHarvest.Web.Controllers
                 switch ((ListerRole)Enum.Parse(typeof(ListerRole), listing.Lister.Role))
                 {
                     case ListerRole.FoodBank:
-                        listing.Lister.Name = listing.FoodBank.name;
+                        listing.Lister.Name = listing.FoodBank.Name;
                         break;
                     case ListerRole.Grower:
                         listing.Lister.Name = listing.Grower.Name;

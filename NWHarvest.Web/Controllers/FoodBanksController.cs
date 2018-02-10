@@ -28,20 +28,20 @@ namespace NWHarvest.Web.Controllers
                 .Select(fb => new FoodBankViewModel
                 {
                     Id = fb.Id,
-                    Name = fb.name,
-                    Email = fb.email,
+                    Name = fb.Name,
+                    Email = fb.Email,
                     NotificationPreference = fb.NotificationPreference,
                     IsActive = fb.IsActive,
                     Address = new AddressViewModel
                     {
-                        Address1 = fb.address1,
-                        Address2 = fb.address2,
-                        Address3 = fb.address3,
-                        Address4 = fb.address4,
-                        City = fb.city,
-                        County = fb.county,
-                        State = fb.state,
-                        Zip = fb.zip
+                        Address1 = fb.Address1,
+                        Address2 = fb.Address2,
+                        Address3 = fb.Address3,
+                        Address4 = fb.Address4,
+                        City = fb.City,
+                        County = fb.County,
+                        State = fb.State,
+                        Zip = fb.Zip
                     }
                 }).FirstOrDefault();
 
@@ -83,17 +83,17 @@ namespace NWHarvest.Web.Controllers
                 .Select(fb => new FoodBankEditViewModel
                 {
                     Id = fb.Id,
-                    Name = fb.name,
+                    Name = fb.Name,
                     Address = new AddressEditViewModel
                     {
-                        Address1 = fb.address1,
-                        Address2 = fb.address2,
-                        Address3 = fb.address3,
-                        Address4 = fb.address4,
-                        City = fb.city,
-                        County = fb.county,
-                        State = fb.state,
-                        Zip = fb.zip
+                        Address1 = fb.Address1,
+                        Address2 = fb.Address2,
+                        Address3 = fb.Address3,
+                        Address4 = fb.Address4,
+                        City = fb.City,
+                        County = fb.County,
+                        State = fb.State,
+                        Zip = fb.Zip
                     },
                     IsActive = fb.IsActive
                 })
@@ -122,15 +122,15 @@ namespace NWHarvest.Web.Controllers
                     return HttpNotFound();
                 }
 
-                foodBank.name = vm.Name;
-                foodBank.address1 = vm.Address.Address1;
-                foodBank.address2 = vm.Address.Address2;
-                foodBank.address3 = vm.Address.Address3;
-                foodBank.address4 = vm.Address.Address4;
-                foodBank.city = vm.Address.City;
-                foodBank.county = vm.Address.County;
-                foodBank.state = vm.Address.State;
-                foodBank.zip = vm.Address.Zip;
+                foodBank.Name = vm.Name;
+                foodBank.Address1 = vm.Address.Address1;
+                foodBank.Address2 = vm.Address.Address2;
+                foodBank.Address3 = vm.Address.Address3;
+                foodBank.Address4 = vm.Address.Address4;
+                foodBank.City = vm.Address.City;
+                foodBank.County = vm.Address.County;
+                foodBank.State = vm.Address.State;
+                foodBank.Zip = vm.Address.Zip;
                 foodBank.IsActive = vm.IsActive;
 
                 db.SaveChanges();
@@ -228,7 +228,7 @@ namespace NWHarvest.Web.Controllers
             var foodBankPhoneNumber = notificationManager.GetUserPhoneNumber(UserId);
             var foodBank = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault();
             var subject = $"NW Harvest listing";
-            var body = $"Your listing of {claim.Product} has been claimed by {foodBank.name} ({foodBank.email})";
+            var body = $"Your listing of {claim.Product} has been claimed by {foodBank.Name} ({foodBank.Email})";
             if (foodBankPhoneNumber != null)
             {
                 body += ", " + foodBankPhoneNumber;
@@ -350,8 +350,8 @@ namespace NWHarvest.Web.Controllers
                         {
                             Id = fb.Id,
                             UserId = fb.UserId,
-                            Name = fb.name,
-                            Email = fb.email,
+                            Name = fb.Name,
+                            Email = fb.Email,
                             NotificationPreference = fb.NotificationPreference
                         }).FirstOrDefault();
                 default:

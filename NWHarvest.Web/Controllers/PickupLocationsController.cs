@@ -32,7 +32,7 @@ namespace NWHarvest.Web.Controllers
             switch (Session[_userRoleSessionKey])
             {
                 case UserRole.FoodBank:
-                    ViewBag.Name = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault()?.name;
+                    ViewBag.Name = db.FoodBanks.Where(fb => fb.UserId == UserId).FirstOrDefault()?.Name;
                     ViewBag.BackToProfile = UserRole.FoodBank.ToString() + "s";
                     return View(GetPickupLocations(_queryFoodBankPickupLocations).ToList());
                 default:
@@ -254,7 +254,7 @@ namespace NWHarvest.Web.Controllers
             {
                 case UserRole.FoodBank:
                     vm = GetPickupLocations(_queryFoodBankPickupLocations, id).First();
-                    vm.UserName = _queryFoodBank.First().name;
+                    vm.UserName = _queryFoodBank.First().Name;
                     return vm;
                 default:
                     vm = GetPickupLocations(_queryGrowerPickupLocations, id).First();
@@ -294,11 +294,11 @@ namespace NWHarvest.Web.Controllers
                 case UserRole.FoodBank:
                     return _queryFoodBank.Select(fb => new PickupLocationEditViewModel
                     {
-                        UserName = fb.name,
+                        UserName = fb.Name,
                         Address = new AddressEditViewModel
                         {
-                            County = fb.county,
-                            State = fb.state
+                            County = fb.County,
+                            State = fb.State
                         },
                     }).FirstOrDefault();
                 default:

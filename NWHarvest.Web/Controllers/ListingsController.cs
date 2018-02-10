@@ -202,7 +202,7 @@ namespace NWHarvest.Web.Controllers
                 db.Listings.Add(listingToAdd);
                 db.SaveChanges();
 
-                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == pickupLocation.county).ToList();
+                var foodBanksToNotify = db.FoodBanks.Where(f => f.County != "Unknown" && f.County == pickupLocation.county).ToList();
                 if (foodBanksToNotify.Count > 0)
                 {
                     SendNotification(listingToAdd, foodBanksToNotify);
@@ -283,7 +283,7 @@ namespace NWHarvest.Web.Controllers
 
                 db.SaveChanges();
 
-                var foodBanksToNotify = db.FoodBanks.Where(f => f.county != "Unknown" && f.county == newPickupLocation.county).ToList();
+                var foodBanksToNotify = db.FoodBanks.Where(f => f.County != "Unknown" && f.County == newPickupLocation.county).ToList();
                 if (prevPickupLocation.county != newPickupLocation.county && foodBanksToNotify.Count > 0)
                 {
                     SendNotification(listing, foodBanksToNotify);
@@ -406,7 +406,7 @@ namespace NWHarvest.Web.Controllers
                     lister.Name = db.Growers.Where(g => g.UserId == UserId).First().Name;
                     break;
                 case ListerRole.FoodBank:
-                    lister.Name = db.FoodBanks.Where(g => g.UserId == UserId).First().name;
+                    lister.Name = db.FoodBanks.Where(g => g.UserId == UserId).First().Name;
                     break;
                 default:
                     return;
@@ -425,7 +425,7 @@ namespace NWHarvest.Web.Controllers
                 var message = new NotificationMessage
                 {
                     DestinationPhoneNumber = foodBankPhoneNumber,
-                    DestinationEmailAddress = fb.email,
+                    DestinationEmailAddress = fb.Email,
                     Subject = subject,
                     Body = body
                 };
@@ -437,7 +437,7 @@ namespace NWHarvest.Web.Controllers
             switch (Session[_userRoleSessionKey])
             {
                 case UserRole.FoodBank:
-                    return _queryFoodBank.First().name;
+                    return _queryFoodBank.First().Name;
                 case UserRole.Grower:
                     return _queryGrower.First().Name;
                 case UserRole.Administrator:

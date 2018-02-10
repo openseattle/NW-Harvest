@@ -48,7 +48,7 @@ namespace NWHarvest.Web.Models
             {
                 registeredUser.Role = UserRoles.FoodBankRole;
                 registeredUser.FoodBankId = foodBankResults.FirstOrDefault().Id;
-                registeredUser.UserName = foodBankResults.FirstOrDefault().name;
+                registeredUser.UserName = foodBankResults.FirstOrDefault().Name;
             }
 
             return registeredUser;
@@ -92,7 +92,7 @@ namespace NWHarvest.Web.Models
 
         private bool UserIsFoodBank(string email)
         {
-            var results = db.FoodBanks.Where(b => b.email == email).ToList();
+            var results = db.FoodBanks.Where(b => b.Email == email).ToList();
 
             return results.Count > 0;
         }
@@ -115,7 +115,7 @@ namespace NWHarvest.Web.Models
 
             if (loginType == UserRoles.FoodBankRole)
             {
-                result = db.FoodBanks.Where(f => f.email == email).FirstOrDefault().IsActive;
+                result = db.FoodBanks.Where(f => f.Email == email).FirstOrDefault().IsActive;
             }
 
             else if (loginType == UserRoles.GrowerRole)
