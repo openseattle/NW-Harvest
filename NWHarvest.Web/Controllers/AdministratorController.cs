@@ -122,16 +122,16 @@ namespace NWHarvest.Web.Controllers
         public ActionResult ManageGrowers()
         {
             var vm = db.Growers
-                .OrderBy(g => g.name)
+                .OrderBy(g => g.Name)
                 .Select(g => new GrowerViewModel
                 {
                     Id = g.Id,
-                    Name = g.name,
+                    Name = g.Name,
                     CreatedOn = g.CreatedOn,
                     Address = new AddressViewModel
                     {
-                        City = g.city,
-                        Zip = g.zip
+                        City = g.City,
+                        Zip = g.Zip
                     },
                     IsActive = g.IsActive
                 }).ToList();
@@ -147,16 +147,16 @@ namespace NWHarvest.Web.Controllers
                 .Select(g => new GrowerViewModel
                 {
                     Id = g.Id,
-                    Name = g.name,
-                    Email = g.email,
+                    Name = g.Name,
+                    Email = g.Email,
                     IsActive = g.IsActive,
                     Address = new AddressViewModel
                     {
-                        Address1 = g.address1,
-                        Address2 = g.address2,
-                        City = g.city,
-                        State = g.state,
-                        Zip = g.zip
+                        Address1 = g.Address1,
+                        Address2 = g.Address2,
+                        City = g.City,
+                        State = g.State,
+                        Zip = g.Zip
                     }
                 }).FirstOrDefault();
 
@@ -266,7 +266,7 @@ namespace NWHarvest.Web.Controllers
                         listing.Lister.Name = listing.FoodBank.name;
                         break;
                     case ListerRole.Grower:
-                        listing.Lister.Name = listing.Grower.name;
+                        listing.Lister.Name = listing.Grower.Name;
                         break;
                     default:
                         break;

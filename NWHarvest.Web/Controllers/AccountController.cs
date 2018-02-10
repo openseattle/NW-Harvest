@@ -549,14 +549,14 @@ namespace NWHarvest.Web.Controllers
                 var grower = new Grower()
                 {
                     UserId = user.Id,
-                    name = model.Name,
-                    email = model.Email,
-                    address1 = model.Address1,
-                    address2 = model.Address2 == null ? "" : model.Address2,
-                    city = model.City,
-                    county = model.County,
-                    state = "WA",
-                    zip = model.Zip,
+                    Name = model.Name,
+                    Email = model.Email,
+                    Address1 = model.Address1,
+                    Address2 = model.Address2 == null ? "" : model.Address2,
+                    City = model.City,
+                    County = model.County,
+                    State = "WA",
+                    Zip = model.Zip,
                     NotificationPreference = model.Notification.ToString(),
                     IsActive = true,
                     PickupLocations = new List<PickupLocation>

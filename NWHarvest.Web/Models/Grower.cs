@@ -21,49 +21,40 @@ namespace NWHarvest.Web.Models
         [Required]
         [Display(Name = "Grower")]
         [StringLength(100)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        [Display(Name = "Email")]
         [StringLength(100)]
-        public string email { get; set; }
+        public string Email { get; set; }
 
         [Required]
-        [Display(Name = "Address1")]
         [StringLength(200)]
-        public string address1 { get; set; }
+        public string Address1 { get; set; }
 
-        [Display(Name = "Address2")]
         [StringLength(200)]
-        public string address2 { get; set; }
+        public string Address2 { get; set; }
 
-        [Display(Name = "Address3")]
         [StringLength(200)]
-        public string address3 { get; set; }
+        public string Address3 { get; set; }
 
-        [Display(Name = "Addres 4")]
         [StringLength(200)]
-        public string address4 { get; set; }
+        public string Address4 { get; set; }
 
         [Required]
-        [Display(Name = "City")]
         [StringLength(100)]
-        public string city { get; set; }
+        public string City { get; set; }
 
         [Required]
-        [Display(Name = "State")]
         [StringLength(2)]
-        public string state { get; set; }
+        public string State { get; set; }
 
         [Required]
         [StringLength(50)]
-        [Display(Name = "County")]
-        public string county { get; set; }
+        public string County { get; set; }
 
         [Required]
-        [Display(Name = "Zip")]
         [StringLength(9)]
-        public string zip { get; set; }
+        public string Zip { get; set; }
 
         [Required]
         [Display(Name = "Notification Preference")]

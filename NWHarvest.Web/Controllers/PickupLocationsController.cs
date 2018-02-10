@@ -36,7 +36,7 @@ namespace NWHarvest.Web.Controllers
                     ViewBag.BackToProfile = UserRole.FoodBank.ToString() + "s";
                     return View(GetPickupLocations(_queryFoodBankPickupLocations).ToList());
                 default:
-                    ViewBag.Name = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.name;
+                    ViewBag.Name = db.Growers.Where(g => g.UserId == UserId).FirstOrDefault()?.Name;
                     ViewBag.BackToProfile = UserRole.Grower.ToString() + "s";
                     return View(GetPickupLocations(_queryGrowerPickupLocations).ToList());
             }
@@ -258,7 +258,7 @@ namespace NWHarvest.Web.Controllers
                     return vm;
                 default:
                     vm = GetPickupLocations(_queryGrowerPickupLocations, id).First();
-                    vm.UserName = _queryGrower.First().name;
+                    vm.UserName = _queryGrower.First().Name;
                     return vm;
             }
         }
@@ -304,11 +304,11 @@ namespace NWHarvest.Web.Controllers
                 default:
                     return _queryGrower.Select(g => new PickupLocationEditViewModel
                     {
-                        UserName = g.name,
+                        UserName = g.Name,
                         Address = new AddressEditViewModel
                         {
-                            County = g.county,
-                            State = g.state
+                            County = g.County,
+                            State = g.State
                         },
                     }).FirstOrDefault();
             }

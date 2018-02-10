@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
+using System;
 using System.Linq;
-using System.Web;
 
 namespace NWHarvest.Web.Models
 {
+    [Obsolete]
     public class RegisteredUser
     {
         public int GrowerId { get; set; }
@@ -13,6 +13,7 @@ namespace NWHarvest.Web.Models
         public string UserName { get; set; }
     }
 
+    [Obsolete]
     public class RegisteredUserService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -40,7 +41,7 @@ namespace NWHarvest.Web.Models
             {
                 registeredUser.Role = UserRoles.GrowerRole;
                 registeredUser.GrowerId = growersResults.FirstOrDefault().Id;
-                registeredUser.UserName = growersResults.FirstOrDefault().name;
+                registeredUser.UserName = growersResults.FirstOrDefault().Name;
             }
 
             else if (foodBankResults.Any())
@@ -84,7 +85,7 @@ namespace NWHarvest.Web.Models
 
         private bool UserIsGrower(string email)
         {
-            var results = db.Growers.Where(b => b.email == email).ToList();
+            var results = db.Growers.Where(b => b.Email == email).ToList();
 
             return results.Count > 0;
         }
@@ -119,7 +120,7 @@ namespace NWHarvest.Web.Models
 
             else if (loginType == UserRoles.GrowerRole)
             {
-                result = db.Growers.Where(f => f.email == email).FirstOrDefault().IsActive;
+                result = db.Growers.Where(f => f.Email == email).FirstOrDefault().IsActive;
             }
 
             else if (loginType == UserRoles.AdministratorRole)

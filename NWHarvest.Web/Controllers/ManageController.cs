@@ -492,7 +492,7 @@ namespace NWHarvest.Web.Controllers
                     .Select(u => new UserViewModel
                     {
                         Id = u.Id,
-                        Name = u.name,
+                        Name = u.Name,
                         NotificationPreference = u.NotificationPreference
                     })
                     .FirstOrDefault();

@@ -403,7 +403,7 @@ namespace NWHarvest.Web.Controllers
             switch ((ListerRole)Enum.Parse(typeof(ListerRole), lister.Role))
             {
                 case ListerRole.Grower:
-                    lister.Name = db.Growers.Where(g => g.UserId == UserId).First().name;
+                    lister.Name = db.Growers.Where(g => g.UserId == UserId).First().Name;
                     break;
                 case ListerRole.FoodBank:
                     lister.Name = db.FoodBanks.Where(g => g.UserId == UserId).First().name;
@@ -439,7 +439,7 @@ namespace NWHarvest.Web.Controllers
                 case UserRole.FoodBank:
                     return _queryFoodBank.First().name;
                 case UserRole.Grower:
-                    return _queryGrower.First().name;
+                    return _queryGrower.First().Name;
                 case UserRole.Administrator:
                     return UserRole.Administrator.ToString();
                 default:

@@ -340,8 +340,8 @@ namespace NWHarvest.Web.Controllers
                         {
                             Id = g.Id,
                             UserId = g.UserId,
-                            Name = g.name,
-                            Email = g.email,
+                            Name = g.Name,
+                            Email = g.Email,
                             NotificationPreference = g.NotificationPreference
                         }).FirstOrDefault();
                 case ListerRole.FoodBank:

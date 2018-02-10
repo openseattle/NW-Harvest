@@ -27,18 +27,18 @@ namespace NWHarvest.Web.Controllers
                 .Select(g => new GrowerViewModel
                 {
                     Id = g.Id,
-                    Name = g.name,
-                    Email = g.email,
+                    Name = g.Name,
+                    Email = g.Email,
                     Address = new AddressViewModel
                     {
-                        Address1 = g.address1,
-                        Address2 = g.address2,
-                        Address3 = g.address3,
-                        Address4 = g.address4,
-                        City = g.city,
-                        County = g.county,
-                        State = g.state,
-                        Zip = g.zip
+                        Address1 = g.Address1,
+                        Address2 = g.Address2,
+                        Address3 = g.Address3,
+                        Address4 = g.Address4,
+                        City = g.City,
+                        County = g.County,
+                        State = g.State,
+                        Zip = g.Zip
                     },
                     IsActive = g.IsActive,
                     NotificationPreference = g.NotificationPreference
@@ -118,17 +118,17 @@ namespace NWHarvest.Web.Controllers
             var vm = db.Growers.Select(g => new GrowerEditViewModel
             {
                 Id = g.Id,
-                Name = g.name,
+                Name = g.Name,
                 Address = new AddressEditViewModel
                 {
-                    Address1 = g.address1,
-                    Address2 = g.address2,
-                    Address3 = g.address3,
-                    Address4 = g.address4,
-                    City = g.city,
-                    County = g.county,
-                    State = g.state,
-                    Zip = g.zip
+                    Address1 = g.Address1,
+                    Address2 = g.Address2,
+                    Address3 = g.Address3,
+                    Address4 = g.Address4,
+                    City = g.City,
+                    County = g.County,
+                    State = g.State,
+                    Zip = g.Zip
                 },
                 IsActive = g.IsActive,
                 NotificationPreference = g.NotificationPreference
@@ -154,15 +154,15 @@ namespace NWHarvest.Web.Controllers
             if (ModelState.IsValid)
             {
                 var grower = db.Growers.Find(vm.Id);
-                grower.name = vm.Name;
-                grower.address1 = vm.Address.Address1;
-                grower.address2 = vm.Address.Address2;
-                grower.address3 = vm.Address.Address3;
-                grower.address4 = vm.Address.Address4;
-                grower.city = vm.Address.City;
-                grower.county = vm.Address.County;
-                grower.state = vm.Address.State;
-                grower.zip = vm.Address.Zip;
+                grower.Name = vm.Name;
+                grower.Address1 = vm.Address.Address1;
+                grower.Address2 = vm.Address.Address2;
+                grower.Address3 = vm.Address.Address3;
+                grower.Address4 = vm.Address.Address4;
+                grower.City = vm.Address.City;
+                grower.County = vm.Address.County;
+                grower.State = vm.Address.State;
+                grower.Zip = vm.Address.Zip;
                 grower.IsActive = vm.IsActive;
                 db.SaveChanges();
 
