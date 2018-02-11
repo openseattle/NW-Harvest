@@ -37,6 +37,7 @@ namespace NWHarvest.Web.ViewModels
         public virtual DateTime ExpirationDate { get; set; }
 
         [DisplayName("Cost per Unit")]
+        [DisplayFormat(DataFormatString ="{0:n2}", ApplyFormatInEditMode = true)]
         public virtual decimal CostPerUnit { get; set; }
 
         [DisplayName("Is Available")]

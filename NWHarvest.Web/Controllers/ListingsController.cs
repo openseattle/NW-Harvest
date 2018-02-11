@@ -177,7 +177,6 @@ namespace NWHarvest.Web.Controllers
                     ListerUserId = UserId,
                     Product = vm.Product,
                     QuantityAvailable = vm.QuantityAvailable,
-                    QuantityClaimed = vm.QuantityClaimed,
                     UnitOfMeasure = vm.UnitOfMeasure,
                     HarvestedDate = vm.HarvestDate,
                     ExpirationDate = vm.ExpirationDate,
@@ -190,6 +189,13 @@ namespace NWHarvest.Web.Controllers
                 switch (Session[_userRoleSessionKey])
                 {
                     case UserRole.FoodBank:
+                        if (vm.CostPerUnit > 0)
+                        {
+                            ModelState.AddModelError(nameof(vm.CostPerUnit), "Food Programs can only create free listings");
+                            vm.PickupLocations = SelectListPickupLocations();
+                            vm.UserName = GetUserName();
+                            return View(vm);
+                        }
                         listingToAdd.ListerRole = UserRole.FoodBank.ToString();
                         break;
                     case UserRole.Grower:
