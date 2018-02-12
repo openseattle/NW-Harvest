@@ -343,6 +343,10 @@ namespace NWHarvest.Web.Controllers
             {
                 return HttpNotFound();
             }
+            else if (vm.QuantityClaimed > 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             vm.UserName = GetUserName();
             return View(vm);
         }
@@ -380,6 +384,7 @@ namespace NWHarvest.Web.Controllers
                         Id = l.Id,
                         Product = l.Product,
                         QuantityAvailable = l.QuantityAvailable,
+                        QuantityClaimed = l.QuantityClaimed,
                         UnitOfMeasure = l.UnitOfMeasure,
                         HarvestDate = l.HarvestedDate,
                         ExpirationDate = l.ExpirationDate,
