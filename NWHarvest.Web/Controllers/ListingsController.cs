@@ -337,36 +337,7 @@ namespace NWHarvest.Web.Controllers
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var vm = _queryListings
-                .Where(l => l.Id == id)
-                .Select(l => new ListingViewModel
-                {
-                    Id = l.Id,
-                    Product = l.Product,
-                    QuantityAvailable = l.QuantityAvailable,
-                    UnitOfMeasure = l.UnitOfMeasure,
-                    HarvestDate = l.HarvestedDate,
-                    ExpirationDate = l.ExpirationDate,
-                    CostPerUnit = l.CostPerUnit,
-                    IsAvailable = l.IsAvailable,
-                    PickupLocationId = l.PickupLocationId,
-                    Comments = l.Comments,
-                    PickupLocation = new PickupLocationViewModel
-                    {
-                        Id = l.PickupLocation.id,
-                        Name = l.PickupLocation.name,
-                        Address = new AddressViewModel
-                        {
-                            Address1 = l.PickupLocation.address1,
-                            Address2 = l.PickupLocation.address2,
-                            Address3 = l.PickupLocation.address3,
-                            Address4 = l.PickupLocation.address4,
-                            City = l.PickupLocation.city,
-                            State = l.PickupLocation.state,
-                            Zip = l.PickupLocation.zip
-                        }
-                    }
-                }).FirstOrDefault();
+            var vm = GetListingViewModel(id);
 
             if (vm == null)
             {
@@ -382,6 +353,13 @@ namespace NWHarvest.Web.Controllers
         public ActionResult DeleteConfirmed(int id, string returnUrl = null)
         {
             Listing listing = db.Listings.Find(id);
+            if (listing.QuantityClaimed > 0)
+            {
+                ModelState.AddModelError(string.Empty, "Unable to delete listings that are claimed.");
+                var vm = GetListingViewModel(id);
+                vm.UserName = GetUserName();
+                return View(vm);
+            }
             db.Listings.Remove(listing);
             db.SaveChanges();
 
@@ -393,6 +371,41 @@ namespace NWHarvest.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        private ListingViewModel GetListingViewModel(int id)
+        {
+            return _queryListings
+                    .Where(l => l.Id == id)
+                    .Select(l => new ListingViewModel
+                    {
+                        Id = l.Id,
+                        Product = l.Product,
+                        QuantityAvailable = l.QuantityAvailable,
+                        UnitOfMeasure = l.UnitOfMeasure,
+                        HarvestDate = l.HarvestedDate,
+                        ExpirationDate = l.ExpirationDate,
+                        CostPerUnit = l.CostPerUnit,
+                        IsAvailable = l.IsAvailable,
+                        PickupLocationId = l.PickupLocationId,
+                        Comments = l.Comments,
+                        PickupLocation = new PickupLocationViewModel
+                        {
+                            Id = l.PickupLocation.id,
+                            Name = l.PickupLocation.name,
+                            Address = new AddressViewModel
+                            {
+                                Address1 = l.PickupLocation.address1,
+                                Address2 = l.PickupLocation.address2,
+                                Address3 = l.PickupLocation.address3,
+                                Address4 = l.PickupLocation.address4,
+                                City = l.PickupLocation.city,
+                                State = l.PickupLocation.state,
+                                Zip = l.PickupLocation.zip
+                            }
+                        }
+                    })
+                    .AsNoTracking()
+                    .FirstOrDefault();
+        }
         // send sms and/or email notification to Food Banks when a new listing is added in their county
         private void SendNotification(Listing listing, List<FoodBank> foodBanks)
         {
