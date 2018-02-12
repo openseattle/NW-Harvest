@@ -1,6 +1,11 @@
 ﻿@model NWHarvest.Web.ViewModels.ListingViewModel
 @{
     ViewBag.Title = "Listing Details";
+    var deleteActionLink = Html.ActionLink("Delete", "Delete", "Listings", new { Id = Model.Id }, new { @class = "btn btn-danger" });
+    if (Model.QuantityClaimed > 0)
+    {
+        deleteActionLink = null;
+    }
 }
 <h3>@Model.UserName's @ViewBag.Title</h3>
 <hr />
@@ -11,6 +16,6 @@
 <br />
 <p>
     @Html.ActionLink("Edit", "Edit", "Listings", new { Id = Model.Id }, new { @class = "btn btn-primary" })
-    @Html.ActionLink("Delete", "Delete", "Listings", new { Id = Model.Id }, new { @class = "btn btn-danger" })
+    @deleteActionLink
     @Html.ActionLink("Back", "Index", "Listings", null, new { @class = "btn btn-default" })
 </p>
